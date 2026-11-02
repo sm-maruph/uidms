@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+
+:root {
+  font-family: 'DM Sans', sans-serif;
+  color: #17212b;
+  background: #f7f8fa;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+  font-weight: 400;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 20px;
+  background:
+    radial-gradient(ellipse at 50% 38%, rgba(179, 220, 207, 0.26), transparent 42%),
+    #f7f8fa;
+}
+
+.welcome-card {
+  width: min(100%, 560px);
+  padding: 56px 48px 52px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid #e8ecef;
+  border-radius: 20px;
+  box-shadow: 0 24px 70px rgba(29, 49, 58, 0.07);
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 25px;
+  color: #fff;
+  background: #23745e;
+  border-radius: 15px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.eyebrow {
+  margin: 0 0 13px;
+  color: #37836e;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+h1 {
+  max-width: 420px;
+  margin: 0 auto;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(30px, 6vw, 42px);
+  line-height: 1.16;
+  letter-spacing: -0.045em;
+}
+
+.description {
+  max-width: 380px;
+  margin: 18px auto 28px;
+  color: #697680;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 17px;
+  color: #fff;
+  background: #23745e;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 150ms ease, transform 150ms ease;
+}
+
+.button:hover { background: #195f4c; transform: translateY(-1px); }
+.button:focus-visible { outline: 3px solid #9dd8c4; outline-offset: 3px; }
+
+footer {
+  position: absolute;
+  bottom: 22px;
+  color: #9aa4aa;
+  font-size: 12px;
+}
+
+@media (max-width: 480px) {
+  .welcome-card { padding: 42px 24px; }
+}
