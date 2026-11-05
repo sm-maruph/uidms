@@ -1,0 +1,26 @@
+/* Overview uses the viewport without page scrolling; all other pages scroll normally. */
+html,body,#root{min-height:100%;height:auto;overflow-x:hidden;overflow-y:auto}
+.app-shell{width:100%;min-height:100vh;min-height:100dvh;height:auto;overflow:visible}
+.app-shell .content-shell{min-height:100vh;min-height:100dvh;height:auto;overflow:visible}
+.app-shell .page-content{padding-top:18px;padding-bottom:12px;overflow:visible}
+.app-shell .page-footer{flex:none}
+.app-shell .modal-scrim{overflow-y:auto}
+.app-shell .overview-shell{position:fixed;inset:0 0 0 248px;width:auto;height:auto;min-height:0;margin-left:0;overflow:hidden}
+.app-shell .overview-shell .page-content{min-height:0;overflow:hidden}
+@media(max-width:1150px){.app-shell .overview-shell{left:220px}}
+@media(max-width:900px){.app-shell .overview-shell{left:0}}
+@media(min-width:1500px){.app-shell .page-content{padding-top:18px}}
+@media(max-height:1100px){
+  .app-shell .overview-shell .page-content{padding-top:12px;padding-bottom:10px}
+  .app-shell .overview-shell .welcome-banner{min-height:112px;padding-top:16px;padding-bottom:16px}
+  .app-shell .overview-shell .metrics-grid{margin-top:9px;margin-bottom:9px}
+  .app-shell .overview-shell .metric-card{min-height:88px;padding-top:10px;padding-bottom:9px}
+  .app-shell .overview-shell .request-row{min-height:54px}
+  .app-shell .overview-shell .quick-actions button{min-height:48px}
+  .app-shell .overview-shell .approval-card{min-height:122px;padding-top:13px;padding-bottom:10px}
+  .app-shell .overview-shell .request-panel{padding-top:14px}
+  .app-shell .overview-shell .table-toolbar{min-height:42px;margin-top:9px}
+  .app-shell .overview-shell .tabs{height:41px}
+  .app-shell .overview-shell .request-head{height:29px}
+  .app-shell .overview-shell .page-footer{min-height:30px;padding-top:6px;padding-bottom:6px}
+}

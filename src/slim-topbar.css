@@ -1,0 +1,9 @@
+.app-shell .topbar{height:44px;min-height:44px;flex:none;display:flex;justify-content:flex-end;gap:12px;overflow:hidden;margin-top:0;padding:0 20px;border-bottom:1px solid var(--line);background:var(--surface)}
+.app-shell .topbar-left,.app-shell .global-search,.app-shell .topbar-divider,.app-shell .role-chip,.app-shell .topbar-avatar{display:none}
+.app-shell .topbar-actions{height:100%;display:flex;align-items:center;gap:10px}
+.app-shell .topbar-actions .icon-button{width:32px;height:32px}
+.app-shell .topbar::before{position:absolute;left:16px;right:150px;top:0;height:44px;overflow:hidden;content:'NOTICE  •  AD ID creation must be requested on behalf of another employee  •  Include a business justification with access requests  •  All request activity is logged';color:var(--muted);font-size:12px;font-weight:500;line-height:44px;white-space:nowrap;text-indent:100%;animation:notice-scroll 32s linear infinite;pointer-events:none}
+.app-shell .topbar:hover::before{animation-play-state:paused}
+@keyframes notice-scroll{to{text-indent:-100%}}
+@media(prefers-reduced-motion:reduce){.app-shell .topbar::before{text-indent:0;animation:none}}
+@media(max-width:620px){.app-shell .topbar{height:40px;min-height:40px;padding:0 12px}.app-shell .topbar::before{height:40px;right:150px;line-height:40px;animation-duration:25s}.app-shell .topbar-actions{gap:6px}}

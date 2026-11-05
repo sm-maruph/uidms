@@ -1,0 +1,35 @@
+/* Readable dashboard scale and clearer hierarchy. */
+.app-shell{font-size:16px}
+.brand strong{font-size:18px}.brand small,.workspace-switch small,.profile-row small{font-size:13px}
+.workspace-switch strong,.profile-row strong{font-size:14px}.nav-label{font-size:11px}.nav-item{font-size:14px;min-height:43px}
+.breadcrumbs{font-size:14px}.global-search input,.table-search input{font-size:14px}.global-search kbd{font-size:11px}
+.eyebrow{font-size:11px}.welcome-banner h1{font-size:30px}.welcome-copy{font-size:15px;line-height:1.55}
+.metric-card{min-height:112px;padding:17px}.metric-top{font-size:14px}.metric-value{font-size:30px}.metric-card>small{font-size:13px}
+.section-title h2{font-size:20px}.section-title .eyebrow{font-size:10px}.text-link{font-size:13px}
+.tabs button{font-size:13px}.request-head{font-size:10px}.request-row{min-height:72px}
+.request-person strong,.system-role strong,.submitted strong,.quick-actions strong{font-size:13px}
+.request-person small,.system-role small,.submitted small,.status-cell small,.quick-actions small{font-size:12px}
+.status{font-size:11px}.quick-card>p,.approval-top p{font-size:13px}.approval-top>strong{font-size:16px}.approval-top button{font-size:12px}
+.page-footer{font-size:11px}.button{font-size:13px;min-height:38px}.directory-panel .section-title h2{font-size:24px}.directory-intro{font-size:15px;line-height:1.55}
+.panel,.quick-card,.approval-card{border-radius:12px;box-shadow:0 4px 16px rgba(19,43,65,.045)}
+.request-panel{padding-top:20px}.table-toolbar{min-height:52px}.tabs{height:51px}.request-head{height:36px}.request-row:hover{background:color-mix(in srgb,var(--blue) 4%,var(--surface))}
+.quick-card{padding:20px 17px 11px}.quick-actions button{min-height:62px}.approval-card{padding:17px;min-height:160px}
+.detail-heading h1{font-size:28px}.detail-heading p:last-child{font-size:14px}.detail-facts small{font-size:11px}.detail-facts strong{font-size:14px}.detail-main h3,.audit-panel h3{font-size:18px}
+.flow-node{font-size:13px}.flow-step strong{font-size:14px}.flow-step small{font-size:12px}.query-note,.ticket-justification p{font-size:13px}.ticket-justification strong{font-size:13px}.detail-actions>button:not(.button){font-size:13px}
+.audit-panel>p,.audit-event small,.audit-row small,.audit-row time{font-size:12px}.audit-event strong,.audit-row strong{font-size:13px}
+.catalog-card strong,.service-card strong{font-size:13px}.catalog-card small,.service-card small{font-size:11px}.catalog-card>button{font-size:12px}
+.workflow-row>div:first-child strong,.admin-tiles strong{font-size:14px}.workflow-row>div:first-child small,.admin-tiles small,.admin-tiles span,.flow-chips span{font-size:12px}
+.field-label{font-size:13px}.field-label select,.field-label textarea{font-size:14px}
+.theme-dark .panel,.theme-dark .quick-card,.theme-dark .approval-card{box-shadow:0 5px 20px #0002}
+@media(max-width:900px){.nav-item{font-size:14px}}
+@media(max-width:620px){
+  .brand strong{font-size:17px}.nav-item{font-size:14px}.breadcrumbs{font-size:12px}
+  .welcome-banner h1{font-size:25px}.welcome-copy{font-size:13px}.welcome-banner .eyebrow{font-size:9px}
+  .metric-top{font-size:12px}.metric-value{font-size:25px}.metric-card>small{font-size:11px}
+  .section-title h2{font-size:17px}.text-link{font-size:11px}.tabs button{font-size:11px}
+  .request-person strong,.system-role strong,.submitted strong,.quick-actions strong{font-size:12px}
+  .request-person small,.system-role small,.submitted small,.status-cell small,.quick-actions small{font-size:10px}
+  .directory-panel .section-title h2{font-size:21px}.directory-intro{font-size:13px}
+  .service-card strong,.catalog-card strong{font-size:12px}.service-card small,.catalog-card small{font-size:10px}
+  .page-footer{font-size:9px}.button{font-size:12px}
+}

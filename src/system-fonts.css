@@ -1,0 +1,35 @@
+/* App-wide minimum sizes for text that was previously too small to read. */
+.app-shell{--muted:#66798b;font-size:17px}
+.theme-dark{--muted:#b2c0ce}
+.app-shell small{font-size:13px;color:var(--muted)}
+.app-shell .nav-item{font-size:15px;min-height:44px}
+.app-shell .nav-label,.app-shell .eyebrow,.app-shell .section-title .eyebrow{font-size:12px}
+.app-shell .workspace-switch strong,.app-shell .profile-row strong{font-size:15px}
+.app-shell .workspace-switch small,.app-shell .profile-row small,.app-shell .help-card p,.app-shell .help-card button{font-size:13px}
+.app-shell .breadcrumbs{font-size:14px}.app-shell .global-search input,.app-shell .table-search input,.app-shell .global-search kbd{font-size:14px}
+.app-shell .metric-top{font-size:15px}.app-shell .metric-card>small{font-size:13px}
+.app-shell .section-title h2{font-size:21px}.app-shell .text-link{font-size:13px}
+.app-shell .request-head{font-size:11px}.app-shell .request-person strong,.app-shell .system-role strong,.app-shell .submitted strong,.app-shell .quick-actions strong{font-size:14px}
+.app-shell .request-person small,.app-shell .system-role small,.app-shell .submitted small,.app-shell .status-cell small,.app-shell .quick-actions small{font-size:13px}
+.app-shell .status{font-size:12px}.app-shell .quick-card>p,.app-shell .approval-top p,.app-shell .approval-top button{font-size:13px}
+.app-shell .page-footer{font-size:12px}.app-shell .button,.app-shell button:not(.icon-button):not(.mobile-menu):not(.sidebar-close){font-size:14px}
+.app-shell .directory-intro{font-size:16px}.app-shell .service-title>strong{font-size:15px}.app-shell .service-title>span:last-child{font-size:13px}
+.app-shell .service-card strong,.app-shell .catalog-card strong{font-size:14px}.app-shell .service-card small,.app-shell .catalog-card small{font-size:12px}
+.app-shell .field-label,.app-shell .field-label input,.app-shell .field-label select,.app-shell .field-label textarea{font-size:14px}
+.app-shell .modal-subtitle{font-size:15px}.app-shell .request-flow-note,.app-shell .form-error{font-size:13px}
+.app-shell .back-link,.app-shell .flow-step small,.app-shell .audit-event small,.app-shell .audit-row small,.app-shell .audit-row time{font-size:13px}
+.app-shell .flow-step strong,.app-shell .audit-event strong,.app-shell .audit-row strong{font-size:14px}
+.app-shell .detail-facts small{font-size:12px}.app-shell .detail-facts strong{font-size:15px}
+.app-shell .transfer-subtype,.app-shell .transfer-person-heading,.app-shell .add-system-link{font-size:14px}
+.app-shell .transfer-system,.app-shell .transfer-similar-id,.app-shell .no-role-level,.app-shell .new-user-note,.app-shell .new-user-services{font-size:13px}
+.app-shell .access-form-head,.app-shell .access-form-row,.app-shell .access-form-row>strong{font-size:14px}
+.app-shell .pending-owner,.app-shell .no-pending-access{font-size:13px}.app-shell .my-access-paper-footer{font-size:12px}
+.app-shell .toast{font-size:14px}
+@media(max-width:620px){
+  .app-shell{font-size:16px}
+  .app-shell small,.app-shell .request-person small,.app-shell .system-role small,.app-shell .submitted small,.app-shell .status-cell small,.app-shell .quick-actions small{font-size:12px}
+  .app-shell .nav-label,.app-shell .eyebrow,.app-shell .section-title .eyebrow{font-size:11px}
+  .app-shell .request-head{font-size:11px}.app-shell .page-footer{font-size:10px}
+  .app-shell .directory-intro{font-size:14px}.app-shell .field-label,.app-shell .field-label input,.app-shell .field-label select,.app-shell .field-label textarea{font-size:14px}
+  .app-shell .service-card strong,.app-shell .catalog-card strong{font-size:13px}.app-shell .service-card small,.app-shell .catalog-card small{font-size:12px}
+}
