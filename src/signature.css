@@ -1,0 +1,38 @@
+.profile-signature-modal{position:relative;width:min(100%,520px);padding:26px;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:0 24px 80px #0e263544;color:var(--text)}
+.profile-signature-modal h2{margin:0;font:700 22px Manrope,sans-serif}.profile-signature-modal>p:not(.eyebrow){margin:8px 0 18px;color:var(--muted);font-size:14px}
+.profile-signature-close{position:absolute;top:14px;right:14px}.signature-preview{height:112px;display:grid;place-items:center;margin:14px 0;padding:12px;border:1px dashed var(--line);border-radius:8px;background:#fff}.signature-preview img{max-width:100%;max-height:82px;object-fit:contain}
+.profile-signature-modal input[type=file]{padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--text)}
+.request-e-signature{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:16px 0;padding:10px 14px;border:1px solid var(--line);border-radius:7px;background:var(--surface-soft);color:var(--muted);font-size:13px}
+.request-e-signature img,.approval-e-signature{max-width:180px;max-height:52px;object-fit:contain}
+.approval-e-signature{display:block;height:43px;margin-top:8px}
+.profile-avatar-button{display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer}
+.profile-avatar-button:focus-visible{outline:2px solid #4b9de0;outline-offset:2px}
+.request-review-banner{display:grid;gap:12px;margin:0 0 14px;padding:14px 16px;border:1px solid #b9d5e9;border-radius:8px;background:linear-gradient(120deg,#eff8ff,#f7fbff);color:var(--text)}
+.request-review-banner strong{font-size:16px}.request-review-banner p{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+.request-review-banner.signed{border-color:#b9dfc7;background:linear-gradient(120deg,#effaf3,#f9fdfb)}
+.request-acknowledgement{display:flex;align-items:flex-start;gap:9px;padding-top:10px;border-top:1px solid #d6e5ef;font-size:13px;line-height:1.45;cursor:pointer}
+.request-acknowledgement input{flex:none;width:17px;height:17px;margin:0;accent-color:var(--blue)}
+.request-review-scrim{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:#12263885;backdrop-filter:blur(4px)}
+.request-review-dialog{display:flex;flex-direction:column;width:min(1120px,96vw);max-height:94vh;overflow:auto;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:0 28px 90px #0e263566;color:var(--text)}
+.request-review-heading{position:sticky;top:-20px;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:-20px -20px 14px;padding:17px 20px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
+.request-review-heading h2{margin:0;font:700 21px Manrope,sans-serif}.request-review-heading p:not(.eyebrow){margin:5px 0 0;color:var(--muted);font-size:13px}
+.request-review-dialog>.request-form-preview{min-height:0;overflow:visible}
+.request-review-footer{position:sticky;bottom:-20px;z-index:2;margin:14px -20px -20px;padding:12px 20px 16px;border-top:1px solid var(--line);background:var(--surface)}
+.request-review-footer .modal-actions{margin-top:10px}
+.request-official-header .official-form-brand img{margin-right:28px}
+.request-form-preview.is-locked{cursor:default}
+.request-form-preview.is-locked .branch-transfer-fields input,.request-form-preview.is-locked .branch-transfer-fields textarea{background-color:#f8fafc}
+.modal-actions button:disabled{opacity:.48;cursor:not-allowed}
+@media print{
+  .request-review-scrim{display:none!important}
+  .request-official-header,.request-official-header *,.request-form-preview,.request-form-preview *{visibility:visible!important}
+  .request-official-header{display:block!important;break-after:avoid-page;break-inside:avoid-page;margin:0 0 10px!important;border-color:#777!important;background:#fff!important;color:#111!important}
+  .request-official-header .official-form-brand span,.request-official-header p{color:#111!important}
+  .request-official-header .official-form-print,.request-modal.transfer-modal>.official-modal-close,.new-user-fields button{display:none!important}
+  .new-user-fields .transfer-person-card,.new-user-fields .new-user-services{break-inside:avoid-page;border-color:#777!important;background:#fff!important;color:#111!important}
+  .new-user-fields input{border-color:#777!important;background:#fff!important;color:#111!important}
+  .request-modal.transfer-modal>.request-e-signature,.request-modal.transfer-modal>.request-e-signature *,.request-form-preview>.request-e-signature,.request-form-preview>.request-e-signature *{visibility:visible!important}
+  .request-modal.transfer-modal>.request-review-banner,.request-modal.transfer-modal>.request-form-preview>.field-label:not(.print-business-justification){display:none!important}
+  .request-form-preview>.print-business-justification,.request-form-preview>.print-business-justification *,.request-form-preview>.print-modal-approvals,.request-form-preview>.print-modal-approvals *{visibility:visible!important}
+  .approval-e-signature{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+}

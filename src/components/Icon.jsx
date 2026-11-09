@@ -17,6 +17,18 @@ const paths = {
   filter: <><path d="M4 6h16M7 12h10m-7 6h4"/></>,
   chevron: <path d="m9 18 6-6-6-6"/>,
   close: <><path d="m18 6-12 12M6 6l12 12"/></>,
+  edit: <><path d="m4 20 4.5-1 9.8-9.8a2.1 2.1 0 0 0-3-3L5.5 16 4 20Z"/><path d="m13.8 7.2 3 3"/></>,
+  userPlus: <><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a6 6 0 0 1 10-4.5M19 14v7m-3.5-3.5h7"/></>,
+  idCard: <><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8" cy="11" r="2"/><path d="M5.5 16a3 3 0 0 1 5 0M13 10h5m-5 4h5"/></>,
+  trash: <><path d="M4 7h16m-10 4v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"/></>,
+  key: <><circle cx="8" cy="15" r="5"/><path d="m11.5 11.5 8-8 2 2-2 2 2 2-3 3-2-2-3 3"/></>,
+  arrowUp: <><path d="M12 19V5m-6 6 6-6 6 6"/><path d="M5 20h14"/></>,
+  branch: <><circle cx="7" cy="5" r="2"/><circle cx="17" cy="19" r="2"/><circle cx="17" cy="5" r="2"/><path d="M7 7v5a4 4 0 0 0 4 4h4m-2-2 2 2-2 2M9 5h6"/></>,
+  mail: <><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></>,
+  forward: <><path d="M4 12h15m-6-6 6 6-6 6"/><path d="M5 6v12"/></>,
+  hardDrive: <><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 14h18m-13 3h.01m4 0h.01"/></>,
+  database: <><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></>,
+  device: <><rect x="6" y="2.5" width="12" height="19" rx="2"/><path d="M10 5h4m-2 13.5h.01"/></>,
 };
 
 export default function Icon({ name, size = 20, ...props }) {

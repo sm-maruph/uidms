@@ -1,0 +1,1 @@
+export const mockSignature = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="360" height="100" viewBox="0 0 360 100"><rect width="100%" height="100%" fill="white" fill-opacity="0"/><text x="8" y="70" fill="#173b68" font-family="cursive" font-size="62" font-style="italic">Rahim Ahmed</text></svg>')}`;

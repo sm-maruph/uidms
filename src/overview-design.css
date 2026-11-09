@@ -1,0 +1,33 @@
+.app-shell .overview-shell .page-content{display:flex;flex-direction:column;gap:0}
+.app-shell .overview-shell .welcome-banner{order:1}
+.app-shell .overview-shell .metrics-grid{order:2}
+.app-shell .overview-shell .overview-request-panel{order:3;position:relative;z-index:5;overflow:visible;border-color:#c9e0f1;background:linear-gradient(112deg,#f3f9fd 0%,#edf6fc 48%,#f6fbfe 100%);box-shadow:0 5px 18px #24658b0b}
+.app-shell .overview-shell .overview-request-panel:has(.request-type-chooser-scrim){z-index:130}
+.app-shell .overview-shell .main-grid{order:4}
+.app-shell .overview-shell .overview-request-panel:before{position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#0877bc,#73c7e9,#53b58a,#0877bc);background-size:220% 100%;animation:request-band-shift 9s linear infinite;content:''}
+.app-shell .overview-shell .overview-request-panel>.section-title{position:relative;z-index:1;padding-top:2px}
+.app-shell .overview-shell .overview-request-grid{position:relative;z-index:1}
+.theme-dark .overview-shell .overview-request-panel{color:#21374d}
+.theme-dark .overview-shell .overview-request-panel .section-title h2{color:#1c3045}
+.theme-dark .overview-shell .overview-request-card,.theme-dark .overview-shell .overview-request-card .system-access-card-copy strong,.theme-dark .overview-shell .overview-request-card .system-access-card-arrow{color:#1d3349}
+.app-shell .overview-shell .overview-request-card{position:relative;z-index:1;overflow:visible;border-color:#c8d9e8;background:linear-gradient(145deg,#fff,#f8fbff);box-shadow:0 3px 8px #16456a18,0 1px 2px #16456a12;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.app-shell .overview-shell .overview-request-card:hover{transform:translateY(-3px);border-color:#76afd4;background:#fff;box-shadow:0 10px 20px #17649c2a,0 3px 7px #16456a18}
+.app-shell .overview-shell .overview-request-card:hover,.app-shell .overview-shell .overview-request-card:focus-visible{z-index:8}
+.app-shell .overview-shell .overview-request-card .system-access-card-copy small{position:absolute;top:calc(100% + 8px);left:50%;z-index:10;display:block;width:min(270px,calc(100vw - 48px));margin:0;padding:10px 12px;border:1px solid #cbdbea;border-radius:8px;background:#fff;box-shadow:0 10px 24px #112b4433;color:#435b72;font-size:12px;line-height:1.5;text-align:left;white-space:normal;opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,-4px);transition:opacity .16s ease,transform .16s ease,visibility .16s ease}
+.app-shell .overview-shell .overview-request-card:hover .system-access-card-copy small,.app-shell .overview-shell .overview-request-card:focus-visible .system-access-card-copy small{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.app-shell .overview-shell .overview-request-card:focus-visible{outline:2px solid #4c9ddd;outline-offset:2px;box-shadow:0 5px 14px #17649c26}
+.app-shell .overview-shell .overview-request-card:active{transform:translateY(-1px) scale(.985)}
+.app-shell .overview-shell .overview-request-card .system-access-card-mark{transition:transform .18s ease,box-shadow .18s ease}
+.app-shell .overview-shell .overview-request-card:hover .system-access-card-mark{transform:scale(1.08);box-shadow:0 3px 9px #17649c20}
+.app-shell .overview-shell .metric-card{transition:transform .18s ease,box-shadow .18s ease}
+.app-shell .overview-shell .metric-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px #173e5c12}
+.app-shell .overview-shell .orbit-one{animation:orbit-drift 22s linear infinite}
+.app-shell .overview-shell .orbit-two{animation:orbit-drift 28s linear infinite reverse}
+.app-shell .overview-shell .art-shield{animation:shield-float 4.2s ease-in-out infinite}
+@keyframes request-band-shift{to{background-position:220% 0}}
+@keyframes orbit-drift{to{transform:rotate(332deg)}}
+@keyframes shield-float{0%,100%{translate:0 0}50%{translate:0 -5px}}
+@media(prefers-reduced-motion:reduce){
+  .app-shell .overview-shell .overview-request-panel:before,.app-shell .overview-shell .orbit-one,.app-shell .overview-shell .orbit-two,.app-shell .overview-shell .art-shield{animation:none!important}
+  .app-shell .overview-shell .overview-request-card,.app-shell .overview-shell .metric-card,.app-shell .overview-shell .system-access-card-mark{transition:none!important}
+}

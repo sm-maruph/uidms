@@ -12,15 +12,48 @@ html,body,#root{min-height:100%;height:auto;overflow-x:hidden;overflow-y:auto}
 @media(min-width:1500px){.app-shell .page-content{padding-top:18px}}
 @media(max-height:1100px){
   .app-shell .overview-shell .page-content{padding-top:12px;padding-bottom:10px}
-  .app-shell .overview-shell .welcome-banner{min-height:112px;padding-top:16px;padding-bottom:16px}
-  .app-shell .overview-shell .metrics-grid{margin-top:9px;margin-bottom:9px}
-  .app-shell .overview-shell .metric-card{min-height:88px;padding-top:10px;padding-bottom:9px}
-  .app-shell .overview-shell .request-row{min-height:54px}
-  .app-shell .overview-shell .quick-actions button{min-height:48px}
-  .app-shell .overview-shell .approval-card{min-height:122px;padding-top:13px;padding-bottom:10px}
-  .app-shell .overview-shell .request-panel{padding-top:14px}
-  .app-shell .overview-shell .table-toolbar{min-height:42px;margin-top:9px}
-  .app-shell .overview-shell .tabs{height:41px}
-  .app-shell .overview-shell .request-head{height:29px}
-  .app-shell .overview-shell .page-footer{min-height:30px;padding-top:6px;padding-bottom:6px}
+  .app-shell .overview-shell .welcome-banner{min-height:92px;padding:12px 22px}
+  .app-shell .overview-shell .welcome-banner h1{font-size:25px}
+  .app-shell .overview-shell .welcome-copy{font-size:12px}
+  .app-shell .overview-shell .metrics-grid{gap:9px;margin:7px 0}
+  .app-shell .overview-shell .metric-card{min-height:74px;padding:9px 11px}
+  .app-shell .overview-shell .metric-top{font-size:12px}
+  .app-shell .overview-shell .metric-value{font-size:25px}
+  .app-shell .overview-shell .metric-card>small{font-size:11px}
+  .app-shell .overview-shell .request-row{min-height:44px;padding-right:10px;padding-left:10px;gap:5px}
+  .app-shell .overview-shell .request-row .avatar{width:27px;height:27px}
+  .app-shell .overview-shell .request-person strong,.app-shell .overview-shell .system-role strong,.app-shell .overview-shell .submitted strong{font-size:12px}
+  .app-shell .overview-shell .request-person small,.app-shell .overview-shell .system-role small,.app-shell .overview-shell .submitted small,.app-shell .overview-shell .status-cell small{font-size:10px}
+  .app-shell .overview-shell .status{font-size:10px;padding:3px 5px}
+  .app-shell .overview-shell .quick-card{padding:12px 11px 5px}
+  .app-shell .overview-shell .quick-card>p{margin:4px 0 7px;font-size:11px}
+  .app-shell .overview-shell .quick-actions button{min-height:38px;padding:5px 0}
+  .app-shell .overview-shell .quick-icon{width:26px;height:26px}
+  .app-shell .overview-shell .quick-actions strong{font-size:12px}
+  .app-shell .overview-shell .quick-actions small{font-size:10px}
+  .app-shell .overview-shell .approval-card{min-height:92px;padding:10px 12px}
+  .app-shell .overview-shell .approval-icon{width:24px;height:24px}
+  .app-shell .overview-shell .approval-top{margin-top:5px}
+  .app-shell .overview-shell .approval-top>strong{font-size:14px}
+  .app-shell .overview-shell .approval-top p{margin:3px 0 6px;font-size:11px}
+  .app-shell .overview-shell .request-panel{padding-top:10px}
+  .app-shell .overview-shell .section-title{padding:0 12px}
+  .app-shell .overview-shell .section-title h2{font-size:17px}
+  .app-shell .overview-shell .section-title .eyebrow{font-size:9px}
+  .app-shell .overview-shell .table-toolbar{min-height:34px;margin-top:6px;padding:0 12px}
+  .app-shell .overview-shell .tabs{height:33px;gap:12px}
+  .app-shell .overview-shell .tabs button{font-size:11px}
+  .app-shell .overview-shell .table-search{height:23px}
+  .app-shell .overview-shell .request-head{height:24px;font-size:9px;padding-right:10px;padding-left:10px}
+  .app-shell .overview-shell .overview-request-panel{margin-bottom:7px;padding-top:8px}
+  .app-shell .overview-shell .overview-request-panel>.section-title h2{font-size:17px}
+  .app-shell .overview-shell .overview-request-grid{gap:6px;padding:6px 10px 9px}
+  .app-shell .overview-shell .overview-request-card{min-height:40px;padding:6px;gap:6px}
+  .app-shell .overview-shell .overview-request-card .system-access-card-mark{width:24px;height:24px;font-size:11px}
+  .app-shell .overview-shell .overview-request-card .system-access-card-copy strong{font-size:12px}
+  .app-shell .overview-shell .page-footer{min-height:26px;padding:5px 20px;font-size:10px}
 }
+@keyframes request-card-enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.app-shell .overview-request-card{animation:request-card-enter .35s ease-out both}
+.app-shell .overview-request-card:nth-child(2){animation-delay:.025s}.app-shell .overview-request-card:nth-child(3){animation-delay:.05s}.app-shell .overview-request-card:nth-child(4){animation-delay:.075s}.app-shell .overview-request-card:nth-child(5){animation-delay:.1s}.app-shell .overview-request-card:nth-child(6){animation-delay:.125s}.app-shell .overview-request-card:nth-child(7){animation-delay:.15s}.app-shell .overview-request-card:nth-child(8){animation-delay:.175s}.app-shell .overview-request-card:nth-child(9){animation-delay:.2s}.app-shell .overview-request-card:nth-child(10){animation-delay:.225s}.app-shell .overview-request-card:nth-child(11){animation-delay:.25s}.app-shell .overview-request-card:nth-child(12){animation-delay:.275s}
+@media(prefers-reduced-motion:reduce){.app-shell .overview-request-card{animation:none!important}}

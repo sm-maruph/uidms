@@ -7,6 +7,30 @@
 .system-access-card-mark.sm-1{background:#eaf5ed;color:#39865a}.system-access-card-mark.sm-2{background:#fdf3e4;color:#a87322}.system-access-card-mark.sm-3{background:#f1edfb;color:#7355a8}.system-access-card-mark.sm-4{background:#e7f5f4;color:#25837b}
 .system-access-card-copy{min-width:0;flex:1}.system-access-card-copy strong,.system-access-card-copy small{display:block}.system-access-card-copy strong{font-size:14px;line-height:1.4}.system-access-card-copy small{margin-top:5px;color:var(--muted);font-size:12px;line-height:1.5}
 .system-access-card-arrow{color:var(--muted);font-size:21px;line-height:1}
+.request-type-chooser-scrim{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:20px;background:#1024388c;backdrop-filter:blur(4px)}
+.request-type-chooser{position:relative;width:min(540px,100%);padding:25px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 28px 90px #06162666;color:var(--text)}
+.request-type-chooser-close{position:absolute;top:13px;right:13px}
+.request-type-chooser>.eyebrow{margin:0 0 6px;color:var(--blue);font-weight:700;letter-spacing:.1em}
+.request-type-chooser h2{margin:0;font:700 22px Manrope,sans-serif;letter-spacing:-.03em}
+.request-type-chooser-intro{margin:6px 0 18px;color:var(--muted);font-size:13px}
+.request-type-chooser-options{display:grid;gap:10px}
+.request-type-chooser-options>button{min-height:76px;display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--surface-soft);color:var(--text);text-align:left;transition:border-color .16s,transform .16s,box-shadow .16s}
+.request-type-chooser-options>button:hover{transform:translateY(-2px);border-color:var(--blue);box-shadow:0 7px 18px #0072ce22}
+.request-type-choice-icon{width:40px;height:40px;display:grid;place-items:center;flex:none;border-radius:10px;background:#e3f1fc;color:#0072ce}
+.request-type-choice-icon.choice-other{background:#e4f6e9;color:#238a43}
+.request-type-chooser-options>button>span:nth-child(2){flex:1}.request-type-chooser-options strong,.request-type-chooser-options small{display:block}.request-type-chooser-options strong{font-size:14px}.request-type-chooser-options small{margin-top:4px;color:var(--muted);font-size:12px;line-height:1.4}
+.request-type-chooser-options>button>svg{color:var(--muted)}
+.overview-request-panel{margin:0 0 10px;padding-top:12px}
+.overview-request-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:10px 14px 14px}
+.overview-request-card{min-height:48px;gap:8px;padding:8px}
+.overview-request-card .system-access-card-mark{width:28px;height:28px;font-size:13px}
+.overview-request-card .system-access-card-copy strong{font-size:12px;line-height:1.25}
+.overview-request-card .system-access-card-copy small{display:none}
+.overview-request-card .system-access-card-arrow{font-size:18px}
+.overview-request-card:hover{transform:translateY(-2px) scale(1.01);box-shadow:0 7px 18px #153f5c1c}
 .theme-dark .system-access-card-mark{background:#233b50;color:#8bcaf0}.theme-dark .system-access-card-mark.sm-1{background:#203c31;color:#8bd4a2}.theme-dark .system-access-card-mark.sm-2{background:#473921;color:#e1b15f}.theme-dark .system-access-card-mark.sm-3{background:#352d49;color:#c5b2f1}.theme-dark .system-access-card-mark.sm-4{background:#1e3d3d;color:#7dd3c7}
 @media(max-width:900px){.system-access-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:620px){.system-access-cards{grid-template-columns:1fr;padding-inline:12px}}
+@media(max-width:1150px){.overview-request-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:900px){.overview-request-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:620px){.system-access-cards{grid-template-columns:1fr;padding-inline:12px}.overview-request-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding-inline:12px}.overview-request-card{min-height:44px}}
+@media(max-width:520px){.request-type-chooser{padding:22px 16px}.request-type-chooser h2{font-size:19px}.request-type-chooser-options>button{min-height:70px}}

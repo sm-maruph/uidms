@@ -1,0 +1,20 @@
+.auto-forward-fields{display:grid;gap:12px}
+.auto-forward-section{padding:14px;border:1px solid var(--line);border-radius:8px;background:var(--surface-soft)}
+.auto-forward-section-heading{margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+.auto-forward-section-heading h3{margin:0;font:700 16px Manrope,sans-serif}
+.auto-forward-section-heading p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.auto-forward-profile-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.auto-forward-profile-grid label,.auto-forward-destination{display:flex;flex-direction:column;gap:5px;color:#465b6d;font-size:13px;font-weight:600}
+.auto-forward-profile-grid input,.auto-forward-destination input{width:100%;min-width:0;min-height:38px;padding:8px 10px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--text);font:inherit;font-weight:400}
+.auto-forward-profile-grid input[readonly]{background:color-mix(in srgb,var(--surface-soft) 65%,var(--line));color:var(--muted)}
+.auto-forward-destination{max-width:560px}
+.auto-forward-address{display:flex;align-items:center;gap:8px}.auto-forward-address input{flex:1}.auto-forward-address strong{color:var(--text);font-size:13px;white-space:nowrap}
+.mailing-group-action{display:flex;flex-wrap:wrap;gap:10px 20px;margin:0 0 13px;padding:0;border:0}
+.mailing-group-action legend{width:100%;margin-bottom:7px;color:var(--muted);font-size:12px;font-weight:600}
+.mailing-group-action label{display:flex;align-items:center;gap:7px;font-size:13px}
+.mailing-group-action input{width:16px;height:16px;accent-color:var(--blue)}
+.theme-dark .auto-forward-profile-grid label,.theme-dark .auto-forward-destination{color:#c8d4df}
+.theme-dark .auto-forward-profile-grid input[readonly]{background:#1b2b3d;color:#d5e3f0}
+@media(max-width:650px){.auto-forward-profile-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){.auto-forward-profile-grid{grid-template-columns:1fr}}
+@media print{.auto-forward-section{break-inside:avoid-page;border-color:#777!important;background:#fff!important;color:#111!important}.auto-forward-profile-grid label,.auto-forward-destination,.mailing-group-action label,.mailing-group-action legend{color:#111!important}.auto-forward-profile-grid input,.auto-forward-destination input{border-color:#777!important;background:#fff!important;color:#111!important}}
