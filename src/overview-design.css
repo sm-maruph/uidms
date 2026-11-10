@@ -1,9 +1,40 @@
 .app-shell .overview-shell .page-content{display:flex;flex-direction:column;gap:0}
 .app-shell .overview-shell .welcome-banner{order:1}
+.app-shell .overview-shell .welcome-audit-note{display:flex;align-items:center;gap:6px;margin:5px 0 0;color:#dceaff;font-size:10px;line-height:1.25}
+.app-shell .overview-shell .welcome-audit-note svg{flex:none;color:#9bd9b0}
+.app-shell .overview-shell .welcome-banner:has(.operations-finder-results){overflow:visible;z-index:30}
+.operations-finder:before{display:block;margin:0 0 6px 3px;color:#d6e8ff;content:'QUICK LOOKUP';font-size:10px;font-weight:700;letter-spacing:.11em}
+.operations-finder{position:absolute;z-index:3;top:50%;right:235px;width:min(430px,40%);transform:translateY(-50%)}
+.operations-finder-controls{display:flex;gap:7px;padding:6px;border:1px solid #9bbce7;border-radius:10px;background:#173a70e8;box-shadow:0 8px 24px #122c5238;transition:border-color .15s,box-shadow .15s}
+.operations-finder-controls:focus-within{border-color:#fff;box-shadow:0 0 0 3px #d4e7ff45,0 10px 26px #122c5245}
+.operations-finder-controls select,.operations-finder-controls label{height:40px;border:1px solid #d3dfed;border-radius:7px;background:#f7faff;color:#213650}
+.operations-finder-controls select{width:142px;flex:none;padding:0 9px;font:600 12px Arial, "Segoe UI", sans-serif}
+.operations-finder-controls label{display:flex;align-items:center;gap:8px;min-width:0;flex:1;padding:0 11px;color:#42648b}
+.operations-finder-controls label svg{flex:none}
+.operations-finder-controls input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#20344d;font:500 13px Arial, "Segoe UI", sans-serif}
+.operations-finder-controls input::placeholder{color:#71849a}
+.operations-finder-results{position:absolute;top:calc(100% + 7px);right:0;left:0;max-height:310px;overflow:auto;border:1px solid #bdcfe3;border-radius:8px;background:#fff;color:#20344d;box-shadow:0 16px 35px #07162e55}
+.operations-finder-results>article,.operations-finder-request{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:10px 12px;border:0;border-bottom:1px solid #e3e9f1;background:#fff;color:#20344d;text-align:left}
+.operations-finder-results>article>span,.operations-finder-request>span{display:flex;flex-direction:column;gap:4px;min-width:0}
+.operations-finder-results strong,.operations-finder-request strong{font-size:12px}.operations-finder-results small,.operations-finder-request small{overflow:hidden;color:#61748b;font-size:10px;text-overflow:ellipsis;white-space:nowrap}
+.operations-finder-results article button{flex:none;padding:5px 10px;border:1px solid #2d6fc5;border-radius:5px;background:#2d6fc5;color:#fff;font-weight:700;cursor:pointer}
+.operations-finder-request{cursor:pointer}.operations-finder-request:hover,.operations-finder-results>article:hover{background:#f1f6fc}
+.operations-finder-results>p{margin:0;padding:13px;color:#61748b;font-size:12px}
+.finder-access-modal{width:min(1160px,96vw);max-height:90vh;overflow:auto}
+.finder-access-modal>.modal-header{margin-bottom:10px}.finder-access-modal .modal-subtitle{margin:5px 0 0}.finder-access-modal .my-access-page{margin:0;padding:0;border:0;background:transparent;box-shadow:none}
+@media(max-width:1100px){.operations-finder{position:relative;top:auto;right:auto;width:min(100%,520px);margin:10px 0 0;transform:none}.app-shell .overview-shell .welcome-banner{align-items:flex-start;flex-direction:column;justify-content:center;gap:4px}.app-shell .overview-shell .welcome-banner:has(.operations-finder-results){overflow:visible}.operations-finder-controls select{width:130px}}
+@media(max-width:620px){.operations-finder{width:100%}.operations-finder-controls{gap:5px;padding:5px}.operations-finder-controls select{width:120px;font-size:10px}.operations-finder-controls label{gap:4px;padding:0 6px}.operations-finder-controls input{font-size:10px}.finder-access-modal{padding:14px}}
+@media(max-width:620px){.operations-finder:before{font-size:9px}.operations-finder-controls select,.operations-finder-controls label{height:38px}.operations-finder-controls select{width:128px;font-size:11px}.operations-finder-controls label{gap:6px;padding:0 8px}.operations-finder-controls input{font-size:11px}}
 .app-shell .overview-shell .metrics-grid{order:2}
+.app-shell .overview-shell .metric-card-action{width:100%;font:inherit;color:var(--text);text-align:left;cursor:pointer;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+.app-shell .overview-shell .metric-card-action:hover{transform:translateY(-2px);border-color:var(--blue);box-shadow:0 8px 22px #0072ce24}
+.app-shell .overview-shell .metric-card-action:focus-visible{outline:3px solid #67b7f0;outline-offset:2px}
 .app-shell .overview-shell .overview-request-panel{order:3;position:relative;z-index:5;overflow:visible;border-color:#c9e0f1;background:linear-gradient(112deg,#f3f9fd 0%,#edf6fc 48%,#f6fbfe 100%);box-shadow:0 5px 18px #24658b0b}
 .app-shell .overview-shell .overview-request-panel:has(.request-type-chooser-scrim){z-index:130}
 .app-shell .overview-shell .main-grid{order:4}
+.app-shell .overview-shell .main-grid{align-items:stretch}
+.app-shell .overview-shell .request-panel{height:100%;box-sizing:border-box}
+.app-shell .overview-shell .overview-role-counts{order:5;margin-top:12px}
 .app-shell .overview-shell .overview-request-panel:before{position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#0877bc,#73c7e9,#53b58a,#0877bc);background-size:220% 100%;animation:request-band-shift 9s linear infinite;content:''}
 .app-shell .overview-shell .overview-request-panel>.section-title{position:relative;z-index:1;padding-top:2px}
 .app-shell .overview-shell .overview-request-grid{position:relative;z-index:1}

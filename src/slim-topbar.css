@@ -1,9 +1,23 @@
-.app-shell .topbar{height:44px;min-height:44px;flex:none;display:flex;justify-content:flex-end;gap:12px;overflow:hidden;margin-top:0;padding:0 20px;border-bottom:1px solid var(--line);background:var(--surface)}
+.app-shell .topbar{position:fixed;top:0;left:248px;right:0;z-index:100;height:44px;min-height:44px;box-sizing:border-box;display:flex;justify-content:flex-end;gap:12px;overflow:visible;margin:0;padding:0 20px;border-bottom:1px solid var(--line);background:var(--surface);backdrop-filter:blur(10px)}
 .app-shell .topbar-left,.app-shell .global-search,.app-shell .topbar-divider,.app-shell .role-chip,.app-shell .topbar-avatar{display:none}
 .app-shell .topbar-actions{height:100%;display:flex;align-items:center;gap:10px}
 .app-shell .topbar-actions .icon-button{width:32px;height:32px}
-.app-shell .topbar::before{position:absolute;left:16px;right:150px;top:0;height:44px;overflow:hidden;content:'NOTICE  •  AD ID creation must be requested on behalf of another employee  •  Include a business justification with access requests  •  All request activity is logged';color:var(--muted);font-size:12px;font-weight:500;line-height:44px;white-space:nowrap;text-indent:100%;animation:notice-scroll 32s linear infinite;pointer-events:none}
+.notification-menu-wrap{position:relative;height:100%;display:flex;align-items:center}
+.app-shell .topbar .notification-button>i{top:2px;right:0;min-width:15px;height:15px;padding:0 3px;border:1px solid var(--surface);border-radius:9px;background:#e37d65;color:#fff;font:700 9px Arial,"Segoe UI",sans-serif;line-height:13px;text-align:center}
+.topbar-profile-trigger{display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:transparent;line-height:0}
+.app-shell .topbar .topbar-system-id{display:inline-flex;align-items:center;min-height:26px;padding:0 9px;border:1px solid var(--line);border-radius:14px;background:var(--surface-soft);color:var(--text);font-size:11px;font-weight:700;letter-spacing:.025em;white-space:nowrap}
+.topbar-profile-trigger:hover .avatar,.topbar-profile-trigger:focus-visible .avatar{outline:2px solid #70a7df;outline-offset:2px}
+.notification-popover{position:fixed;z-index:150;top:52px;right:14px;width:min(370px,calc(100vw - 24px));max-height:min(70vh,520px);overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);box-shadow:0 18px 46px #02081766}
+.notification-popover>header{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;border-bottom:1px solid var(--line);font-size:13px}
+.notification-popover>header span{display:grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:11px;background:var(--blue);color:#fff;font-size:11px;font-weight:700}
+.notification-popover>button{display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:100%;padding:11px 15px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text);text-align:left}
+.notification-popover>button:hover{background:var(--surface-soft)}
+.notification-popover>button strong{font-size:12px}.notification-popover>button small,.notification-popover>button span,.notification-popover>p{color:var(--muted);font-size:11px}
+.notification-popover>p{margin:0;padding:14px 15px}
+.app-shell .topbar::before{position:absolute;left:16px;right:235px;top:0;height:44px;overflow:hidden;content:'NOTICE  •  AD ID creation must be requested on behalf of another employee  •  Include a business justification with access requests  •  All request activity is logged';color:var(--muted);font-size:12px;font-weight:500;line-height:44px;white-space:nowrap;text-indent:100%;animation:notice-scroll 32s linear infinite;pointer-events:none}
 .app-shell .topbar:hover::before{animation-play-state:paused}
 @keyframes notice-scroll{to{text-indent:-100%}}
 @media(prefers-reduced-motion:reduce){.app-shell .topbar::before{text-indent:0;animation:none}}
-@media(max-width:620px){.app-shell .topbar{height:40px;min-height:40px;padding:0 12px}.app-shell .topbar::before{height:40px;right:150px;line-height:40px;animation-duration:25s}.app-shell .topbar-actions{gap:6px}}
+@media(max-width:1150px){.app-shell .topbar{left:220px}}
+@media(max-width:900px){.app-shell .topbar{left:0}}
+@media(max-width:620px){.app-shell .topbar{height:40px;min-height:40px;padding:0 12px}.app-shell .topbar::before{height:40px;right:235px;line-height:40px;animation-duration:25s}.app-shell .topbar-actions{gap:6px}}

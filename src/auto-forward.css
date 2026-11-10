@@ -1,7 +1,7 @@
 .auto-forward-fields{display:grid;gap:12px}
 .auto-forward-section{padding:14px;border:1px solid var(--line);border-radius:8px;background:var(--surface-soft)}
 .auto-forward-section-heading{margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--line)}
-.auto-forward-section-heading h3{margin:0;font:700 16px Manrope,sans-serif}
+.auto-forward-section-heading h3{margin:0;font:700 16px Arial, "Segoe UI", sans-serif}
 .auto-forward-section-heading p{margin:4px 0 0;color:var(--muted);font-size:12px}
 .auto-forward-profile-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .auto-forward-profile-grid label,.auto-forward-destination{display:flex;flex-direction:column;gap:5px;color:#465b6d;font-size:13px;font-weight:600}

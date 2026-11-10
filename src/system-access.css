@@ -3,7 +3,7 @@
 .system-access-card{min-width:0;min-height:88px;display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--text);text-align:left;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}
 .system-access-card:hover{transform:translateY(-1px);border-color:var(--blue);box-shadow:0 5px 16px #153f5c12}
 .system-access-card:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-.system-access-card-mark{width:36px;height:36px;display:grid;place-items:center;flex:none;border-radius:8px;background:#e8f3fa;color:var(--blue);font:700 16px Manrope,sans-serif}
+.system-access-card-mark{width:36px;height:36px;display:grid;place-items:center;flex:none;border-radius:8px;background:#e8f3fa;color:var(--blue);font:700 16px Arial, "Segoe UI", sans-serif}
 .system-access-card-mark.sm-1{background:#eaf5ed;color:#39865a}.system-access-card-mark.sm-2{background:#fdf3e4;color:#a87322}.system-access-card-mark.sm-3{background:#f1edfb;color:#7355a8}.system-access-card-mark.sm-4{background:#e7f5f4;color:#25837b}
 .system-access-card-copy{min-width:0;flex:1}.system-access-card-copy strong,.system-access-card-copy small{display:block}.system-access-card-copy strong{font-size:14px;line-height:1.4}.system-access-card-copy small{margin-top:5px;color:var(--muted);font-size:12px;line-height:1.5}
 .system-access-card-arrow{color:var(--muted);font-size:21px;line-height:1}
@@ -11,7 +11,7 @@
 .request-type-chooser{position:relative;width:min(540px,100%);padding:25px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 28px 90px #06162666;color:var(--text)}
 .request-type-chooser-close{position:absolute;top:13px;right:13px}
 .request-type-chooser>.eyebrow{margin:0 0 6px;color:var(--blue);font-weight:700;letter-spacing:.1em}
-.request-type-chooser h2{margin:0;font:700 22px Manrope,sans-serif;letter-spacing:-.03em}
+.request-type-chooser h2{margin:0;font:700 22px Arial, "Segoe UI", sans-serif;letter-spacing:-.03em}
 .request-type-chooser-intro{margin:6px 0 18px;color:var(--muted);font-size:13px}
 .request-type-chooser-options{display:grid;gap:10px}
 .request-type-chooser-options>button{min-height:76px;display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--surface-soft);color:var(--text);text-align:left;transition:border-color .16s,transform .16s,box-shadow .16s}
