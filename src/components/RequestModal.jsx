@@ -4,16 +4,17 @@ import BranchTransferFields from './BranchTransferFields.jsx';
 import NewUserFields from './NewUserFields.jsx';
 import BatchAccessFields from './BatchAccessFields.jsx';
 import ResetAccessFields from './ResetAccessFields.jsx';
+import DeactivationFields from './DeactivationFields.jsx';
 import AutoForwardFields from './AutoForwardFields.jsx';
 import MailingGroupFields from './MailingGroupFields.jsx';
 import { Button } from './UI.jsx';
 import { canRequestIdDeletion } from './requestPermissions.js';
 import bankLogo from '../images-removebg-preview.png';
 
-const requestTypes = ['New ID creation (on behalf)','System ID creation (self-request)','Existing ID deletion','ID reset / unlock','ID upgrade','Branch transfer','Email creation','Mailing group change','Auto-forward change','IDrive access','N Drive access','External device email access'];
+const requestTypes = ['New ID creation (on behalf)','System ID creation (self-request)','ID deactivation','ID reset / unlock','ID upgrade','Branch transfer','Email creation','Mailing group change','Auto-forward change','IDrive access','N Drive access','External device email access'];
 
 export default function RequestModal({ onClose, onSubmit, profile, initialType='New ID creation (on behalf)' }) {
-  const availableRequestTypes = requestTypes.filter(value => value !== 'Existing ID deletion' || canRequestIdDeletion(profile?.department));
+  const availableRequestTypes = requestTypes.filter(value => value !== 'ID deactivation' || canRequestIdDeletion(profile?.department));
   const [type, setType] = useState(availableRequestTypes.includes(initialType) ? initialType : availableRequestTypes[0]);
   const [stage, setStage] = useState('edit');
   const [acknowledged, setAcknowledged] = useState(false);
@@ -23,6 +24,7 @@ export default function RequestModal({ onClose, onSubmit, profile, initialType='
   const [newUser, setNewUser] = useState({});
   const [batch, setBatch] = useState({});
   const [reset, setReset] = useState({systems:[]});
+  const [deactivation, setDeactivation] = useState({systems:[]});
   const [autoForward, setAutoForward] = useState({forwardTo:''});
   const [mailingGroup, setMailingGroup] = useState({action:'',groupAddress:''});
   const [error, setError] = useState('');
@@ -31,22 +33,23 @@ export default function RequestModal({ onClose, onSubmit, profile, initialType='
   const officialForm = type === 'Branch transfer' || type === 'System ID creation (self-request)';
   const brandedForm = officialForm || type === 'New ID creation (on behalf)' || type === 'Auto-forward change' || type === 'Mailing group change';
   const signature = localStorage.getItem('uidmsSignature') || profile?.signature;
-  const payload = { type, system, justification, signature, transferDetails: officialForm ? transfer : null, newUserDetails: type === 'New ID creation (on behalf)' ? newUser : null, resetDetails: type === 'ID reset / unlock' ? reset : null, autoForwardDetails:type==='Auto-forward change'?{...autoForward,forwardTo:autoForward.forwardTo?`${autoForward.forwardTo}@combankbd.com`:'',profileEmail:profile?.email}:null, mailingGroupDetails:type==='Mailing group change'?{...mailingGroup,groupAddress:mailingGroup.groupAddress?`${mailingGroup.groupAddress}@combankbd.com`:'',profileEmail:profile?.email,requesterName:profile?.name}:null, batchDetails: !officialForm && type !== 'New ID creation (on behalf)' && type !== 'ID reset / unlock' && type !== 'Auto-forward change' && type !== 'Mailing group change' ? batch : null };
+  const payload = { type, system, justification, signature, transferDetails: officialForm ? transfer : null, newUserDetails: type === 'New ID creation (on behalf)' ? newUser : null, resetDetails: type === 'ID reset / unlock' ? reset : null, deactivationDetails:type==='ID deactivation'?{...deactivation,name:deactivation.name||profile?.name,employeeId:deactivation.employeeId||profile?.employeeId,userId:deactivation.userId||profile?.systemId||profile?.employeeId,department:deactivation.department||profile?.department,branch:deactivation.branch||profile?.branch}:null, autoForwardDetails:type==='Auto-forward change'?{...autoForward,forwardTo:autoForward.forwardTo?`${autoForward.forwardTo}@combankbd.com`:'',profileEmail:profile?.email}:null, mailingGroupDetails:type==='Mailing group change'?{...mailingGroup,groupAddress:mailingGroup.groupAddress?`${mailingGroup.groupAddress}@combankbd.com`:'',profileEmail:profile?.email,requesterName:profile?.name}:null, batchDetails: !officialForm && type !== 'New ID creation (on behalf)' && type !== 'ID reset / unlock' && type !== 'ID deactivation' && type !== 'Auto-forward change' && type !== 'Mailing group change' ? batch : null };
 
   const handleSubmit = event => {
     event.preventDefault();
     if (stage === 'signed') { onSubmit(payload); return; }
     if (stage !== 'edit') return;
-    if (type === 'Existing ID deletion' && !canRequestIdDeletion(profile?.department)) { setError('Existing ID deletion requests are available only to HR and IT departments.'); return; }
+    if (type === 'ID deactivation' && !canRequestIdDeletion(profile?.department)) { setError('ID deactivation requests are available only to HR and IT departments.'); return; }
     if (!justification.trim()) { setError('Add a business justification to continue.'); return; }
     if (type === 'New ID creation (on behalf)' && (newUser.people || []).some(person => !person.adId && !person.email)) { setError('Select AD ID, email, or both for every new user.'); return; }
     if (type === 'ID reset / unlock' && !reset.systems.length) { setError('Select at least one system to reset or unlock.'); return; }
+    if (type === 'ID deactivation' && !deactivation.systems.length) { setError('Select at least one system ID to deactivate.'); return; }
     setAcknowledged(false);
     setStage('preview');
   };
 
   const formContent = <>
-    {type === 'Branch transfer' || type === 'System ID creation (self-request)' ? <BranchTransferFields value={transfer} onChange={setTransfer} mode={type === 'Branch transfer' ? 'transfer' : 'self'} profile={{...profile,signature}}/> : type === 'New ID creation (on behalf)' ? <NewUserFields value={newUser} onChange={setNewUser}/> : type==='Auto-forward change'?<AutoForwardFields profile={profile} value={autoForward} onChange={setAutoForward}/>:type==='Mailing group change'?<MailingGroupFields profile={profile} value={mailingGroup} onChange={setMailingGroup}/>:type === 'ID reset / unlock' ? <ResetAccessFields value={reset} onChange={setReset}/> : <BatchAccessFields value={batch} onChange={setBatch}/>}
+    {type === 'Branch transfer' || type === 'System ID creation (self-request)' ? <BranchTransferFields value={transfer} onChange={setTransfer} mode={type === 'Branch transfer' ? 'transfer' : 'self'} profile={{...profile,signature}}/> : type === 'New ID creation (on behalf)' ? <NewUserFields value={newUser} onChange={setNewUser}/> : type==='Auto-forward change'?<AutoForwardFields profile={profile} value={autoForward} onChange={setAutoForward}/>:type==='Mailing group change'?<MailingGroupFields profile={profile} value={mailingGroup} onChange={setMailingGroup}/>:type === 'ID reset / unlock' ? <ResetAccessFields value={reset} onChange={setReset}/> : type === 'ID deactivation' ? <DeactivationFields value={deactivation} onChange={setDeactivation} profile={profile}/> : <BatchAccessFields value={batch} onChange={setBatch}/>}
     {!officialForm&&stage==='signed'&&<div className="request-e-signature"><span>E-signed by {profile?.name||'User'}</span><img src={signature} alt={`Electronic signature of ${profile?.name||'user'}`}/></div>}
     <label className="field-label print-business-justification">{type==='Branch transfer'?'Business Justification for the New Systems Requested (Mandatory if new access is requested)':'Business justification'}<textarea value={justification} onChange={event => {setJustification(event.target.value);setError('');}} placeholder="Explain why this request is needed…" rows="3" required/></label>
     {officialForm&&<section className="approval-fields print-modal-approvals"><h3>Approvals</h3><div className="approval-signatures">{['User (Signature)','Head of Department / Branch (Signature)','CITO (Signature & Comments)','Head of HR (Signature & Comments)','Deputy CEO & COO (Signature)'].map((label,index)=><div key={label}><strong>{label}</strong>{index===0&&stage==='signed'?<img className="approval-e-signature" src={signature} alt="User e-signature"/>:<span>Signature</span>}{label.includes('Comments')&&<textarea placeholder="Comments" rows="2"/>}</div>)}</div></section>}

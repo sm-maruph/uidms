@@ -1,20 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from './UI.jsx';
 
-const roles=['User','Branch manager','Department head','IT','CITO','COO','HR','Administrator'];
-const designations=['Officer','Senior Officer','Manager','Senior Manager','Department Head','Branch Manager','IT Officer'];
-const departments=['IT Division','Operations','Human Resources','Finance','Risk Management','Corporate Banking'];
-const branches=['Corporate Office','Gulshan Branch','Dhanmondi Branch','Banani Branch','Chattogram Branch'];
-
-export default function Login({onLogin}) {
-  const [name,setName]=useState('Rahim Ahmed');
-  const [email,setEmail]=useState('shahriarmaruph@combankbd.com');
-  const [employeeId,setEmployeeId]=useState('CB-10428');
-  const [designation,setDesignation]=useState('Officer');
-  const [department,setDepartment]=useState('IT Division');
-  const [branch,setBranch]=useState('Corporate Office');
-  const [role,setRole]=useState('User');
-  const [setup,setSetup]=useState(false);
-  const field=(label,control)=><label className="field-label">{label}{control}</label>;
-  return <main className="login-screen theme-dark"><form className="login-card" onSubmit={event=>{event.preventDefault();onLogin({name,email,employeeId,designation,department,branch,role});}}><div className="brand-mark">C</div><p className="eyebrow">COMMERCIAL BANK OF CEYLON · IDENTITY OPERATIONS</p><h1>Welcome to UIDMS</h1><p className="login-copy">Sign in to manage identity requests and access approvals.</p>{field('Email or employee ID',<input value={email} onChange={event=>setEmail(event.target.value)} required/>)}{field('Mock role',<select value={role} onChange={event=>setRole(event.target.value)}>{roles.map(value=><option key={value}>{value}</option>)}</select>)}{setup&&<>{field('Full name',<input value={name} onChange={event=>setName(event.target.value)} required/>)}{field('Employee ID',<input value={employeeId} onChange={event=>setEmployeeId(event.target.value)}/>)}{field('Designation',<select value={designation} onChange={event=>setDesignation(event.target.value)}>{designations.map(value=><option key={value}>{value}</option>)}</select>)}{field('Department',<select value={department} onChange={event=>setDepartment(event.target.value)}>{departments.map(value=><option key={value}>{value}</option>)}</select>)}{field('Branch',<select value={branch} onChange={event=>setBranch(event.target.value)}>{branches.map(value=><option key={value}>{value}</option>)}</select>)}</>}<Button type="submit">Continue to workspace</Button><button type="button" className="login-setup" onClick={()=>setSetup(!setup)}>{setup?'Hide profile details':'First time here? Complete your profile'}</button><small className="mock-hint">Mock sign-in · choose a role to preview its dashboard</small></form></main>;
+export default function Login({users,onLogin}) {
+  const [employeeId,setEmployeeId]=useState(users[0]?.employeeId||'');
+  const selected=users.find(user=>user.employeeId===employeeId);
+  return <main className="login-screen theme-dark"><form className="login-card" onSubmit={event=>{event.preventDefault();if(selected)onLogin(selected);}}><div className="brand-mark">C</div><p className="eyebrow">COMMERCIAL BANK OF CEYLON · IDENTITY OPERATIONS</p><h1>Welcome to UIDMS</h1><p className="login-copy">Choose a mock employee account to open its role dashboard.</p><label className="field-label">Employee ID / System ID<select value={employeeId} onChange={event=>setEmployeeId(event.target.value)} required>{users.map(user=><option key={user.employeeId} value={user.employeeId}>{user.employeeId} · {user.name}</option>)}</select></label>{selected&&<div className="login-account-summary"><strong>{selected.name}</strong><span>{selected.role} · {selected.branch}</span></div>}<Button type="submit">Continue to workspace</Button><small className="mock-hint">Mock accounts · no password required</small></form></main>;
 }

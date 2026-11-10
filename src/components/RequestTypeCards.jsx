@@ -4,7 +4,7 @@ import { canRequestIdDeletion } from './requestPermissions.js';
 
 const requestTypes = [
   { title:'New ID creation', description:'Create a new ID for yourself or request one on behalf of another employee.', icon:'userPlus' },
-  { title:'Existing ID deletion', description:'Request removal of an existing user ID.', icon:'trash' },
+  { title:'ID deactivation', requestType:'ID deactivation', description:'Request deactivation of an existing user ID.', icon:'trash' },
   { title:'ID Unlock / Reset', requestType:'ID reset / unlock', description:'Reset a password or unlock an account.', icon:'key' },
   { title:'ID upgrade', description:'Request a change to an existing ID or its access.', icon:'arrowUp' },
   { title:'Branch transfer', description:'Update access when an employee moves branch.', icon:'branch' },
@@ -18,7 +18,7 @@ const requestTypes = [
 
 export default function RequestTypeCards({ onContinue, department, compact = false }) {
   const [showNewIdChoices,setShowNewIdChoices]=useState(false);
-  const availableTypes = requestTypes.filter(({ title }) => title !== 'Existing ID deletion' || canRequestIdDeletion(department));
+  const availableTypes = requestTypes.filter(({ title }) => title !== 'ID deactivation' || canRequestIdDeletion(department));
   const choose = type => {setShowNewIdChoices(false);onContinue(type);};
   return <div className={`system-access-cards${compact ? ' overview-request-grid' : ''}`}>
     {availableTypes.map(({ title, requestType, description, icon }, index) => (

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from './UI.jsx';
 import bankLogo from '../images-removebg-preview.png';
+import { requestRoles } from './requestCatalog.js';
 
 const formatTimestamp = value => {
   if (!value) return 'Timestamp unavailable';
@@ -14,7 +15,7 @@ export default function TransferSummary({ details = {}, title = 'Branch transfer
   const isSelected = (key,system) => Boolean(details[`${key}Systems`]?.[system] || (Array.isArray(details[key]?.[system]) ? details[key][system].length : details[key]?.[system]));
   const selections = key => {
     const roles = details[key] || {};
-    return [...new Set([...Object.keys(roles),...Object.keys(systems)])]
+    return [...new Set([...Object.keys(roles),...Object.keys(requestRoles)])]
       .filter(system => isSelected(key,system))
       .map(system => {
         const value = roles[system];
