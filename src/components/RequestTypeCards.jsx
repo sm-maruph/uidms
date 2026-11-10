@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import Icon from './Icon.jsx';
 import { canRequestIdDeletion } from './requestPermissions.js';
 
 const requestTypes = [
   { title:'New ID creation', description:'Create a new ID for yourself or request one on behalf of another employee.', icon:'userPlus' },
-  { title:'ID deactivation', requestType:'ID deactivation', description:'Request deactivation of an existing user ID.', icon:'trash' },
+  { title:'Employee ID deactivation', requestType:'Employee ID deactivation', description:'Deactivate an employee identity and all associated system access.', icon:'trash' },
+  { title:'System ID deactivation', description:'Select one or more system IDs to deactivate while keeping other access active.', icon:'key' },
   { title:'ID Unlock / Reset', requestType:'ID reset / unlock', description:'Reset a password or unlock an account.', icon:'key' },
   { title:'ID upgrade', description:'Request a change to an existing ID or its access.', icon:'arrowUp' },
   { title:'Branch transfer', description:'Update access when an employee moves branch.', icon:'branch' },
@@ -16,18 +17,21 @@ const requestTypes = [
   { title:'External device email access', description:'Request email access from an external device.', icon:'device' },
 ];
 
-export default function RequestTypeCards({ onContinue, department, compact = false }) {
+export default function RequestTypeCards({ onContinue, department, compact = false, query = '', category = 'All requests' }) {
   const [showNewIdChoices,setShowNewIdChoices]=useState(false);
-  const availableTypes = requestTypes.filter(({ title }) => title !== 'ID deactivation' || canRequestIdDeletion(department));
+  const categoryFor = title => ['Email creation','Mailing group inclusion/exclusion','Auto-forward change'].includes(title) ? 'Email & collaboration' : ['IDrive access','N Drive access','External device email access'].includes(title) ? 'Files & devices' : 'Identity & access';
+  const availableTypes = requestTypes.filter(({ title, description }) => (title !== 'Employee ID deactivation' || canRequestIdDeletion(department)) && (category === 'All requests' || categoryFor(title) === category) && (title + ' ' + description).toLowerCase().includes(query.trim().toLowerCase()));
   const choose = type => {setShowNewIdChoices(false);onContinue(type);};
   return <div className={`system-access-cards${compact ? ' overview-request-grid' : ''}`}>
+    {!availableTypes.length && <div className="rc-empty" role="status"><Icon name="search" size={28}/><strong>No matching requests</strong><p>Try another search or choose a different category.</p></div>}
     {availableTypes.map(({ title, requestType, description, icon }, index) => (
       <button className={`system-access-card${compact ? ' overview-request-card' : ''}`} key={title} onClick={() => title==='New ID creation'?setShowNewIdChoices(true):onContinue(requestType||title)}>
         <span className={`system-access-card-mark sm-${index % 5}`} aria-hidden="true"><Icon name={icon} size={compact?16:20}/></span>
         <span className="system-access-card-copy"><strong>{title}</strong><small>{description}</small></span>
-        <span className="system-access-card-arrow" aria-hidden="true">›</span>
+        <span className="system-access-card-arrow" aria-hidden="true"><Icon name="arrow" size={18}/></span>
       </button>
     ))}
     {showNewIdChoices&&<div className="request-type-chooser-scrim" onMouseDown={event=>event.target===event.currentTarget&&setShowNewIdChoices(false)}><section className="request-type-chooser" role="dialog" aria-modal="true" aria-labelledby="new-id-chooser-title"><button type="button" className="icon-button request-type-chooser-close" aria-label="Close" onClick={()=>setShowNewIdChoices(false)}><Icon name="close"/></button><p className="eyebrow">NEW ID CREATION</p><h2 id="new-id-chooser-title">Who is this request for?</h2><p className="request-type-chooser-intro">Choose the right form to continue.</p><div className="request-type-chooser-options"><button type="button" onClick={()=>choose('System ID creation (self-request)')}><span className="request-type-choice-icon choice-self"><Icon name="idCard" size={21}/></span><span><strong>New ID for me</strong><small>Request your own non-AD system IDs and access.</small></span><Icon name="chevron" size={18}/></button><button type="button" onClick={()=>choose('New ID creation (on behalf)')}><span className="request-type-choice-icon choice-other"><Icon name="userPlus" size={21}/></span><span><strong>New ID for others (on behalf)</strong><small>Request an AD ID and email for another employee.</small></span><Icon name="chevron" size={18}/></button></div></section></div>}
   </div>;
 }
+

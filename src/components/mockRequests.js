@@ -1,3 +1,5 @@
+﻿import { extraMockRequests } from './extraMockRequests.js';
+
 const t = value => new Date(value).toISOString();
 
 export const mockRequests = [
@@ -30,7 +32,7 @@ export const mockRequests = [
     remarks:[{by:'Abu Jami',role:'Branch manager',at:t('2026-11-10T08:06:00+06:00'),message:'Identity verified against the branch employee record.'}],
   },
   {
-    id:'UID-2026-1004', requesterId:'BD00438', name:'Sabin Rahman', initials:'SR', action:'ID deactivation', system:'HRIS, Email', role:'Deactivate existing IDs', branch:'Gulshan Branch', date:'Nov 9, 02:15 PM', createdAt:t('2026-11-09T14:15:00+06:00'), state:'Approved', step:'Completed', assignedRole:null, justification:'The employee has left the bank. Deactivate the listed IDs after the final working day and retain the audit record.', deactivationDetails:{name:'Former employee',employeeId:'BD07881',userId:'BD07881',department:'Operations',branch:'Gulshan Branch',systems:['HRIS','Email']},
+    id:'UID-2026-1004', requesterId:'BD00438', name:'Sabin Rahman', initials:'SR', action:'Employee ID deactivation', system:'All systems', role:'Deactivate existing IDs', branch:'Gulshan Branch', date:'Nov 9, 02:15 PM', createdAt:t('2026-11-09T14:15:00+06:00'), state:'Approved', step:'Completed', assignedRole:null, justification:'The employee has left the bank. Deactivate the employee identity and all associated systems after the final working day and retain the audit record.', deactivationDetails:{name:'Former employee',employeeId:'BD07881',userId:'BD07881',department:'Operations',branch:'Gulshan Branch',scope:'all systems',systems:['All systems']},
     approvalHistory:[
       {stage:'Branch manager',status:'Approved',by:'Abu Jami',role:'Branch manager',at:t('2026-11-09T14:42:00+06:00'),remark:'Branch confirmed the employee’s final working day and returned equipment.'},
       {stage:'IT',status:'Approved',by:'Shah Mohammad Al Noor',role:'IT',at:t('2026-11-09T15:18:00+06:00'),remark:'No active service dependencies found. Deactivation can proceed.'},
@@ -40,4 +42,6 @@ export const mockRequests = [
     queryHistory:[{stage:'IT review',by:'Shah Mohammad Al Noor',role:'IT',at:t('2026-11-09T15:00:00+06:00'),message:'HR: confirm the final working date and whether the mailbox should be retained for records.',targetIds:['BD00438'],targetNames:['Sabin Rahman'],responses:[{employeeId:'BD00438',response:'Final working date was 9 November. Retain mailbox data under the standard records policy; disable sign-in.',responseBy:'Sabin Rahman',responseAt:t('2026-11-09T15:08:00+06:00')}] }],
     remarks:[{by:'Sabin Rahman',role:'HR',at:t('2026-11-09T14:20:00+06:00'),message:'Exit documentation and employee record have been verified.'},{by:'Haily Algawatte',role:'COO',at:t('2026-11-09T16:06:00+06:00'),message:'Confirm completion in the audit log.'}],
   },
+  ...extraMockRequests,
 ];
+

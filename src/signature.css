@@ -1,5 +1,5 @@
 .profile-signature-modal{position:relative;width:min(100%,520px);padding:26px;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:0 24px 80px #0e263544;color:var(--text)}
-.profile-signature-modal h2{margin:0;font:700 22px Arial, "Segoe UI", sans-serif}.profile-signature-modal>p:not(.eyebrow){margin:8px 0 18px;color:var(--muted);font-size:14px}
+.profile-signature-modal h2{margin:0;font:700 22px var(--font-ui)}.profile-signature-modal>p:not(.eyebrow){margin:8px 0 18px;color:var(--muted);font-size:14px}
 .profile-signature-close{position:absolute;top:14px;right:14px}.signature-preview{height:112px;display:grid;place-items:center;margin:14px 0;padding:12px;border:1px dashed var(--line);border-radius:8px;background:#fff}.signature-preview img{max-width:100%;max-height:82px;object-fit:contain}
 .profile-signature-modal input[type=file]{padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--text)}
 .request-e-signature{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:16px 0;padding:10px 14px;border:1px solid var(--line);border-radius:7px;background:var(--surface-soft);color:var(--muted);font-size:13px}
@@ -15,7 +15,7 @@
 .request-review-scrim{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:#12263885;backdrop-filter:blur(4px)}
 .request-review-dialog{display:flex;flex-direction:column;width:min(1120px,96vw);max-height:94vh;overflow:auto;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:0 28px 90px #0e263566;color:var(--text)}
 .request-review-heading{position:sticky;top:-20px;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:-20px -20px 14px;padding:17px 20px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
-.request-review-heading h2{margin:0;font:700 21px Arial, "Segoe UI", sans-serif}.request-review-heading p:not(.eyebrow){margin:5px 0 0;color:var(--muted);font-size:13px}
+.request-review-heading h2{margin:0;font:700 21px var(--font-ui)}.request-review-heading p:not(.eyebrow){margin:5px 0 0;color:var(--muted);font-size:13px}
 .request-review-dialog>.request-form-preview{min-height:0;overflow:visible}
 .request-review-footer{position:sticky;bottom:-20px;z-index:2;margin:14px -20px -20px;padding:12px 20px 16px;border-top:1px solid var(--line);background:var(--surface)}
 .request-review-footer .modal-actions{margin-top:10px}

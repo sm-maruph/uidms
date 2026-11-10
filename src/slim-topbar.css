@@ -3,7 +3,7 @@
 .app-shell .topbar-actions{height:100%;display:flex;align-items:center;gap:10px}
 .app-shell .topbar-actions .icon-button{width:32px;height:32px}
 .notification-menu-wrap{position:relative;height:100%;display:flex;align-items:center}
-.app-shell .topbar .notification-button>i{top:2px;right:0;min-width:15px;height:15px;padding:0 3px;border:1px solid var(--surface);border-radius:9px;background:#e37d65;color:#fff;font:700 9px Arial,"Segoe UI",sans-serif;line-height:13px;text-align:center}
+.app-shell .topbar .notification-button>i{top:2px;right:0;min-width:15px;height:15px;padding:0 3px;border:1px solid var(--surface);border-radius:9px;background:#e37d65;color:#fff;font:700 9px var(--font-ui);line-height:13px;text-align:center}
 .topbar-profile-trigger{display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:transparent;line-height:0}
 .app-shell .topbar .topbar-system-id{display:inline-flex;align-items:center;min-height:26px;padding:0 9px;border:1px solid var(--line);border-radius:14px;background:var(--surface-soft);color:var(--text);font-size:11px;font-weight:700;letter-spacing:.025em;white-space:nowrap}
 .topbar-profile-trigger:hover .avatar,.topbar-profile-trigger:focus-visible .avatar{outline:2px solid #70a7df;outline-offset:2px}

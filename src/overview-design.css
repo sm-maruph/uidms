@@ -5,14 +5,18 @@
 .app-shell .overview-shell .welcome-banner:has(.operations-finder-results){overflow:visible;z-index:30}
 .operations-finder:before{display:block;margin:0 0 6px 3px;color:#d6e8ff;content:'QUICK LOOKUP';font-size:10px;font-weight:700;letter-spacing:.11em}
 .operations-finder{position:absolute;z-index:3;top:50%;right:235px;width:min(430px,40%);transform:translateY(-50%)}
-.operations-finder-controls{display:flex;gap:7px;padding:6px;border:1px solid #9bbce7;border-radius:10px;background:#173a70e8;box-shadow:0 8px 24px #122c5238;transition:border-color .15s,box-shadow .15s}
-.operations-finder-controls:focus-within{border-color:#fff;box-shadow:0 0 0 3px #d4e7ff45,0 10px 26px #122c5245}
-.operations-finder-controls select,.operations-finder-controls label{height:40px;border:1px solid #d3dfed;border-radius:7px;background:#f7faff;color:#213650}
-.operations-finder-controls select{width:142px;flex:none;padding:0 9px;font:600 12px Arial, "Segoe UI", sans-serif}
-.operations-finder-controls label{display:flex;align-items:center;gap:8px;min-width:0;flex:1;padding:0 11px;color:#42648b}
+.operations-finder-controls{display:flex;gap:6px;padding:5px;border:1px solid #c5dcf5;border-radius:12px;background:#e9f3ffed;box-shadow:0 10px 28px #102b4a40, inset 0 1px 0 #ffffffb8;transition:border-color .18s,box-shadow .18s,transform .18s}
+.operations-finder-controls:hover{border-color:#fff;box-shadow:0 12px 30px #102b4a4d,inset 0 1px 0 #ffffffc9}
+.operations-finder-controls:focus-within{border-color:#fff;box-shadow:0 0 0 3px #d4e7ff55,0 12px 30px #102b4a50}
+.operations-finder-controls select,.operations-finder-controls label{height:42px;border:1px solid #d4e1ef;border-radius:8px;background:#fff;color:#213650}
+.operations-finder-controls select{width:142px;flex:none;padding:0 10px;font:600 12px var(--font-ui);cursor:pointer;transition:border-color .15s,background .15s}
+.operations-finder-controls select:hover{border-color:#a9c9e9;background:#fafdff}
+.operations-finder-controls select:focus-visible{outline:2px solid #68a9e4;outline-offset:1px}
+.operations-finder-controls label{display:flex;align-items:center;gap:9px;min-width:0;flex:1;padding:0 12px;color:#3674aa;transition:border-color .15s,box-shadow .15s}
+.operations-finder-controls label:focus-within{border-color:#8ebce5;box-shadow:0 0 0 2px #d9ecfb}
 .operations-finder-controls label svg{flex:none}
-.operations-finder-controls input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#20344d;font:500 13px Arial, "Segoe UI", sans-serif}
-.operations-finder-controls input::placeholder{color:#71849a}
+.operations-finder-controls input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#20344d;font:500 13px var(--font-ui)}
+.operations-finder-controls input::placeholder{color:#73859a}
 .operations-finder-results{position:absolute;top:calc(100% + 7px);right:0;left:0;max-height:310px;overflow:auto;border:1px solid #bdcfe3;border-radius:8px;background:#fff;color:#20344d;box-shadow:0 16px 35px #07162e55}
 .operations-finder-results>article,.operations-finder-request{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:10px 12px;border:0;border-bottom:1px solid #e3e9f1;background:#fff;color:#20344d;text-align:left}
 .operations-finder-results>article>span,.operations-finder-request>span{display:flex;flex-direction:column;gap:4px;min-width:0}
@@ -34,7 +38,6 @@
 .app-shell .overview-shell .main-grid{order:4}
 .app-shell .overview-shell .main-grid{align-items:stretch}
 .app-shell .overview-shell .request-panel{height:100%;box-sizing:border-box}
-.app-shell .overview-shell .overview-role-counts{order:5;margin-top:12px}
 .app-shell .overview-shell .overview-request-panel:before{position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#0877bc,#73c7e9,#53b58a,#0877bc);background-size:220% 100%;animation:request-band-shift 9s linear infinite;content:''}
 .app-shell .overview-shell .overview-request-panel>.section-title{position:relative;z-index:1;padding-top:2px}
 .app-shell .overview-shell .overview-request-grid{position:relative;z-index:1}
@@ -55,6 +58,26 @@
 .app-shell .overview-shell .orbit-one{animation:orbit-drift 22s linear infinite}
 .app-shell .overview-shell .orbit-two{animation:orbit-drift 28s linear infinite reverse}
 .app-shell .overview-shell .art-shield{animation:shield-float 4.2s ease-in-out infinite}
+/* Keep overview text comfortable to read at the compact viewport height. */
+.app-shell .overview-shell .welcome-banner .eyebrow{font-size:12px}
+.app-shell .overview-shell .welcome-banner h1{font-size:29px}
+.app-shell .overview-shell .welcome-copy{font-size:15px}
+.app-shell .overview-shell .welcome-audit-note{font-size:12px}
+.app-shell .overview-shell .operations-finder:before{font-size:11px}
+.app-shell .overview-shell .operations-finder-controls select,.app-shell .overview-shell .operations-finder-controls input{font-size:14px}
+.app-shell .overview-shell .metric-top{font-size:14px}
+.app-shell .overview-shell .metric-card>small{font-size:12px}
+.app-shell .overview-shell .section-title .eyebrow{font-size:11px}
+.app-shell .overview-shell .section-title h2{font-size:19px}
+.app-shell .overview-shell .table-search input{font-size:13px}
+.app-shell .overview-shell .tabs button{font-size:13px}
+.app-shell .overview-shell .request-head{font-size:10px}
+.app-shell .overview-shell .request-person strong,.app-shell .overview-shell .system-role strong,.app-shell .overview-shell .submitted strong{font-size:13px}
+.app-shell .overview-shell .request-person small,.app-shell .overview-shell .system-role small,.app-shell .overview-shell .submitted small,.app-shell .overview-shell .status-cell small{font-size:11px}
+.app-shell .overview-shell .status{font-size:11px}
+.app-shell .overview-shell .quick-actions strong{font-size:13px}
+.app-shell .overview-shell .quick-actions small,.app-shell .overview-shell .quick-card>p{font-size:11px}
+.app-shell .overview-shell .overview-request-card .system-access-card-copy strong{font-size:14px}
 @keyframes request-band-shift{to{background-position:220% 0}}
 @keyframes orbit-drift{to{transform:rotate(332deg)}}
 @keyframes shield-float{0%,100%{translate:0 0}50%{translate:0 -5px}}
