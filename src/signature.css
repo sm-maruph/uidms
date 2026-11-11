@@ -81,3 +81,31 @@
 
 .request-review-dialog>.request-form-preview{touch-action:pan-y;-webkit-overflow-scrolling:touch}
 .request-review-dialog>.request-form-preview:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+
+.preview-ticket-record{padding:14px;margin:12px 0;border:1px solid #aabac7;background:#fff;color:#153349}
+.preview-ticket-record h3{margin:0 0 12px;font-size:15px}
+.preview-ticket-record dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0}
+.preview-ticket-record dt{font-size:11px;color:#526777}
+.preview-ticket-record dd{margin:4px 0 0;font-size:12px;overflow-wrap:anywhere}
+.preview-missing-record{padding:12px;border:1px solid #becbd5;background:#f2f6fa;color:#314a5c;font-size:12px;line-height:1.6}
+@media(max-width:620px){.preview-ticket-record dl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media print{.preview-ticket-record,.preview-ticket-record *{visibility:visible!important}.preview-ticket-record{break-inside:avoid}}
+
+@media screen{
+ body>.modal-scrim.approval-form-scrim{position:fixed;inset:0;z-index:200;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);place-items:center;overflow:hidden;padding:20px}
+ .approval-form-scrim>.request-modal.transfer-modal.approval-form-modal{box-sizing:border-box;width:min(1100px,100%);max-width:100%;min-width:0;max-height:calc(100dvh - 40px);margin:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-gutter:stable}
+ .approval-form-modal>.approval-form-toolbar{position:sticky;top:-20px;z-index:10;display:flex;align-items:center;gap:12px;margin:-20px -20px 16px;padding:14px 20px;border-bottom:1px solid #bac7d2;background:#e9edf2}
+ .approval-form-toolbar-actions{display:flex;align-items:center;gap:12px;flex:none}
+ .approval-form-modal>.request-form-preview{min-width:0;overflow-wrap:anywhere}
+ .approval-form-modal .transfer-system{grid-template-columns:minmax(140px,1.3fr) repeat(5,minmax(0,1fr))}
+ .approval-form-modal .transfer-system>*,.approval-form-modal .transfer-field-grid>*{min-width:0}
+ .approval-form-modal .transfer-field-grid input{width:100%;max-width:100%}
+ .request-review-scrim{z-index:220}
+}
+@media screen and (max-width:620px){
+ body>.modal-scrim.approval-form-scrim{padding:10px}
+ .approval-form-scrim>.request-modal.transfer-modal.approval-form-modal{max-height:calc(100dvh - 20px)}
+ .approval-form-modal .transfer-system{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .approval-form-modal .transfer-field-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .approval-form-modal .approval-signatures{grid-template-columns:1fr}
+}
