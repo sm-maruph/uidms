@@ -6,6 +6,7 @@ import './dark-palette.css';
 import './fonts.css';
 import './dashboard-refresh.css';
 import './bank-theme.css';
+import './scrollbars.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

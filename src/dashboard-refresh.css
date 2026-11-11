@@ -215,3 +215,8 @@
 @media(max-width:899px){.query-inbox{height:auto;max-height:650px;min-height:260px}.query-inbox-content{flex:1 1 auto;max-height:420px}}
 @media(prefers-reduced-motion:no-preference){.query-inbox-symbol{animation:query-attention 3s ease-in-out 3}.query-inbox-ticket button svg{transition:transform .2s}.query-inbox-ticket button:hover svg{transform:translateX(3px)}}
 @keyframes query-attention{0%,100%{box-shadow:0 0 0 0 #dca14400}50%{box-shadow:0 0 0 5px #dca14418}}
+
+/* Lookup results must escape the banner and stack above following dashboard rows. */
+.app-shell .content-shell.overview-shell .welcome-banner:has(.operations-finder-results){position:relative;z-index:40;overflow:visible}
+.app-shell .content-shell.overview-shell .welcome-banner:has(.operations-finder-results) .banner-art{clip-path:inset(0 round 14px)}
+.app-shell .content-shell.overview-shell .operations-finder-results{z-index:50;max-height:min(310px,45dvh);overflow-y:auto;overscroll-behavior:contain}
