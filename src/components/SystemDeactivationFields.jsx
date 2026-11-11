@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import Icon from './Icon.jsx';
-import { systemDeactivationSystems } from './deactivationRequests.js';
+import { assignedDeactivationSystems } from './deactivationRequests.js';
 
 export default function SystemDeactivationFields({ value, onChange, profile, users=[] }) {
   const employees=users.length?users:[profile].filter(Boolean);
