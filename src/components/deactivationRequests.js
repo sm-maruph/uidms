@@ -9,7 +9,7 @@ export function assignedDeactivationSystems(user) {
   return [...new Set([...Object.keys(access.systemRoles||{}),...(access.enabledSystems||[]),...(access.otherAccess||[])])].filter(system=>system!=='AD ID');
 }
 
-export const systemDeactivationSystems = [...new Set([...requestSystems,'MS Office','External Device Access'])].filter(system=>system!=='AD ID');
+export const systemDeactivationSystems = [...new Set([...requestSystems,'N Drive','Remmit Plus','MS Office','External Device Access'])];
 export function deactivationScope(type, details) {
   return type===EMPLOYEE_DEACTIVATION ? {...details,scope:'all systems',systems:['All systems']} : {...details,scope:'selected systems'};
 }

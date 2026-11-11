@@ -10,14 +10,14 @@
 .request-review-banner{display:grid;gap:12px;margin:0 0 14px;padding:14px 16px;border:1px solid #b9d5e9;border-radius:8px;background:linear-gradient(120deg,#eff8ff,#f7fbff);color:var(--text)}
 .request-review-banner strong{font-size:16px}.request-review-banner p{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
 .request-review-banner.signed{border-color:#b9dfc7;background:linear-gradient(120deg,#effaf3,#f9fdfb)}
-.request-acknowledgement{display:flex;align-items:flex-start;gap:9px;padding-top:10px;border-top:1px solid #d6e5ef;font-size:13px;line-height:1.45;cursor:pointer}
-.request-acknowledgement input{flex:none;width:17px;height:17px;margin:0;accent-color:var(--blue)}
+.request-acknowledgement{display:grid;grid-template-columns:18px minmax(0,1fr);align-items:start;gap:10px;margin:0;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--surface-soft);font-size:13px;line-height:1.5;cursor:pointer}
+.request-acknowledgement input{flex:none;width:17px;height:17px;margin:2px 0 0;accent-color:var(--blue)}
 .request-review-scrim{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:#12263885;backdrop-filter:blur(4px)}
-.request-review-dialog{display:flex;flex-direction:column;width:min(1120px,96vw);max-height:94vh;overflow:auto;padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:0 28px 90px #0e263566;color:var(--text)}
-.request-review-heading{position:sticky;top:-20px;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:-20px -20px 14px;padding:17px 20px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
+.request-review-dialog{display:flex;flex-direction:column;box-sizing:border-box;width:min(1120px,100%);max-height:calc(100dvh - 40px);overflow:hidden;padding:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:0 28px 90px #0e263566;color:var(--text)}
+.request-review-heading{position:static;flex:none;display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:0;padding:17px 20px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
 .request-review-heading h2{margin:0;font:700 21px var(--font-ui)}.request-review-heading p:not(.eyebrow){margin:5px 0 0;color:var(--muted);font-size:13px}
-.request-review-dialog>.request-form-preview{min-height:0;overflow:visible}
-.request-review-footer{position:sticky;bottom:-20px;z-index:2;margin:14px -20px -20px;padding:12px 20px 16px;border-top:1px solid var(--line);background:var(--surface)}
+.request-review-dialog>.request-form-preview{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:20px;scrollbar-gutter:stable}
+.request-review-footer{position:static;flex:none;margin:0;padding:12px 20px 16px;border-top:1px solid var(--line);background:var(--surface)}
 .request-review-footer .modal-actions{margin-top:10px}
 .request-official-header .official-form-brand img{margin-right:28px}
 .request-form-preview.is-locked{cursor:default}
@@ -36,3 +36,48 @@
   .request-form-preview>.print-business-justification,.request-form-preview>.print-business-justification *,.request-form-preview>.print-modal-approvals,.request-form-preview>.print-modal-approvals *{visibility:visible!important}
   .approval-e-signature{print-color-adjust:exact;-webkit-print-color-adjust:exact}
 }
+
+.approval-form-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;padding-right:36px}
+.approval-form-modal .request-form-preview button{display:none}
+@media print{
+ body.approval-form-open>#root{display:none!important}
+ body.approval-form-open>.approval-form-scrim{position:static!important;display:block!important;padding:0!important;background:white!important;backdrop-filter:none!important;overflow:visible!important}
+ .approval-form-modal .approval-form-toolbar,.approval-form-modal>.modal-actions{display:none!important}
+ .approval-form-modal .request-form-preview,.approval-form-modal .request-form-preview *{visibility:visible!important;color:#111!important}
+ .approval-form-modal input,.approval-form-modal textarea,.approval-form-modal select{background:#fff!important;color:#111!important}
+}
+
+/* The approval preview is the complete paper form, including unselected sections. */
+.approval-form-modal{background:#e9edf2!important;padding:20px!important}
+.approval-form-modal .approval-form-toolbar{color:#172536}
+.approval-form-modal>.request-official-header,.approval-form-modal>.request-form-preview{background:#fff;color:#111;--surface:#fff;--surface-soft:#fff;--text:#111;--muted:#444;--line:#999;--blue:#254e83;padding:20px;border-radius:0}
+.approval-form-modal .branch-transfer-fields{gap:10px}
+.approval-form-modal .official-form-header{border-radius:0;border-color:#777;background:#fff}
+.approval-form-modal .transfer-person-card,.approval-form-modal .transfer-access,.approval-form-modal .approval-fields{border-radius:0;border-color:#777;background:#fff}
+.approval-form-modal .transfer-access>h3{padding:8px;background:#62676c;color:#fff}
+.approval-form-modal .transfer-system{border-bottom:1px solid #aaa;padding-top:10px;padding-bottom:10px}
+.approval-form-modal input,.approval-form-modal textarea,.approval-form-modal select{color:#111!important;background:#fff!important;border-radius:0;opacity:1}
+.approval-form-modal .request-form-preview>.field-label{margin-top:18px}
+.approval-form-modal .request-form-preview>.field-label textarea{min-height:100px}
+.approval-form-modal .approval-signatures{grid-template-columns:repeat(5,minmax(0,1fr))}
+.approval-form-modal .approval-signatures>div{min-height:120px}
+.approval-form-modal .transfer-field-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media print{
+ .approval-form-modal>.request-form-preview{padding:0!important}
+ .approval-form-modal .transfer-access>h3{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .approval-form-modal .transfer-field-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .approval-form-modal .approval-signatures{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+}
+
+.request-preview-toolbar{display:flex;justify-content:flex-end;align-items:center;min-height:36px;margin:0 36px 12px 0}
+.request-preview-toolbar .button{white-space:nowrap}
+@media print{.request-preview-toolbar{display:none!important}}
+
+.request-modal.transfer-modal>.request-sticky-actions{position:sticky;bottom:-23px;z-index:5;display:flex;justify-content:flex-end;gap:10px;margin:18px -23px -23px;padding:14px 23px;border-top:1px solid var(--line);background:var(--surface);box-shadow:0 -6px 16px #00000008}
+.request-review-dialog .request-form-preview button{display:none}
+.request-review-dialog .request-form-preview>.official-form-header{margin-bottom:16px}
+@media(max-width:620px){.request-modal.transfer-modal>.request-sticky-actions{bottom:-18px;margin:16px -18px -18px;padding:12px 18px}}
+@media print{.request-sticky-actions{display:none!important}}
+
+.request-review-dialog>.request-form-preview{touch-action:pan-y;-webkit-overflow-scrolling:touch}
+.request-review-dialog>.request-form-preview:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}

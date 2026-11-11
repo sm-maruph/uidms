@@ -44,7 +44,7 @@ export default function TransferSummary({ details = {}, title = 'Branch transfer
   return <section className="transfer-summary">
     <div className="transfer-summary-heading print-bank-heading">
       <div className="print-bank-brand"><img src={bankLogo} alt="Commercial Bank of Ceylon"/><span><strong>Commercial Bank of Ceylon PLC</strong><small>Bangladesh Operations</small></span></div>
-      <Button variant="subtle" onClick={()=>window.print()}>Print full form</Button>
+      
     </div>
     <div className="print-form-title"><h2>User ID Request Form - {title}</h2><p>Complete all sections. Business justification is mandatory.</p></div>
     <section className="print-form-section"><h3>Requester Information</h3><div className="transfer-summary-grid">{[['To whom','CITO / Deputy CEO & COO'],['Request type',title==='Branch Transfer'?details.transferRequestType:'System access request'],['Number of employees',String(people.length||1)],['Ticket',ticket?.id],['Submitted by',ticket?.name],['Submitted at',formatTimestamp(submittedAt)]].map(([label,value])=><div key={label}><small>{label}</small><strong>{value||'—'}</strong></div>)}</div></section>

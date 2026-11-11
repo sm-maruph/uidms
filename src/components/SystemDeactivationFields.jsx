@@ -1,11 +1,11 @@
 ﻿import React from 'react';
 import Icon from './Icon.jsx';
-import { assignedDeactivationSystems } from './deactivationRequests.js';
+import { systemDeactivationSystems } from './deactivationRequests.js';
 
 export default function SystemDeactivationFields({ value, onChange, profile, users=[] }) {
   const employees=users.length?users:[profile].filter(Boolean);
   const selected=employees.find(user=>user.employeeId===(value.employeeId||profile?.employeeId));
-  const systems=assignedDeactivationSystems(selected);
+  const systems=systemDeactivationSystems;
   const checked=value.systems||[];
   const selectEmployee=employee=>onChange({employeeId:employee.employeeId,name:employee.name,userId:employee.systemId||employee.employeeId,department:employee.department,branch:employee.branch,systems:[],scope:'selected systems'});
   const toggle=system=>onChange({...value,name:selected.name,employeeId:selected.employeeId,userId:selected.systemId||selected.employeeId,department:selected.department,branch:selected.branch,scope:'selected systems',systems:checked.includes(system)?checked.filter(item=>item!==system):[...checked,system]});
