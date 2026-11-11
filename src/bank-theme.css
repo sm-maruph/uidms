@@ -1,0 +1,43 @@
+/* Commercial Bank logo palette: blue primary, green accent. */
+:root{--bank-blue:#006fb5;--bank-blue-deep:#00558d;--bank-green:#51b44b;--bank-green-deep:#287d2f;--brand-blue-soft:#e8f3fb;--brand-green-soft:#edf7eb;--bg:#f3f7fa;--surface:#fff;--surface-soft:#f0f6fa;--text:#153349;--muted:#5c7282;--line:#d6e3ec;--blue:var(--bank-blue);--blue-dark:var(--bank-blue-deep);--green:var(--bank-green);--shadow:0 4px 16px #00558d0a}
+.app-shell.theme-dark{--bg:#0b1823;--surface:#132735;--surface-soft:#193241;--text:#edf6fb;--muted:#adc3d1;--line:#2c485a;--blue:#72bdf0;--blue-dark:#00558d;--green:#79cf70;--brand-blue-soft:#193b52;--brand-green-soft:#1c3c30;--shadow:0 4px 16px #020e1680}
+.uidms-login{--login-brand-blue:var(--bank-blue);--login-brand-green:var(--bank-green)}
+.uidms-login .login-story{background:linear-gradient(140deg,var(--bank-blue),var(--bank-blue-deep))}
+.app-shell .button-primary,.uidms-login .login-submit{border-color:var(--bank-blue);background:var(--bank-blue);color:#fff}
+.app-shell .button-primary:hover:not(:disabled),.uidms-login .login-submit:hover{border-color:var(--bank-blue-deep);background:var(--bank-blue-deep)}
+.app-shell .button-subtle{border-color:var(--line);background:var(--surface);color:var(--blue)}
+.app-shell .brand-mark{background:var(--bank-blue);border-bottom:3px solid var(--bank-green)}
+.app-shell .brand strong span,.app-shell .text-link,.app-shell .workspace-icon{color:var(--blue)}
+.app-shell .workspace-icon,.app-shell .help-icon{background:var(--brand-blue-soft)}
+.app-shell .nav-item.active{border-left:3px solid var(--bank-green);background:var(--brand-blue-soft);color:var(--blue)}
+.app-shell .nav-item.active svg,.app-shell .nav-item:hover svg{color:var(--blue)}
+.app-shell .nav-item:hover{background:var(--surface-soft);color:var(--blue)}
+.app-shell .help-card{border-color:var(--line);background:var(--surface-soft)}
+.app-shell .tabs button.selected{border-bottom-color:var(--bank-green);color:var(--blue)}
+.app-shell .avatar-blue,.app-shell .avatar-navy{background:var(--brand-blue-soft);color:var(--blue)}
+.app-shell .avatar-green{background:var(--brand-green-soft);color:var(--green)}
+.app-shell .request-flow-note{border-color:var(--line);background:var(--brand-blue-soft);color:var(--blue)}
+.app-shell :is(input[type=checkbox],input[type=radio]){accent-color:var(--bank-blue)}
+.app-shell :is(input,textarea,select):focus-visible{outline-color:var(--bank-blue)}
+.app-shell .system-access-card,.app-shell .service-card,.app-shell .catalog-card{border-color:var(--line);background:var(--surface-soft);color:var(--text)}
+.app-shell .system-access-card:hover,.app-shell .service-card:hover,.app-shell .catalog-card:hover{border-color:var(--bank-blue)}
+.app-shell :is(.system-access-card-mark,.service-mark,.quick-icon){background:var(--brand-blue-soft);color:var(--blue)}
+.app-shell .system-access-card:nth-child(even) .system-access-card-mark,.app-shell .service-card:nth-child(even) .service-mark{background:var(--brand-green-soft);color:var(--green)}
+.app-shell .content-shell.overview-shell .welcome-banner{border-color:var(--bank-blue);border-left:3px solid var(--bank-green);border-bottom:2px solid var(--bank-green);background:linear-gradient(110deg,var(--bank-blue) 0%,#0565a1 60%,var(--bank-blue-deep) 100%);box-shadow:0 6px 20px #006fb51a}
+.app-shell .content-shell.overview-shell .welcome-banner .live-dot{background:var(--bank-green);box-shadow:0 0 0 3px #51b44b30}
+.app-shell .content-shell.overview-shell .overview-request-panel{background:var(--surface);border-color:var(--line);border-bottom:2px solid var(--bank-green);box-shadow:none}
+.app-shell .content-shell.overview-shell .overview-request-card{border-color:var(--line);border-left:3px solid var(--bank-blue);background:var(--surface-soft)}
+.app-shell .content-shell.overview-shell .overview-request-card:nth-child(even){border-left-color:var(--bank-green)}
+.app-shell .content-shell.overview-shell .overview-request-card .system-access-card-mark{background:var(--brand-blue-soft);color:var(--blue)}
+.app-shell .content-shell.overview-shell .overview-request-card:nth-child(even) .system-access-card-mark{background:var(--brand-green-soft);color:var(--green)}
+.app-shell .content-shell.overview-shell .overview-request-card:hover{border-color:var(--bank-blue);background:var(--brand-blue-soft);box-shadow:0 4px 12px #006fb51a}
+.app-shell .content-shell.overview-shell .metric-icon{background:var(--brand-blue-soft);color:var(--blue)}
+.app-shell .content-shell.overview-shell .metric-card:nth-child(even) .metric-icon{background:var(--brand-green-soft);color:var(--green)}
+.app-shell .official-section-heading,.app-shell .upgrade-access-form .transfer-access>h3,.app-shell .print-form-section>h3{background:var(--bank-blue);color:#fff}
+.app-shell .official-form-header{border-color:var(--line)}
+.app-shell .upgrade-selection-count{background:var(--brand-blue-soft);color:var(--blue)}
+.app-shell .system-role-view{border-color:var(--bank-blue);color:var(--blue)}
+.app-shell .system-role-modal .modal-actions .button{border-color:var(--bank-blue);background:var(--bank-blue);color:#fff}
+.app-shell .ap-metric,.app-shell .ap-queue,.app-shell .ap-filters{border-color:var(--line)}
+/* Status and query warning colors retain their meaning. */
+@media print{.official-section-heading,.print-form-section>h3{background:#006fb5!important;color:#fff!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}}

@@ -1,16 +1,36 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useEffect, useRef, useState } from 'react';
 import Icon from './Icon.jsx';
 import { SectionTitle } from './UI.jsx';
 import '../request-pagination.css';
 
-const pageSize = 4;
+
 export default function OverviewRequestQueue({ rows, filter, onFilter, search, onSearch, title, eyebrow, onViewQueue, renderRows }) {
   const [page, setPage] = useState(1);
+  const [pageSize,setPageSize]=useState(4);
+  const panelRef=useRef(null);
+  useEffect(()=>{
+    const panel=panelRef.current;
+    if (!panel) return;
+    const observer=new ResizeObserver(()=>{
+      if(window.innerWidth<900){setPageSize(4);return;}
+      const list=panel.querySelector('.request-list');
+      const heading=panel.querySelector('.request-head');
+      const row=panel.querySelector('.request-row');
+      if (!list) return;
+      const available=list.clientHeight-(heading?.offsetHeight||0);
+      const rowHeight=row?.offsetHeight||56;
+      setPageSize(Math.max(1,Math.min(8,Math.floor((available-4)/rowHeight))));
+    });
+    observer.observe(panel);
+    const list=panel.querySelector('.request-list');
+    if (list) observer.observe(list);
+    return ()=>observer.disconnect();
+  },[]);
   const filtered = rows.filter(row => filter === 'All' || row.state === filter);
   const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
   const currentPage = Math.min(page, pageCount);
   const start = (currentPage - 1) * pageSize;
-  return <section className="panel request-panel overview-paginated-queue">
+  return <section ref={panelRef} className="panel request-panel overview-paginated-queue">
     <SectionTitle eyebrow={eyebrow} title={title}><button className="text-link" onClick={onViewQueue}>View queue <Icon name="arrow" size={15}/></button></SectionTitle>
     <div className="table-toolbar"><div className="tabs" aria-label="Request status filters">{['All','Pending','In review','Query'].map(status => <button type="button" key={status} className={filter===status?'selected':''} aria-pressed={filter===status} onClick={()=>{setPage(1);onFilter(status);}}>{status}<span className="queue-tab-count">{status==='All'?rows.length:rows.filter(row=>row.state===status).length}</span></button>)}</div><label className="table-search"><Icon name="search" size={16}/><input value={search} onChange={event=>{setPage(1);onSearch(event.target.value);}} placeholder="Find a ticket" aria-label="Find a ticket"/></label></div>
     {renderRows(filtered.slice(start,start+pageSize))}
