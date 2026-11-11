@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from './UI.jsx';
 import { otherAccessSystems, requestRoles } from './requestCatalog.js';
+import { supportsSimilarId } from './similarIdSystems.js';
 import bankLogo from '../images-removebg-preview.png';
 
 const blankPerson = () => ({ fullName:'', designation:'', employeeId:'', systemId:'', department:'', fromBranch:'', toBranch:'' });
@@ -8,7 +9,7 @@ const coreSystems = ['ICBS','RVI Web Portal Access','Query','ITMBD','T4S','Chequ
 const testSystems = ['ITMBD Test','ICBS Test'];
 const losDepartments = ['Corporate Banking','Credit Admin','Islamic Banking','Card Center','Customer Service'];
 
-export default function BranchTransferFields({ value, onChange, mode='transfer', profile, readOnly=false }) {
+export default function BranchTransferFields({ value, onChange, mode='transfer', profile, readOnly=false, expandSections=false }) {
   const availableOtherAccessSystems = mode === 'self' ? otherAccessSystems.filter(system => system !== 'AD ID') : otherAccessSystems;
   const update = (key,next) => onChange({...value,[key]:next});
   const selfPerson={...blankPerson(),fullName:profile?.name||'',designation:profile?.designation||'',employeeId:profile?.employeeId||'',systemId:profile?.systemId||profile?.userId||profile?.employeeId||'',department:profile?.department||'',branch:profile?.branch||''};
@@ -18,33 +19,36 @@ export default function BranchTransferFields({ value, onChange, mode='transfer',
   const chooseRole = (key,name,role) => onChange({...value,[key]:{...value[key],[name]:value[key]?.[name]?.includes(role)?[]:[role]},[`${key}Systems`]:{...value[`${key}Systems`],[name]:true}});
   const chooseLOSDepartment = (key,department) => onChange({...value,[`${key}Departments`]:{...value[`${key}Departments`],LOS:department},[key]:{...value[key],LOS:[]},[`${key}Systems`]:{...value[`${key}Systems`],LOS:true}});
   const rolesFor = system => requestRoles[system] || [];
-  const changeDetail = (key,event) => update(key,event.target.type==='checkbox'?event.target.checked:event.target.value);
   const labelFor = system => system==='ITMBD'?'ITMBD (Card Center only)':system==='HRIS'?'HRIS (HR only)':system==='SWIFT Demerged ID (ex-BNGLXXXXX / BD0XXXXXX)'?'SWIFT Demerged ID (ex-BNGLXXXXX / BD0XXXXXX)':system;
   const extraFor = (key,system,field) => value[`${key}Extra`]?.[system]?.[field]||'';
   const updateExtra = (key,system,field,next) => update(`${key}Extra`,{...value[`${key}Extra`],[system]:{...value[`${key}Extra`]?.[system],[field]:next}});
-  const checkRows = (key,heading,list,similar=false) => <section className="transfer-access"><h3>{heading}</h3><p>Select the systems and role levels that apply.{list.includes('RVI Web Portal Access')?' RVI Web Portal Access requires a separate justification.':''}</p>{list.map(system=>{
+  const previewOnly = readOnly || expandSections;
+  const isSystemSelected = (key,system) => value[`${key}Systems`]?.[system] ?? Boolean(value[key]?.[system]?.length);
+  const checkRows = (key,heading,list,similar=false) => {
+    const visibleSystems = previewOnly ? list.filter(system=>isSystemSelected(key,system)) : list;
+    if (!visibleSystems.length) return null;
+    return <details className="transfer-access system-section-accordion" open={readOnly||expandSections} onInvalidCapture={event=>{event.currentTarget.open=true;}}><summary><span className="system-section-overview"><span className="system-section-title">{heading}</span><span className="system-section-system-list">{visibleSystems.map(system=><span key={system}>{labelFor(system)}</span>)}</span></span>{!previewOnly&&<span className="system-section-instruction"><span className="system-expand-hint">Click here to select required systems</span><span className="system-collapse-hint">Click here to collapse</span></span>}</summary><div className="system-section-content">{!previewOnly&&<p>Select the systems and role levels that apply.</p>}{visibleSystems.map(system=>{
     const selected=value[key]?.[system]||[];
     const selectedRole=selected.find(role=>rolesFor(system).includes(role));
     const systemChecked=value[`${key}Systems`]?.[system]??Boolean(selected.length);
     const selectedDepartment=value[`${key}Departments`]?.[system]||'';
-    const showRoleDetails=rolesFor(system).length?Boolean(selectedRole):systemChecked;
+    const showRoleDetails=systemChecked;
     const departmentRoles=system==='LOS'&&selectedDepartment?rolesFor(system).filter(role=>role.startsWith(`${selectedDepartment} `)):[];
     return <div className="transfer-system" key={system}>
       <strong><label><input type="checkbox" checked={systemChecked} onChange={e=>toggleSystem(key,system,e.target.checked)}/>{labelFor(system)}</label></strong>
-      {system==='LOS'&&systemChecked&&<div className="los-departments">{losDepartments.map(department=><label key={department}><input type="radio" name={`${key}-LOS-department`} checked={selectedDepartment===department} onChange={()=>chooseLOSDepartment(key,department)}/>{department}</label>)}</div>}
+      {system==='LOS'&&systemChecked&&<div className="los-departments">{losDepartments.filter(department=>!previewOnly||department===selectedDepartment).map(department=><label key={department}><input type="radio" name={`${key}-LOS-department`} required={systemChecked} checked={selectedDepartment===department} onChange={()=>chooseLOSDepartment(key,department)}/>{department}</label>)}</div>}
       {system==='LOS'&&selectedDepartment&&<>
         <div className="los-department-details">
           {selectedDepartment==='Corporate Banking'&&<label>Unit<input required value={extraFor(key,system,'unit')} onChange={e=>updateExtra(key,system,'unit',e.target.value)}/></label>}
           {(selectedDepartment==='Corporate Banking'||selectedDepartment==='Credit Admin'||selectedDepartment==='Islamic Banking')&&<label>Reference<input required value={extraFor(key,system,'reference')} onChange={e=>updateExtra(key,system,'reference',e.target.value)}/></label>}
         </div>
-        <div className="los-roles">{departmentRoles.map(role=><label className={selectedRole&&selectedRole!==role?'transfer-role role-dimmed':'transfer-role'} key={role}><input type="radio" name={`${key}-LOS-role`} checked={selectedRole===role} disabled={Boolean(selectedRole&&selectedRole!==role)} onChange={()=>chooseRole(key,system,role)}/>{role.slice(selectedDepartment.length).replace(/^\W+/, '').trim()}</label>)}</div>
+        <div className="los-roles">{departmentRoles.filter(role=>!previewOnly||selected.includes(role)).map(role=><label className={selectedRole&&selectedRole!==role?'transfer-role role-dimmed':'transfer-role'} key={role}><input type="radio" name={`${key}-LOS-role`} required={systemChecked} checked={selectedRole===role} disabled={Boolean(selectedRole&&selectedRole!==role)} onChange={()=>chooseRole(key,system,role)}/>{role.slice(selectedDepartment.length).replace(/^\W+/, '').trim()}</label>)}</div>
       </>}
-      {system!=='LOS'&&systemChecked&&rolesFor(system).map(role=><label className={selectedRole&&selectedRole!==role?'transfer-role role-dimmed':'transfer-role'} key={role}><input type="radio" name={`${key}-${system}`} checked={selectedRole===role} disabled={Boolean(selectedRole&&selectedRole!==role)} onChange={()=>chooseRole(key,system,role)}/>{role}</label>)}
+      {system!=='LOS'&&systemChecked&&rolesFor(system).filter(role=>!previewOnly||selected.includes(role)).map(role=><label className={selectedRole&&selectedRole!==role?'transfer-role role-dimmed':'transfer-role'} key={role}><input type="radio" name={`${key}-${system}`} required={systemChecked} checked={selectedRole===role} disabled={Boolean(selectedRole&&selectedRole!==role)} onChange={()=>chooseRole(key,system,role)}/>{role}</label>)}
       {system==='CITRIX_R'&&systemChecked&&<input required value={extraFor(key,system,'mentionId')} onChange={e=>updateExtra(key,system,'mentionId',e.target.value)} placeholder="Mention ID (required)"/>}
-      {system==='RVI Web Portal Access'&&showRoleDetails&&<textarea className="transfer-justification" rows="2" required value={extraFor(key,system,'justification')} onChange={e=>updateExtra(key,system,'justification',e.target.value)} placeholder="Separate RVI Web Portal justification (required)"/>}
-      {system!=='RVI Web Portal Access'&&showRoleDetails&&<textarea className="transfer-justification" rows="2" value={extraFor(key,system,'justification')} onChange={e=>updateExtra(key,system,'justification',e.target.value)} placeholder={`Justification for ${labelFor(system)} (optional)`}/>}
-      {(similar||system==='LOS'||system==='WBO')&&showRoleDetails&&<input className="transfer-similar-id" value={value.similarIds?.[system]||''} onChange={e=>update('similarIds',{...value.similarIds,[system]:e.target.value})} placeholder={`Similar ID for ${system} (if needed)`}/>}
-    </div>})}</section>;
+      {supportsSimilarId(system)&&showRoleDetails&&<label className="transfer-similar-id-field"><span>Similar ID for {system} (required)</span><input required aria-label={`Similar ID for ${system}`} className="transfer-similar-id" value={value.similarIds?.[system]||''} onChange={e=>update('similarIds',{...value.similarIds,[system]:e.target.value})} placeholder="Enter a similar ID"/></label>}
+    </div>})}</div></details>;
+  };
   return <div className="branch-transfer-fields">
     <header className="official-form-header">
       <div className="official-form-brand"><div><strong>Commercial Bank of Ceylon PLC</strong><span>Bangladesh Operations</span></div><img src={bankLogo} alt="Commercial Bank of Ceylon"/></div>
@@ -62,6 +66,6 @@ export default function BranchTransferFields({ value, onChange, mode='transfer',
     {checkRows('newOtherAccess',mode==='transfer'?'B. New ID required after transfer — Other Access': 'Other Access (if required)',availableOtherAccessSystems,true)}
     {checkRows('newTestSystems',mode==='transfer'?'B. New ID required after transfer — Specialized Test Systems':'Specialized Test Systems',testSystems,true)}
     {checkRows('additionalTestSystems','Specialized Test Systems (Specialized Dept / Purpose only)',testSystems)}
-    {mode!=='transfer'&&<section className="transfer-access"><div className="transfer-field-grid"><label>Specialized department / purpose<input value={value.specializedPurpose||''} onChange={e=>update('specializedPurpose',e.target.value)}/></label></div><h3>Wi-Fi & Device Access</h3><div className="new-user-services"><label><input type="checkbox" checked={Boolean(value.wifiEnabled)} onChange={e=>update('wifiEnabled',e.target.checked)}/> Wi-Fi Access (8th Floor only)</label><label><input type="checkbox" checked={Boolean(value.externalEnabled)} onChange={e=>update('externalEnabled',e.target.checked)}/> External Device Access (Email via phone / other device)</label></div>{(value.wifiEnabled||value.externalEnabled)&&<div className="transfer-field-grid">{value.wifiEnabled&&<><label>Wi-Fi User ID<input required value={value.wifiUserId||''} onChange={e=>update('wifiUserId',e.target.value)}/></label><label>User Device Name<input required value={value.deviceName||''} onChange={e=>update('deviceName',e.target.value)}/></label><label>User Device MAC<input value={value.deviceMac||''} onChange={e=>update('deviceMac',e.target.value)} placeholder="For IT to submit"/></label></>}{value.externalEnabled&&<><label>External device name<input required value={value.externalDeviceName||''} onChange={e=>update('externalDeviceName',e.target.value)}/></label><label>External device model<input required value={value.externalDeviceModel||''} onChange={e=>update('externalDeviceModel',e.target.value)}/></label><label>External device serial number<input required value={value.externalDeviceSerial||''} onChange={e=>update('externalDeviceSerial',e.target.value)}/></label></>}</div>}<h3>Email & Required Software</h3><label className="field-label">Preferred Email ID<input value={value.preferredEmail||''} onChange={e=>update('preferredEmail',e.target.value)} placeholder="________________________@combankbd.com"/></label><div className="new-user-services"><strong>Required Software</strong><label><input type="checkbox" checked={Boolean(value.msOffice)} onChange={e=>changeDetail('msOffice',e)}/> MS Office</label><label><input type="checkbox" checked={Boolean(value.otherSoftware)} onChange={e=>update('otherSoftware',e.target.checked?'Other':'')}/> Other</label>{value.otherSoftware==='Other'&&<input value={value.otherSoftwareDetail||''} onChange={e=>update('otherSoftwareDetail',e.target.value)} placeholder="Specify software"/>}</div></section>}
+
   </div>;
 }

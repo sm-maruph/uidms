@@ -1,0 +1,54 @@
+/* Keep every navigation item and account action within the viewport. */
+.app-shell .sidebar{height:100dvh;max-height:100dvh;min-height:0;padding:16px 12px 10px;display:flex;flex-direction:column;gap:12px;overflow:hidden;box-sizing:border-box}
+.app-shell .sidebar .sidebar-branding{flex:0 0 auto;min-height:0}
+.app-shell .sidebar .sidebar-bank-logo{width:min(100%,178px);max-height:52px;object-fit:contain;margin:0 auto 10px}
+.app-shell .sidebar .brand{height:42px;padding:0 7px;gap:9px}
+.app-shell .sidebar .brand-mark{width:32px;height:32px;border-radius:9px;font-size:20px}
+.app-shell .sidebar .brand strong{font-size:15px}
+.app-shell .sidebar .brand small{font-size:10px;margin-top:2px}
+.app-shell .sidebar>nav{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:12px}
+.app-shell .sidebar .nav-group{flex:0 1 auto;margin:0;min-height:0}
+.app-shell .sidebar .nav-label{margin:0 8px 5px;font-size:9px;line-height:14px;letter-spacing:.11em}
+.app-shell .sidebar button.nav-item{height:clamp(29px,4.3dvh,39px);min-height:0;padding:0 10px;margin:2px 0;font-size:12px!important;line-height:1.3;gap:10px;white-space:nowrap}
+.app-shell .sidebar .nav-item svg{width:17px;height:17px;flex:none}
+.app-shell .sidebar .sidebar-bottom{flex:0 0 auto;margin-top:auto;min-height:0}
+.app-shell .sidebar .help-card{margin:0 2px 10px;padding:10px}
+.app-shell .sidebar .help-icon{display:none}
+.app-shell .sidebar .help-card>strong{font-size:11px}
+.app-shell .sidebar .help-card p{margin:5px 0;font-size:10px;line-height:1.45}
+.app-shell .sidebar .help-card button{font-size:11px!important}
+.app-shell .sidebar .profile-row{margin-top:0;padding:9px 2px 0;gap:8px}
+.app-shell .sidebar .profile-row>span{min-width:0}
+.app-shell .sidebar .profile-row strong{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;font-size:12px;line-height:1.35}
+.app-shell .sidebar .profile-row small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;line-height:1.4}
+.app-shell .sidebar .profile-row .avatar{width:28px;height:28px;font-size:9px}
+.app-shell .sidebar .profile-row .icon-button{width:25px;height:25px;flex:none}
+.app-shell .sidebar .sidebar-logout-button{min-height:28px;height:28px;margin-top:7px;padding:4px 9px;font-size:11px!important}
+@media(max-height:760px){
+ .app-shell .sidebar{padding-top:12px;gap:8px}
+ .app-shell .sidebar .sidebar-bank-logo{max-height:40px;width:150px;margin-bottom:7px}
+ .app-shell .sidebar .brand{height:36px}
+ .app-shell .sidebar>nav{gap:8px}
+ .app-shell .sidebar .help-card{padding:8px;margin-bottom:8px}
+ .app-shell .sidebar .help-card p{display:none}
+ .app-shell .sidebar .help-card button{margin-top:5px}
+}
+@media(max-height:620px){
+ .app-shell .sidebar{gap:6px;padding:8px 10px}
+ .app-shell .sidebar .sidebar-bank-logo{width:130px;max-height:32px;margin-bottom:4px}
+ .app-shell .sidebar .brand{height:32px}
+ .app-shell .sidebar .brand-mark{width:27px;height:27px;font-size:17px}
+ .app-shell .sidebar .brand small{display:none}
+ .app-shell .sidebar .help-card{display:none}
+ .app-shell .sidebar button.nav-item{height:27px;margin:1px 0;font-size:11px!important}
+ .app-shell .sidebar .nav-label{line-height:12px;margin-bottom:3px}
+ .app-shell .sidebar>nav{gap:5px}
+ .app-shell .sidebar .profile-row{padding-top:6px}
+}
+@media(max-height:480px){
+ .app-shell .sidebar .sidebar-branding>.brand{display:none}
+ .app-shell .sidebar .nav-label{display:none}
+ .app-shell .sidebar button.nav-item{height:24px}
+ .app-shell .sidebar .profile-row strong{-webkit-line-clamp:1}
+ .app-shell .sidebar .profile-row small{display:none}
+}

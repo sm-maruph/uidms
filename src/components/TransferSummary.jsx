@@ -63,6 +63,5 @@ export default function TransferSummary({ details = {}, title = 'Branch transfer
         return <tr key={step}><td>{step}</td><td>{event?.status||(query?'Query raised':legacyCompleted?'Completed (timestamp unavailable)':isCurrent?ticket.state:'Upcoming')}</td><td>{event?`${event.by}${event.role?` (${event.role})`:''}`:query?`${query.by}${query.role?` (${query.role})`:''}`:isCurrent?ticket.step:legacyCompleted?'Approver unavailable':'—'}</td><td>{event?formatTimestamp(event.at):query?formatTimestamp(query.at):'—'}</td></tr>;
       })}
     </tbody></table></section>
-    <section className="approval-fields print-signatures"><h3>Approvals & Signatures</h3><div className="approval-signatures">{['User (Signature)','Head of Department / Branch (Signature)','CITO (Signature & Comments)','Head of HR (Signature & Comments)','Deputy CEO & COO (Signature)'].map((label,index)=><div key={label}><strong>{label}</strong>{index===0&&ticket.signature?<img className="approval-e-signature" src={ticket.signature} alt="User e-signature"/>:<span>Signature</span>}{label.includes('Comments')&&<small>Comments</small>}</div>)}</div></section>
   </section>;
 }
