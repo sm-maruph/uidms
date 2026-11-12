@@ -32,3 +32,6 @@
 .ticket-form-reveal:not(.is-open){pointer-events:none}
 @media(prefers-reduced-motion:reduce){.ticket-form-reveal,.ticket-form-reveal.is-open{transition:none}}
 @media print{.ticket-form-reveal:not(.is-open){display:none}}
+
+.detail-heading>div{min-width:0;flex:1}
+.detail-heading .ticket-heading-systems{display:block;max-width:100%;margin:7px 0 5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--blue);font-size:13px;font-weight:600;line-height:1.6}
