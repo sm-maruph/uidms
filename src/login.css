@@ -48,3 +48,99 @@
 .login-dark .login-submit{background:var(--login-brand-blue);border-color:#328bc5}
 .login-dark .login-submit:hover{background:#087fc9}
 @media(max-width:400px){.login-entry-controls{gap:6px}.login-theme-toggle{padding:7px}.login-theme-toggle span{display:none}}
+
+/* Login stays within the viewport after removing the promotional headline. */
+html:has(.uidms-login),body:has(.uidms-login){height:100%;overflow:hidden}
+.uidms-login{position:fixed;inset:0;height:100dvh;min-height:0;max-height:100dvh;overflow:hidden;grid-template-rows:minmax(0,1fr)}
+.uidms-login .login-story,.uidms-login .login-entry{min-height:0;box-sizing:border-box;padding-top:clamp(18px,4dvh,35px);padding-bottom:clamp(16px,3dvh,28px)}
+.uidms-login .login-story-content{padding:20px 0;max-width:480px;width:100%;align-self:center;min-height:0}
+.uidms-login .login-kicker{margin-bottom:14px}
+.uidms-login .login-security-guidance{margin-top:0}
+.uidms-login .login-form-wrap{padding:clamp(10px,2dvh,25px) 0;min-height:0}
+.uidms-login .login-bank-logo{margin-bottom:clamp(16px,3dvh,28px);height:52px}
+.uidms-login .login-form-heading>p:last-child{margin-bottom:20px}
+.uidms-login .login-entry-note{margin-top:18px;padding-top:14px}
+.uidms-login .login-entry-footer{flex:none;line-height:1.6}
+@media(max-height:720px){
+ .uidms-login .login-story,.uidms-login .login-entry{padding-top:14px;padding-bottom:14px}
+ .uidms-login .login-form-wrap{padding:8px 0}
+ .uidms-login .login-bank-logo{height:42px;margin-bottom:14px}
+ .uidms-login .login-form-heading h2{font-size:29px;margin-bottom:7px}
+ .uidms-login .login-form-heading>p:last-child{margin-bottom:14px}
+ .uidms-login .login-profile{min-height:64px;padding:10px;margin:10px 0 14px}
+ .uidms-login .login-entry-note{margin-top:12px;padding-top:10px}
+ .uidms-login .login-benefits{margin-top:14px}
+}
+@media(max-width:760px){
+ .uidms-login{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr)}
+ .uidms-login .login-story{display:none}
+ .uidms-login .login-entry{height:100%;gap:10px;padding:18px 7%;border-top:4px solid var(--login-brand-green)}
+ .uidms-login .login-form-wrap{width:100%;max-width:430px}
+}
+@media(max-height:560px){
+ .uidms-login .login-entry-note,.uidms-login .login-demo-note,.uidms-login .login-story-footer,.uidms-login .login-benefits{display:none}
+ .uidms-login .login-bank-logo{height:32px;margin-bottom:8px}
+ .uidms-login .login-form-eyebrow{margin-bottom:6px;font-size:8px}
+ .uidms-login .login-form-heading h2{font-size:25px;margin-bottom:5px}
+ .uidms-login .login-form-heading>p:last-child{font-size:11px;margin-bottom:10px}
+ .uidms-login .login-select-wrap select,.uidms-login .login-submit{height:38px}
+ .uidms-login .login-profile{min-height:50px;margin:8px 0;padding:7px 10px}
+ .uidms-login .login-entry-top{font-size:8px}
+ .uidms-login .login-entry-footer{font-size:8px}
+}
+.login-story-footer>span:only-child{font-size:10px;letter-spacing:0;line-height:1.6}
+
+.login-story .login-credit{display:flex;justify-content:center;align-items:center;gap:8px;width:100%;max-width:480px;align-self:center;padding:10px 12px;border:1px solid #ffffff18;border-radius:9px;background:#ffffff05}
+.login-credit-spark{display:grid;place-items:center;flex:none;width:22px;height:22px;border:1px solid #9be88a55;border-radius:7px;background:#51b44b1a;color:#b8efac}
+.login-credit-window{flex:1;min-width:0;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.login-credit-track{display:flex;width:max-content;animation:login-credit-scroll 30s linear infinite}
+.login-credit-track>span{display:block;flex:none;padding-right:42px;font-size:10px;line-height:1.8;letter-spacing:.02em;white-space:nowrap;color:#d7ebf8}
+.login-credit:is(:hover,:focus-within) .login-credit-track{animation-play-state:paused}
+.login-credit-window:focus-visible{outline:2px solid #b8efac;outline-offset:2px}
+@keyframes login-credit-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes login-credit-glow{0%,100%{box-shadow:0 0 0 0 #9be88a00}50%{box-shadow:0 0 0 4px #9be88a12}}
+@media(prefers-reduced-motion:no-preference){.login-credit-spark{animation:login-credit-glow 4s ease-in-out infinite}}
+@media(prefers-reduced-motion:reduce){.login-credit-track{animation:none;width:auto}.login-credit-track>span{white-space:normal;text-align:center;padding:0}.login-credit-track>span+span{display:none}.login-credit-window{mask-image:none}}
+@media(max-height:560px){.login-story .login-credit{display:none}}
+
+.login-credit-track>span{font-size:12px;font-weight:500;line-height:1.7}
+@media(prefers-reduced-motion:no-preference){
+ .login-story .login-credit{animation:credit-focus-glow 5s ease-in-out infinite}
+ .login-credit-track>span{animation:credit-text-focus 5s ease-in-out infinite}
+}
+@keyframes credit-focus-glow{
+  0%,100%{border-color:#006fb560;box-shadow:0 0 0 0 #006fb500,0 0 12px #006fb514;background:#006fb50a}
+  50%{border-color:#51b44bb3;box-shadow:0 0 0 3px #51b44b14,0 0 20px #51b44b24;background:#51b44b0d}
+}
+@keyframes credit-text-focus{
+  0%,100%{color:#c7e6fa;text-shadow:0 0 7px #006fb550}
+  50%{color:#d7f1d3;text-shadow:0 0 9px #51b44b70}
+}
+
+.login-wordmark-copy{display:grid;gap:5px;min-width:0}
+.login-wordmark .login-wordmark-copy strong{font-size:18px;line-height:1.4;letter-spacing:0}
+.login-wordmark .login-wordmark-copy small{font-size:10px;line-height:1.5;letter-spacing:.04em;color:#d7ebf8}
+@media(max-width:1000px){.login-wordmark .login-wordmark-copy strong{font-size:15px}.login-wordmark .login-wordmark-copy small{font-size:9px}}
+
+.login-story .login-wordmark{gap:13px;padding:10px 12px 10px 0;max-width:100%;border-radius:12px;transition:opacity .2s}
+.login-story .login-wordmark .login-identity-symbol{position:relative;width:46px;height:46px;flex:none;border:1px solid #8ac9f55c;border-radius:12px;background:linear-gradient(145deg,#006fb54a,#00558d24);color:#c8e9ff;box-shadow:inset 0 1px 0 #ffffff12,0 5px 15px #00152818}
+.login-identity-symbol>i{position:absolute;right:-4px;bottom:-3px;display:grid;place-items:center;width:16px;height:16px;border:2px solid #17354d;border-radius:50%;background:#51b44b;color:#fff}
+.login-story .login-wordmark-copy{gap:5px}
+.login-story .login-wordmark-copy strong{font-size:20px;font-weight:650;line-height:1.3;letter-spacing:-.025em;color:#fff}
+.login-story .login-wordmark-copy small{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:400;line-height:1.5;letter-spacing:.035em;color:#bbd4e7}
+.login-wordmark-copy small::before{content:'';display:block;flex:none;width:20px;height:2px;border-radius:2px;background:linear-gradient(90deg,#006fb5,#51b44b)}
+.login-story .login-wordmark:hover{opacity:.9}
+.login-story .login-wordmark:focus-visible{outline:2px solid #8cdb7f;outline-offset:5px}
+@media(max-width:1100px){.login-story .login-wordmark-copy strong{font-size:17px}.login-story .login-wordmark-copy small{font-size:9px}.login-story .login-wordmark .login-identity-symbol{width:40px;height:40px}}
+@media(prefers-reduced-motion:reduce){.login-story .login-wordmark{transition:none}}
+
+.uidms-login .login-submit{position:relative;overflow:hidden;isolation:isolate;transition:background .2s,box-shadow .2s,transform .2s}
+.uidms-login .login-submit::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 25%,#ffffff28 48%,transparent 70%);transform:translateX(-130%)}
+.uidms-login .login-submit>svg{transition:transform .25s}
+.uidms-login .login-submit:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 18px #006fb535}
+.uidms-login .login-submit:hover:not(:disabled)>svg{transform:translateX(4px)}
+.uidms-login .login-submit:active:not(:disabled){transform:translateY(0) scale(.99);box-shadow:0 2px 7px #006fb525}
+.uidms-login .login-submit:focus-visible{outline:2px solid var(--bank-green,#51b44b);outline-offset:4px}
+@media(prefers-reduced-motion:no-preference){.uidms-login .login-submit:not(:disabled)::after{animation:login-button-shimmer 5s ease-in-out infinite}}
+@keyframes login-button-shimmer{0%,55%{transform:translateX(-130%)}85%,100%{transform:translateX(130%)}}
+@media(prefers-reduced-motion:reduce){.uidms-login .login-submit,.uidms-login .login-submit>svg{transition:none}.uidms-login .login-submit:hover:not(:disabled),.uidms-login .login-submit:active:not(:disabled),.uidms-login .login-submit:hover:not(:disabled)>svg{transform:none}}

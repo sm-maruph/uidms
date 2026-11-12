@@ -21,3 +21,23 @@
 @media(max-width:1150px){.app-shell .topbar{left:220px}}
 @media(max-width:900px){.app-shell .topbar{left:0}}
 @media(max-width:620px){.app-shell .topbar{height:40px;min-height:40px;padding:0 12px}.app-shell .topbar::before{height:40px;right:235px;line-height:40px;animation-duration:25s}.app-shell .topbar-actions{gap:6px}}
+
+.app-shell .topbar .topbar-logout:hover{background:var(--brand-blue-soft);color:var(--blue)}
+
+/* Let the notice occupy only the space left by the controls. */
+.app-shell .topbar::before{position:relative;inset:auto;left:auto;right:auto;top:auto;display:block;flex:1 1 0;min-width:0;width:0;height:100%;align-self:center;line-height:44px;overflow:hidden}
+.app-shell .topbar-actions{position:relative;z-index:1;flex:0 0 auto;background:var(--surface);padding-left:10px}
+.app-shell .topbar-theme-switch{position:relative;display:flex;align-items:center;justify-content:space-around;flex:none;width:60px;height:30px;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--surface-soft);color:var(--muted);cursor:pointer;isolation:isolate}
+.theme-switch-thumb{position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:var(--bank-blue);box-shadow:0 2px 5px #001e3530;transition:transform .22s ease,background .22s ease;z-index:-1}
+.topbar-theme-switch[aria-checked=true] .theme-switch-thumb{transform:translateX(30px)}
+.theme-switch-sun,.theme-switch-moon{display:grid;place-items:center;width:22px;height:22px;pointer-events:none;transition:color .2s}
+.topbar-theme-switch[aria-checked=false] .theme-switch-sun,.topbar-theme-switch[aria-checked=true] .theme-switch-moon{color:#fff}
+.app-shell .topbar-theme-switch:hover{border-color:var(--blue)}
+.app-shell .topbar-theme-switch:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+@media(max-width:620px){.app-shell .topbar::before{line-height:40px}.app-shell .topbar-actions{padding-left:5px}}
+@media(prefers-reduced-motion:reduce){.theme-switch-thumb,.theme-switch-sun,.theme-switch-moon{transition:none}}
+
+.app-shell .topbar .topbar-logout{color:#f00000}
+.app-shell.theme-dark .topbar .topbar-logout{color:#ff3030}
+.app-shell .topbar .topbar-logout:hover{color:#d60000;background:#ff000020}
+.app-shell.theme-dark .topbar .topbar-logout:hover{color:#ff1010;background:#ff000028}

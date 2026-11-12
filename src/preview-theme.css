@@ -1,8 +1,8 @@
 /* Portal previews follow the active application theme. Screen rules leave printing white. */
 @media screen{
- :is(.request-review-dialog,.approval-form-modal){--surface:#fff;--surface-soft:#f0f6fa;--text:#153349;--muted:#5c7282;--line:#d6e3ec;--blue:#006fb5;color:var(--text);color-scheme:light}
- body:has(.app-shell.theme-dark) :is(.request-review-dialog,.approval-form-modal){--surface:#132735;--surface-soft:#193241;--text:#edf6fb;--muted:#adc3d1;--line:#2c485a;--blue:#72bdf0;color-scheme:dark}
- body :is(.request-review-dialog,.approval-form-modal){background:var(--surface)!important}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview){--surface:#fff;--surface-soft:#f0f6fa;--text:#153349;--muted:#5c7282;--line:#d6e3ec;--blue:#006fb5;color:var(--text);color-scheme:light}
+ body:has(.app-shell.theme-dark) :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview){--surface:#132735;--surface-soft:#193241;--text:#edf6fb;--muted:#adc3d1;--line:#2c485a;--blue:#72bdf0;color-scheme:dark}
+ body :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview){background:var(--surface)!important}
  body .approval-form-modal>.request-form-preview,body .approval-form-modal>.request-official-header{--surface:inherit;--surface-soft:inherit;--text:inherit;--muted:inherit;--line:inherit;--blue:inherit;background:var(--surface);color:var(--text);padding:12px}
  body .approval-form-modal>.approval-form-toolbar{background:var(--surface);color:var(--text);border-color:var(--line);padding-top:10px;padding-bottom:10px;margin-bottom:10px}
  .request-review-heading{padding:12px 16px 10px}
@@ -13,44 +13,53 @@
  .request-review-footer{padding:10px 16px}
  .request-review-footer .modal-actions{margin-top:8px;padding-top:8px}
  .request-acknowledgement{font-size:12px;padding:9px 10px;gap:9px}
- :is(.request-review-dialog,.approval-form-modal) .branch-transfer-fields{gap:8px}
- :is(.request-review-dialog,.approval-form-modal) .official-form-header{padding:10px 12px;background:var(--surface);border-color:var(--line);border-radius:6px}
- :is(.request-review-dialog,.approval-form-modal) .official-form-brand{min-height:36px}
- :is(.request-review-dialog,.approval-form-modal) .official-form-brand strong{font-size:17px}
- :is(.request-review-dialog,.approval-form-modal) .official-form-brand span{font-size:11px;color:var(--muted)}
- :is(.request-review-dialog,.approval-form-modal) .official-form-brand img{width:130px;max-height:40px;object-fit:contain}
- :is(.request-review-dialog,.approval-form-modal) .official-form-heading{margin-top:6px;padding-top:6px}
- :is(.request-review-dialog,.approval-form-modal) .official-form-heading h2{font-size:16px;line-height:1.4}
- :is(.request-review-dialog,.approval-form-modal) .official-form-heading p{font-size:11px;color:var(--muted)}
- :is(.request-review-dialog,.approval-form-modal) .transfer-people-heading h3{font-size:13px}
- :is(.request-review-dialog,.approval-form-modal) .transfer-people-heading p{display:none}
- :is(.request-review-dialog,.approval-form-modal) .transfer-person-card{padding:10px;gap:8px;background:var(--surface-soft);border-color:var(--line);color:var(--text)}
- :is(.request-review-dialog,.approval-form-modal) .transfer-person-heading{padding-bottom:6px;font-size:12px}
- :is(.request-review-dialog,.approval-form-modal) .transfer-field-grid{gap:7px 10px}
- :is(.request-review-dialog,.approval-form-modal) .transfer-field-grid label{font-size:11px;gap:4px;color:var(--muted)}
- body :is(.request-review-dialog,.approval-form-modal) :is(input,textarea,select){background:var(--surface-soft)!important;color:var(--text)!important;border-color:var(--line)!important;opacity:1;-webkit-text-fill-color:var(--text)}
- :is(.request-review-dialog,.approval-form-modal) .transfer-field-grid input{min-height:32px;height:32px;padding:6px 8px;font-size:12px}
- :is(.request-review-dialog,.approval-form-modal) .system-section-accordion{padding:0;border-color:var(--line)}
- :is(.request-review-dialog,.approval-form-modal) .system-section-accordion>summary{padding:8px 10px;margin-bottom:4px;color:var(--text)}
- :is(.request-review-dialog,.approval-form-modal) .system-section-title{font-size:13px}
- :is(.request-review-dialog,.approval-form-modal) .system-section-content{padding:0 10px 8px}
- :is(.request-review-dialog,.approval-form-modal) .transfer-system{display:flex;flex-wrap:wrap;gap:7px 20px;padding:7px 0;background:var(--surface);border-color:var(--line);font-size:12px}
- :is(.request-review-dialog,.approval-form-modal) .transfer-similar-id-field{width:100%;gap:4px;font-size:11px;color:var(--text)}
- :is(.request-review-dialog,.approval-form-modal) .transfer-similar-id-field input{min-height:30px;padding:6px 8px;font-size:12px}
- :is(.request-review-dialog,.approval-form-modal) .print-business-justification{margin-top:9px;font-size:11px;color:var(--muted)}
- :is(.request-review-dialog,.approval-form-modal) .print-business-justification textarea{min-height:60px!important;height:60px;padding:8px;font-size:12px}
- :is(.request-review-dialog,.approval-form-modal) .preview-ticket-record{background:var(--surface-soft);border-color:var(--line);color:var(--text);padding:10px}
- :is(.request-review-dialog,.approval-form-modal) .preview-ticket-record dt{color:var(--muted)}
- :is(.request-review-dialog,.approval-form-modal) .preview-missing-record{background:var(--surface-soft);border-color:var(--line);color:var(--muted)}
- :is(.request-review-dialog,.approval-form-modal) .button-primary{background:#006fb5;border-color:#006fb5;color:#fff}
- :is(.request-review-dialog,.approval-form-modal) .button-subtle{background:var(--surface);border-color:var(--line);color:var(--blue)}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .branch-transfer-fields{gap:8px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .official-form-header{padding:10px 12px;background:var(--surface);border-color:var(--line);border-radius:6px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .official-form-brand{min-height:36px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .official-form-brand strong{font-size:17px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .official-form-brand span{font-size:11px;color:var(--muted)}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .official-form-brand img{width:130px;max-height:40px;object-fit:contain}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .official-form-heading{margin-top:6px;padding-top:6px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .official-form-heading h2{font-size:16px;line-height:1.4}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .official-form-heading p{font-size:11px;color:var(--muted)}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .transfer-people-heading h3{font-size:13px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .transfer-people-heading p{display:none}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .transfer-person-card{padding:10px;gap:8px;background:var(--surface-soft);border-color:var(--line);color:var(--text)}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .transfer-person-heading{padding-bottom:6px;font-size:12px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .transfer-field-grid{gap:7px 10px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .transfer-field-grid label{font-size:11px;gap:4px;color:var(--muted)}
+ body :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) :is(input,textarea,select){background:var(--surface-soft)!important;color:var(--text)!important;border-color:var(--line)!important;opacity:1;-webkit-text-fill-color:var(--text)}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .transfer-field-grid input{min-height:32px;height:32px;padding:6px 8px;font-size:12px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .system-section-accordion{padding:0;border-color:var(--line)}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .system-section-accordion>summary{padding:8px 10px;margin-bottom:4px;color:var(--text)}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .system-section-title{font-size:13px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .system-section-content{padding:0 10px 8px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .transfer-system{display:flex;flex-wrap:wrap;gap:7px 20px;padding:7px 0;background:var(--surface);border-color:var(--line);font-size:12px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .transfer-similar-id-field{width:100%;gap:4px;font-size:11px;color:var(--text)}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .transfer-similar-id-field input{min-height:30px;padding:6px 8px;font-size:12px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .print-business-justification{margin-top:9px;font-size:11px;color:var(--muted)}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .print-business-justification textarea{min-height:60px!important;height:60px;padding:8px;font-size:12px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .preview-ticket-record{background:var(--surface-soft);border-color:var(--line);color:var(--text);padding:10px}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .preview-ticket-record dt{color:var(--muted)}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .preview-missing-record{background:var(--surface-soft);border-color:var(--line);color:var(--muted)}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .button-primary{background:#006fb5;border-color:#006fb5;color:#fff}
+ :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .button-subtle{background:var(--surface);border-color:var(--line);color:var(--blue)}
  .request-review-dialog .upgrade-redesign{gap:12px;margin-top:10px}
  .request-review-dialog .upgrade-access-employee>div{padding:9px}
  .request-review-dialog .upgrade-section-title{margin-bottom:9px}
 }
 @media screen and (min-width:1000px){
- body :is(.request-review-dialog,.approval-form-modal) .transfer-field-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+ body :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .transfer-field-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
 }
 @media screen and (max-width:620px){
- body :is(.request-review-dialog,.approval-form-modal) .transfer-field-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body :is(.request-review-dialog,.approval-form-modal,.embedded-form-preview) .transfer-field-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+.embedded-form-preview{margin-top:16px;padding:16px;border:1px solid var(--line);border-radius:9px;background:var(--surface);min-width:0}
+.submitted-form-details-heading{margin-bottom:12px}
+.submitted-form-details-heading .eyebrow{margin:0 0 5px;color:var(--muted);font-size:10px;letter-spacing:.08em}
+.submitted-form-details-heading h2{margin:0;font-size:18px;color:var(--text)}
+.embedded-form-preview .request-form-preview button{display:none}
+.embedded-form-preview .request-form-preview{min-width:0;overflow-wrap:anywhere}
+.embedded-form-preview .request-official-header{margin-bottom:10px}
+.embedded-form-preview .system-section-accordion>summary::after{display:none}

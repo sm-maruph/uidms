@@ -1,0 +1,8 @@
+import React, {useEffect,useRef} from 'react';
+import {createPortal} from 'react-dom';
+import Icon from './Icon.jsx';
+export default function DeleteRequestDialog({ticket,onCancel,onConfirm}){
+ const panel=useRef(null);
+ useEffect(()=>{const previous=document.activeElement;panel.current?.querySelector('button')?.focus();return ()=>previous?.isConnected&&previous.focus();},[]);
+ return createPortal(<div className="validation-popup-scrim"><section ref={panel} className="validation-popup delete-request-dialog" role="alertdialog" aria-modal="true" aria-labelledby="delete-request-title" aria-describedby="delete-request-description" onKeyDown={event=>{if(event.key==='Escape')onCancel();if(event.key==='Tab'){const buttons=[...event.currentTarget.querySelectorAll('button')];if(event.shiftKey&&document.activeElement===buttons[0]){event.preventDefault();buttons.at(-1).focus();}else if(!event.shiftKey&&document.activeElement===buttons.at(-1)){event.preventDefault();buttons[0].focus();}}}}><span className="validation-popup-icon"><Icon name="trash" size={25}/></span><p className="validation-popup-eyebrow">DELETE REQUEST / {ticket.id}</p><h2 id="delete-request-title">Delete this request permanently?</h2><div id="delete-request-description"><p>This deletion will be logged in the system audit trail with your identity, the ticket ID, and the time of deletion.</p><p>The request will be permanently removed. Its audit record will be retained. Do you want to continue?</p></div><div className="delete-request-dialog-actions"><button type="button" className="button button-subtle" onClick={onCancel}>Cancel</button><button type="button" className="button delete-request-confirm" onClick={onConfirm}>Delete permanently</button></div></section></div>,document.body);
+}

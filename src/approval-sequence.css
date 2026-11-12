@@ -7,3 +7,28 @@
 @media(max-width:700px){.request-summary-scrim{padding:8px}.request-summary-modal{max-height:96vh}.request-summary-content{grid-template-columns:1fr;padding:10px}.request-summary-executive{grid-column:auto}.request-summary-meta{grid-template-columns:repeat(2,minmax(0,1fr))}.request-summary-header{padding:14px}.ticket-detail-toolbar{align-items:flex-start;flex-direction:column}.ticket-detail-toolbar .button{width:100%}}
 .request-summary-access{margin-top:12px;padding:11px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}.request-summary-access h4{margin:0 0 8px;font:700 13px var(--font-ui)}.request-summary-access-table{overflow-x:auto}.request-summary-access table{width:100%;border-collapse:collapse;font-size:12px}.request-summary-access th,.request-summary-access td{padding:8px 9px;border:1px solid var(--line);text-align:left;vertical-align:top}.request-summary-access th{background:var(--surface-soft);color:var(--muted);font-size:11px}.request-summary-access td{overflow-wrap:anywhere}
 .approval-notice{display:flex;align-items:center;gap:7px;min-width:0;margin:0;padding:9px 11px;border-left:3px solid #e0ab42;border-radius:5px;background:var(--surface-soft);color:var(--muted);font-size:11px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.approval-notice svg{flex:none;color:#e0ab42}
+
+.ticket-request-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:14px 0 18px}
+.ticket-request-actions .button{min-height:36px;padding:8px 12px;font-size:12px}
+.ticket-request-actions button:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.ticket-request-actions .ticket-delete-request{border:1px solid #d9424245;background:#d942420c;color:#c93232}
+.theme-dark .ticket-request-actions .ticket-delete-request{color:#ff8585}
+.ticket-request-actions .ticket-delete-request:hover:not(:disabled){background:#d942421c;border-color:#d94242}
+@media(max-width:620px){.ticket-request-actions{gap:7px}.ticket-request-actions .button{flex:1;justify-content:center;white-space:nowrap}}
+
+#ticket-form-details,#ticket-approval-workflow{scroll-margin-top:60px}
+.ticket-form-workflow-link{position:sticky;top:44px;z-index:4;display:flex;justify-content:flex-end;padding:8px 0;background:var(--surface)}
+.delete-request-dialog #delete-request-description p{font-size:13px;line-height:1.7;color:var(--muted)}
+.delete-request-dialog-actions{display:flex;gap:10px;margin-top:20px}
+.delete-request-dialog .delete-request-dialog-actions .button{width:auto;flex:1}
+.delete-request-dialog .delete-request-dialog-actions .button-subtle{border-color:var(--line);background:var(--surface);color:var(--text)}
+.delete-request-dialog .delete-request-dialog-actions .delete-request-confirm{background:#c92c2c;border-color:#c92c2c;color:white}
+
+@keyframes request-details-enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.ticket-form-reveal{display:grid;grid-template-rows:0fr;opacity:0;visibility:hidden;transition:grid-template-rows 1000ms cubic-bezier(.25,.65,.3,1),opacity 650ms ease,visibility 0s 1000ms;overflow-anchor:none}
+.ticket-form-reveal.is-open{grid-template-rows:1fr;opacity:1;visibility:visible;transition:grid-template-rows 1000ms cubic-bezier(.25,.65,.3,1),opacity 750ms ease 100ms,visibility 0s}
+.ticket-form-reveal-inner{min-height:0;overflow:hidden}
+.ticket-form-reveal:not(.is-open){pointer-events:none}
+@media(prefers-reduced-motion:reduce){.ticket-form-reveal,.ticket-form-reveal.is-open{transition:none}}
+@media print{.ticket-form-reveal:not(.is-open){display:none}}

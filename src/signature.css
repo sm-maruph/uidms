@@ -109,3 +109,14 @@
  .approval-form-modal .transfer-field-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
  .approval-form-modal .approval-signatures{grid-template-columns:1fr}
 }
+
+.validation-popup-scrim{position:fixed;inset:0;z-index:400;display:grid;place-items:center;padding:20px;background:#03111cc4;backdrop-filter:blur(5px)}
+.validation-popup{box-sizing:border-box;width:min(460px,100%);padding:26px;border:1px solid var(--line);border-top:3px solid #dca144;border-radius:14px;background:var(--surface);color:var(--text);box-shadow:0 24px 80px #0005}
+body:has(.app-shell.theme-dark) .validation-popup{--surface:#132735;--surface-soft:#193241;--text:#edf6fb;--muted:#adc3d1;--line:#2c485a}
+.validation-popup-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:12px;background:#dca14418;color:#c79035}
+.validation-popup-eyebrow{margin:16px 0 7px;font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--muted)}
+.validation-popup h2{margin:0 0 14px;font-size:20px;line-height:1.4}
+#validation-popup-message{padding:12px;margin:0;border:1px solid #dca14460;border-radius:7px;background:#dca1440d;font-size:14px;line-height:1.6;font-weight:600;overflow-wrap:anywhere}
+.validation-popup-help{margin:14px 0 20px;color:var(--muted);font-size:12px;line-height:1.6}
+.validation-popup .button{width:100%;background:#006fb5;color:#fff;border-color:#006fb5}
+@media print{.validation-popup-scrim{display:none!important}}

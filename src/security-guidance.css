@@ -1,0 +1,78 @@
+
+.login-security-guidance{margin-top:24px;border:1px solid #ffffff26;border-radius:12px;background:#ffffff06;overflow:hidden;max-width:480px;color:#fff}
+.login-security-guidance>header{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #ffffff18}
+.security-guidance-mark{display:grid;place-items:center;flex:none;width:32px;height:32px;border-radius:8px;background:#ffffff12;color:#a4e69d}
+.login-security-guidance header small{display:block;font-size:9px;letter-spacing:.12em;color:#c1d9ee}
+.login-security-guidance h2{margin:4px 0 0;font-size:14px;font-weight:600;color:#fff}
+.login-security-guidance header button{margin-left:auto;padding:5px 8px;border:1px solid #ffffff35;border-radius:5px;background:transparent;color:#e0eff9;font:inherit;font-size:10px;cursor:pointer}
+.security-guidance-window{height:156px;overflow:hidden;position:relative;mask-image:linear-gradient(transparent,#000 8%,#000 92%,transparent)}
+.security-guidance-track{animation:security-guidance-rise 58s linear infinite}
+.security-guidance-track ul{list-style:none;margin:0;padding:0 14px}
+.security-guidance-track li{display:flex;gap:10px;padding:13px 0;border-bottom:1px solid #ffffff12}
+.security-guidance-track li>i{flex:none;width:6px;height:6px;margin-top:5px;border-radius:50%;background:#80d776}
+.security-guidance-track strong{font-size:12px;font-weight:600;line-height:1.5}
+.security-guidance-track p{margin:4px 0;color:#d2e4f2;font-size:11px;line-height:1.65}
+.security-guidance-track small{display:block;margin-top:4px;color:#a5c5dd;font-size:9px}
+.login-security-guidance>footer{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 14px;border-top:1px solid #ffffff18;font-size:9px;color:#c1d9ee}
+.login-security-guidance footer a{display:flex;align-items:center;gap:5px;color:#b8edb1;text-decoration:none;white-space:nowrap}
+.login-security-guidance footer a:hover{text-decoration:underline}
+.login-security-guidance:is(:hover,:focus-within,.is-paused) .security-guidance-track{animation-play-state:paused}
+.login-security-guidance :is(button,a):focus-visible,.security-guidance-window:focus-visible{outline:2px solid #b8edb1;outline-offset:-2px}
+@keyframes security-guidance-rise{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+@media(max-height:800px){.login-security-guidance{margin-top:18px}.security-guidance-window{height:120px}}
+@media(prefers-reduced-motion:reduce){.security-guidance-track{animation:none}.security-guidance-window{overflow-y:auto;mask-image:none}.security-guidance-track ul[aria-hidden=true]{display:none}.login-security-guidance header button{display:none}}
+
+.guidance-carousel{background:linear-gradient(125deg,#ffffff08,#ffffff03);box-shadow:0 10px 32px #00172a15}
+.guidance-journey{display:flex;align-items:center;justify-content:center;padding:13px 20px 4px}
+.guidance-stage{display:flex;align-items:center;gap:6px;color:#a7c4db;transition:color .5s}
+.guidance-stage i{display:grid;place-items:center;width:27px;height:27px;border:1px solid #ffffff25;border-radius:50%;background:#ffffff06;transition:background .5s,border-color .5s,box-shadow .5s}
+.guidance-stage small{font-size:9px;white-space:nowrap}
+.guidance-stage.is-current{color:#d4f4c8}
+.guidance-stage.is-current i{background:#51b44b28;border-color:#81d875;box-shadow:0 0 0 4px #51b44b0d}
+.guidance-connector{flex:1;min-width:10px;max-width:40px;height:1px;margin:0 8px;background:#ffffff20;transition:background .5s}
+.guidance-connector.is-complete{background:#81d87580}
+.guidance-slides{position:relative;height:156px;overflow:hidden}
+.guidance-slide{position:absolute;inset:0;display:flex;align-items:flex-start;gap:12px;padding:18px 18px 12px;box-sizing:border-box}
+.guidance-slide-icon{flex:none;display:grid;place-items:center;width:42px;height:42px;border:1px solid #ffffff20;border-radius:12px;background:linear-gradient(135deg,#51b44b20,#72bdf018);color:#b4e7a9}
+.guidance-slide>div{min-width:0}
+.guidance-slide>div>small{font-size:8px;letter-spacing:.12em;color:#a5c5dd}
+.guidance-slide h3{margin:6px 0;font-size:14px;font-weight:600;line-height:1.45;color:#fff}
+.guidance-slide p{margin:0;font-size:11px;line-height:1.7;color:#d2e4f2}
+.guidance-clause{display:inline-block;margin-top:9px;padding:2px 6px;border:1px solid #ffffff18;border-radius:4px;color:#b2cedf;font-size:9px}
+.guidance-slide.is-entering{animation:guidance-slide-in .7s cubic-bezier(.2,.75,.25,1) both}
+.guidance-slide.is-leaving{animation:guidance-slide-out .5s ease both;pointer-events:none}
+.guidance-controls{display:flex;align-items:center;gap:6px;padding:0 18px 10px;color:#b9d1e3;font-size:10px}
+.guidance-dots{display:flex;align-items:center;gap:3px;margin-right:auto}
+.guidance-dots button{display:grid;place-items:center;width:21px;height:23px;padding:0;border:0;background:none;cursor:pointer}
+.guidance-dots button::after{content:'';width:5px;height:5px;border-radius:5px;background:#ffffff40;transition:width .4s,background .4s}
+.guidance-dots button[aria-current=true]::after{width:18px;background:#8bdf7d}
+.guidance-controls>button{display:grid;place-items:center;width:25px;height:25px;padding:0;border:1px solid #ffffff25;border-radius:6px;background:#ffffff06;color:#d1e6f5;cursor:pointer}
+.guidance-controls>button:hover{background:#ffffff18;border-color:#9ee08f}
+.guidance-time-track{height:2px;background:#ffffff0a;overflow:hidden}
+.guidance-time-track>span{display:block;width:100%;height:100%;transform-origin:left;background:linear-gradient(90deg,#72bdf0,#83dc71);animation:guidance-timer 9s linear both}
+.guidance-carousel:is(:hover,:focus-within,.is-paused) .guidance-time-track>span{animation-play-state:paused}
+@keyframes guidance-slide-in{from{opacity:0;transform:translateY(20px);filter:blur(2px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
+@keyframes guidance-slide-out{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-16px)}}
+@keyframes guidance-timer{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media(max-height:800px){.guidance-journey{padding-top:10px}.guidance-slides{height:145px}.guidance-slide{padding-top:13px}.guidance-carousel>header{padding:10px 14px}}
+@media(max-width:400px){.guidance-slide{padding:12px;gap:9px}.guidance-slide-icon{width:30px;height:30px}.guidance-stage small{font-size:8px}.guidance-journey{padding-left:12px;padding-right:12px}.guidance-connector{margin:0 5px}}
+@media(prefers-reduced-motion:reduce){.guidance-slide.is-entering{animation:none}.guidance-slide.is-leaving{display:none}.guidance-time-track>span{animation:none;transform:scaleX(0)}.guidance-carousel :is(.guidance-stage,.guidance-stage i,.guidance-connector,.guidance-dots button::after){transition:none}}
+
+/* Autoplay follows the explicit Pause control, not pointer position or button focus. */
+.guidance-carousel:not(.is-paused) .guidance-time-track>span{animation-play-state:running}
+.guidance-carousel .guidance-time-track>span{animation-duration:7s}
+.guidance-carousel.is-paused .guidance-time-track>span{animation-play-state:paused}
+
+.guidance-explorer{display:flex;align-items:center;gap:8px;padding:10px 15px 8px;background:linear-gradient(110deg,#51b44b0e,#72bdf008)}
+.explorer-emblem{display:grid;place-items:center;width:28px;height:28px;flex:none;border:1px solid #8bdf7d55;border-radius:8px;background:#51b44b18;color:#b8edb1;transform:rotate(-5deg)}
+.guidance-explorer>div{min-width:0}
+.guidance-explorer strong{display:block;font-size:11px;font-weight:600;line-height:1.5;color:#d4f4c8}
+.guidance-explorer>div>span{display:block;font-size:9px;line-height:1.5;color:#b1cadc}
+.explorer-count{margin-left:auto;padding:4px 7px;border:1px solid #ffffff20;border-radius:6px;background:#ffffff08;font-size:13px;font-weight:700;color:#c4efb8;white-space:nowrap}
+.explorer-count small{font-size:10px;font-weight:400;color:#a5c5dd}
+.explorer-progress{height:3px;margin:0 15px;background:#ffffff10;border-radius:4px;overflow:hidden}
+.explorer-progress>span{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#72bdf0,#8bdf7d);transition:width .65s cubic-bezier(.2,.75,.25,1)}
+.guidance-dots button.is-discovered:not([aria-current=true])::after{background:#8bdf7d80;box-shadow:0 0 0 2px #8bdf7d14}
+@media(prefers-reduced-motion:no-preference){.explorer-count{animation:explorer-unlock .45s ease-out}.guidance-explorer:hover .explorer-emblem{transition:transform .25s;transform:rotate(0) scale(1.05)}}
+@keyframes explorer-unlock{0%{transform:scale(.9);opacity:.6}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){.explorer-progress>span{transition:none}}
