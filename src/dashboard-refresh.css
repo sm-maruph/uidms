@@ -220,3 +220,5 @@
 .app-shell .content-shell.overview-shell .welcome-banner:has(.operations-finder-results){position:relative;z-index:40;overflow:visible}
 .app-shell .content-shell.overview-shell .welcome-banner:has(.operations-finder-results) .banner-art{clip-path:inset(0 round 14px)}
 .app-shell .content-shell.overview-shell .operations-finder-results{z-index:50;max-height:min(310px,45dvh);overflow-y:auto;overscroll-behavior:contain}
+
+.query-inbox-footer{justify-content:flex-start;align-items:stretch}.query-inbox-footer .button{justify-content:center;min-width:0}.query-inbox-footer .query-inbox-view-ticket{flex:1;background:var(--bank-green-deep,#287d2f);border:1px solid var(--bank-green,#51b44b);color:#fff}.query-inbox-footer .query-inbox-reply{flex:1.5;background:var(--bank-blue,#006fb5);border:1px solid var(--bank-blue,#006fb5);color:#fff}.query-inbox-footer .query-inbox-reply span{overflow-wrap:anywhere}.query-inbox-footer .button:hover{filter:brightness(1.08)}.query-inbox-footer .button svg{flex-shrink:0}

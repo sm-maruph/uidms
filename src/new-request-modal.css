@@ -1,0 +1,3 @@
+.new-request-modal{width:min(100%,960px);max-height:calc(100dvh - 36px);overflow-y:auto;box-sizing:border-box}
+.new-request-modal .system-access-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:620px){.new-request-modal .system-access-cards{grid-template-columns:1fr}}
