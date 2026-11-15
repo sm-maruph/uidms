@@ -1,0 +1,16 @@
+export const defaultDepartments = [
+  'Operations',
+  'IT Department',
+  'Human Resources',
+  'Islamic Banking',
+  'Trade and Finance Department',
+  'Treasury Front Office',
+  'Back Office',
+  'Accounts',
+  'Credit Administration',
+  'Operations and Logistics',
+  'Marketing and Brand Building',
+  "Sustainable and Women's Banking",
+  'Management',
+  'Cheque Clearing',
+];

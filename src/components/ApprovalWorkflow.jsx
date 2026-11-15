@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import Icon from './Icon.jsx';
 import '../approval-workflow.css';
 
@@ -23,18 +23,18 @@ export default function ApprovalWorkflow({ ticket, flow, users }) {
   ];
   const completed=stages.filter(stage=>stage.state==='done').length;
   const current=stages.find(stage=>['active','query','rejected'].includes(stage.state));
-  const label=ticket.state==='Completed'?'Request completed - ticket closed':['Approved','In progress'].includes(ticket.state)?'Approved - ID creation in progress':ticket.state==='Rejected'?'Request rejected':ticket.state==='Query'?'Awaiting query response':current?`Waiting for ${current.stage}`:'Awaiting approval';
+  const label=ticket.state==='Completed'?'Request completed - ticket closed':['Approved','In progress'].includes(ticket.state)?'Approved - Processing':ticket.state==='Rejected'?'Request rejected':ticket.state==='Query'?'Awaiting query response':current?`Waiting for ${current.stage}`:'Awaiting approval';
   const labels={done:'Completed',rejected:'Rejected',query:'Query raised',active:'Awaiting approval',upcoming:'Upcoming',stopped:'Not reached'};
-  return <section className="approval-workflow" aria-labelledby="approval-workflow-title">
+  return <section className={`approval-workflow${!closed&&ticket.state!=='Rejected'?' aw-live':''}`} aria-labelledby="approval-workflow-title">
     <header className="aw-header"><div><p>APPROVAL JOURNEY</p><h3 id="approval-workflow-title">Approval workflow</h3></div><span className={`aw-state aw-state-${ticket.state.toLowerCase().replace(' ','-')}`}><i/>{label}</span></header>
     <div className="aw-progress-meta"><span>{completed} of {stages.length} stages complete</span><strong>{Math.round(completed/stages.length*100)}%</strong></div>
-    <div className="aw-progress" role="progressbar" aria-label="Completed approval stages" aria-valuemin={0} aria-valuemax={stages.length} aria-valuenow={completed}><span style={{width:`${completed/stages.length*100}%`}}/></div>
-    <ol className="aw-stages" style={{'--aw-columns':stages.length}}>{stages.map(({stage,event,state,approver},index)=><li key={`${ticket.id}-${stage}-${state}`} className={`aw-stage aw-${state}`} style={{'--aw-delay':`${index*65}ms`}} aria-current={['active','query'].includes(state)?'step':undefined}>
+    <div key={`progress-${ticket.id}`} className="aw-progress" role="progressbar" aria-label="Completed approval stages" aria-valuemin={0} aria-valuemax={stages.length} aria-valuenow={completed}><span style={{width:`${completed/stages.length*100}%`,'--aw-progress-duration':`${Math.max(600,completed*420)}ms`}}/></div>
+    <ol key={ticket.id} className="aw-stages" style={{'--aw-columns':stages.length}}>{stages.map(({stage,event,state,approver},index)=><li key={`${ticket.id}-${stage}`} className={`aw-stage aw-${state}`} style={{'--aw-delay':`${index*420}ms`}} aria-current={['active','query'].includes(state)?'step':undefined}>
       <div className="aw-track"><span className="aw-node">{state==='done'?<Icon name="check" size={18}/>:state==='rejected'?<Icon name="close" size={18}/>:state==='query'?<Icon name="mail" size={17}/>:state==='active'?<Icon name="clock" size={18}/>:String(index+1).padStart(2,'0')}</span>{index<stages.length-1&&<span className="aw-connector"><i/></span>}</div>
-      <div className="aw-stage-copy"><span className="aw-stage-label">{stage==='Requester'?'Submitted':stage==='IT fulfilment'?'ID creation in progress':stage==='Ticket closed'?'IDs provided / Ticket closed':stage}</span><strong>{approver||'Assigned by role'}</strong><span className="aw-stage-status">{stage==='IT fulfilment'&&state==='active'?'IT processing':labels[state]}</span><time dateTime={stage==='Requester'?ticket.createdAt:event?.at}>{timestamp(stage==='Requester'?ticket.createdAt:event?.at)||(['active','query'].includes(state)?'Action required':'—')}</time>{event?.remark&&<p className="aw-remark">{event.remark}</p>}</div>
+      <div className="aw-stage-copy"><span className="aw-stage-label">{stage==='Requester'?'Submitted':stage==='IT fulfilment'?'Processing':stage==='Ticket closed'?'Completed':stage}</span><strong>{approver||'Assigned by role'}</strong><span className="aw-stage-status">{stage==='IT fulfilment'&&state==='active'?'IT processing':labels[state]}</span><time dateTime={stage==='Requester'?ticket.createdAt:event?.at}>{timestamp(stage==='Requester'?ticket.createdAt:event?.at)||(['active','query'].includes(state)?'Action required':'—')}</time>{event?.remark&&<p className="aw-remark">{event.remark}</p>}</div>
     </li>)}</ol>
     {ticket.state==='Query'&&<div className="aw-query-note"><Icon name="mail" size={16}/><p>Approval is paused while <strong>{ticket.queryHistory?.at(-1)?.targetNames?.join(', ')||'the requested employees'}</strong> respond. It will return to <strong>{ticket.queryReturnRole||'the reviewer'}</strong>.</p></div>}
-    {approved&&!closed&&<div className="aw-query-note"><Icon name="settings" size={16}/><p>Your request is approved. <strong>ID creation is in progress.</strong> You will be notified here when completed.</p></div>}
+    {approved&&!closed&&<div className="aw-query-note"><Icon name="settings" size={16}/><p>Your request is approved. <strong>Processing.</strong> You will be notified here when completed.</p></div>}
     {closed&&<div className="aw-query-note"><Icon name="check" size={16}/><p>IDs have been provided. This request is completed and the ticket is closed.</p></div>}
     {ticket.state==='Rejected'&&<div className="aw-query-note aw-rejected-note"><Icon name="close" size={16}/><p>This request was rejected. Later approval stages will not proceed.</p></div>}
   </section>;

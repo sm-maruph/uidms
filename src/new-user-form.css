@@ -1,0 +1,28 @@
+.new-user-fields{display:grid;gap:16px;color:var(--text)}
+.new-user-fields .new-user-note{display:flex;align-items:center;gap:14px;margin:0;padding:18px 20px;border:1px solid var(--line);border-radius:12px;background:var(--surface-soft);color:var(--text)}
+.new-user-note-icon{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:11px;background:color-mix(in srgb,var(--blue) 12%,var(--surface));color:var(--blue)}
+.new-user-fields .new-user-note>div{display:grid;gap:5px;flex:1}
+.new-user-fields .new-user-note strong{font-size:14px;color:var(--text)}
+.new-user-fields .new-user-note div>span{font-size:12px;line-height:1.6;color:var(--muted)}
+.new-user-note>small{padding:6px 10px;border:1px solid var(--line);border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;color:var(--blue)}
+.new-user-fields .transfer-person-card{margin:0;padding:22px;border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:0 4px 18px #00000006}
+.new-user-fields .transfer-person-heading{margin:0 0 20px;padding:0 0 17px;border-bottom:1px solid var(--line)}
+.new-user-person-title{display:flex;align-items:center;gap:12px}
+.new-user-person-title>span{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--line);border-radius:10px;background:var(--surface-soft);color:var(--blue);font-size:12px;font-weight:700}
+.new-user-person-title>div{display:grid;gap:4px}
+.new-user-person-title strong{font-size:14px}.new-user-person-title small{font-size:11px;font-weight:400;color:var(--muted)}
+.new-user-fields .transfer-field-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 16px;margin-bottom:22px}
+.new-user-fields .transfer-field-grid>label{display:grid;gap:8px;align-content:start;font-size:12px;font-weight:600;color:var(--muted);min-width:0}
+.new-user-fields .transfer-field-grid input,.new-user-fields .transfer-field-grid select,.new-user-fields .new-user-services input:not([type=checkbox]){box-sizing:border-box;width:100%;min-width:0;height:43px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface-soft);color:var(--text);font:inherit;font-size:12px;transition:border-color .15s,box-shadow .15s}
+.new-user-fields .transfer-field-grid select{appearance:none;padding-right:34px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23849aaa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;cursor:pointer;text-overflow:ellipsis}
+.new-user-fields select option{background:var(--surface);color:var(--text)}
+.new-user-fields .transfer-field-grid input:focus-visible,.new-user-fields .transfer-field-grid select:focus-visible,.new-user-fields .new-user-services input:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-color:var(--blue);box-shadow:0 0 0 4px color-mix(in srgb,var(--blue) 10%,transparent)}
+.new-user-fields .new-user-services{display:flex;align-items:center;flex-wrap:wrap;gap:14px 20px;margin:12px 0 0;padding:16px;border:1px solid var(--line);border-radius:9px;background:var(--surface-soft);font-size:12px}
+.new-user-fields .new-user-services>label:not(.preferred-email){display:flex;align-items:center;gap:8px;min-height:28px;cursor:pointer;color:var(--text)}
+.new-user-fields .new-user-services input[type=checkbox]{width:16px;height:16px;margin:0;accent-color:var(--blue);flex:none}
+.new-user-fields .new-user-section-label{flex-basis:100%;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.new-user-fields .new-user-services .preferred-email{display:flex;align-items:center;gap:9px;flex:1 1 360px;min-width:0;color:var(--muted);font-size:11px}
+.new-user-fields .preferred-email input{flex:1}.new-user-fields .preferred-email>span{font-size:11px;color:var(--text)}
+.new-user-fields>.button{justify-self:start}
+@media(max-width:720px){.new-user-fields .transfer-field-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.new-user-fields .transfer-person-card{padding:16px}.new-user-note>small{display:none}.new-user-fields .new-user-services .preferred-email{flex-wrap:wrap;flex-basis:100%}.new-user-fields .preferred-email input{flex-basis:50%}}
+@media(max-width:460px){.new-user-fields .transfer-field-grid{grid-template-columns:1fr}.new-user-fields .new-user-note{padding:14px}.new-user-fields .preferred-email>span{font-size:10px}}

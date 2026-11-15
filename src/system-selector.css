@@ -1,0 +1,21 @@
+/* Increase overview text while preserving the original spacing. */
+@media screen {
+  .theme-dark .request-modal .print-business-justification,
+  .theme-dark .request-modal .print-business-justification textarea {
+    color:#fff;
+  }
+  .theme-dark .request-modal .print-business-justification textarea::placeholder {
+    color:#fff;
+    opacity:1;
+  }
+  .theme-dark .request-modal .system-section-accordion,
+  .theme-dark .request-modal .system-section-accordion :is(summary,span,p,label,strong,small,input,select,option,textarea) {
+    color:#fff;
+  }
+  .request-modal .system-section-accordion .system-section-system-list>span {
+    font-size:13px;
+  }
+  .request-modal .system-section-accordion>summary>.system-section-instruction {
+    font-size:13px;
+  }
+}

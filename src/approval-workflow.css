@@ -1,4 +1,4 @@
-﻿.approval-workflow{margin:22px 0;padding:22px;border:1px solid var(--line);border-radius:13px;background:var(--surface-soft);--aw-blue:#006fb9;--aw-green:#42963f;--aw-amber:#ae771a;--aw-red:#ba4f4f;color:var(--text)}
+.approval-workflow{margin:22px 0;padding:22px;border:1px solid var(--line);border-radius:13px;background:var(--surface-soft);--aw-blue:#006fb9;--aw-green:#42963f;--aw-amber:#ae771a;--aw-red:#ba4f4f;color:var(--text)}
 .aw-header{display:flex;align-items:center;justify-content:space-between;gap:15px}.aw-header>div>p{margin:0 0 7px;font-size:9px;letter-spacing:1.6px;font-weight:700;color:var(--muted)}.approval-workflow .aw-header h3{margin:0;font-size:19px;letter-spacing:-.4px}.aw-state{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #006fb930;border-radius:20px;background:#006fb90d;color:var(--aw-blue);font-size:10px;line-height:1.5}.aw-state>i{width:6px;height:6px;flex:none;border-radius:50%;background:currentColor}.aw-state-approved{color:var(--aw-green);background:#51b35010;border-color:#51b35040}.aw-state-rejected{color:var(--aw-red);background:#ba4f4f0c;border-color:#ba4f4f40}.aw-state-query{color:var(--aw-amber);background:#ae771a0d;border-color:#ae771a40}
 .aw-progress-meta{display:flex;justify-content:space-between;margin:20px 0 8px;font-size:10px;color:var(--muted)}.aw-progress-meta strong{font-weight:600;color:var(--aw-green)}.aw-progress{height:4px;background:var(--line);border-radius:5px;overflow:hidden}.aw-progress>span{display:block;height:100%;background:linear-gradient(90deg,#006fb9,#51b350);border-radius:inherit;transition:width .6s ease}
 .aw-stages{display:grid;grid-template-columns:repeat(var(--aw-columns),minmax(0,1fr));gap:0;padding:0;margin:25px 0 0;list-style:none}.aw-stage{min-width:0;animation:aw-enter .4s ease both;animation-delay:var(--aw-delay)}.aw-track{display:flex;align-items:center;gap:9px;padding-right:9px}.aw-node{position:relative;display:grid;place-items:center;flex:none;width:36px;height:36px;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--muted);font-size:11px;font-weight:600;transition:background .3s,border-color .3s}.aw-connector{position:relative;flex:1;height:2px;background:var(--line);overflow:hidden}.aw-connector i{display:block;width:0;height:100%;background:var(--aw-green)}.aw-done .aw-node{background:#51b35014;border-color:#51b35060;color:var(--aw-green)}.aw-done .aw-connector i{width:100%;animation:aw-connect .6s ease both;animation-delay:var(--aw-delay)}.aw-active .aw-node{border-color:var(--aw-blue);background:#006fb912;color:var(--aw-blue)}.aw-active .aw-node::before{content:"";position:absolute;inset:-5px;border:1px solid var(--aw-blue);border-radius:50%;animation:aw-pulse 2.4s ease-out infinite}.aw-active .aw-connector i{width:35%;background:var(--aw-blue);animation:aw-travel 2.4s ease-in-out infinite}.aw-query .aw-node{border-color:var(--aw-amber);color:var(--aw-amber);background:#ae771a12}.aw-rejected .aw-node{border-color:var(--aw-red);color:var(--aw-red);background:#ba4f4f12}.aw-stopped{opacity:.6}
@@ -14,3 +14,162 @@
 @media(max-width:1200px){.aw-stages{grid-template-columns:repeat(4,minmax(0,1fr))!important;row-gap:20px}}
 @media(max-width:700px){.aw-stages{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:420px){.aw-stages{grid-template-columns:1fr!important}}
+
+/* Readable workflow text with room for full approver names and remarks. */
+.approval-workflow{container-type:inline-size}
+.approval-workflow .aw-header>div>p{font-size:12px;color:var(--aw-blue)}
+.approval-workflow .aw-header h3{font-size:22px;color:var(--aw-blue)}
+.approval-workflow .aw-state{font-size:13px;white-space:normal}
+.approval-workflow .aw-progress-meta{font-size:13px}
+.approval-workflow .aw-stage-label{font-size:15px;line-height:1.5}
+.approval-workflow .aw-stage-copy>strong{font-size:14px;line-height:1.6}
+.approval-workflow .aw-stage-status{font-size:12px;line-height:1.5}
+.approval-workflow .aw-stage-copy time{font-size:12px}
+.approval-workflow .aw-stage-copy .aw-remark{font-size:13px;line-height:1.7}
+.approval-workflow .aw-query-note p{font-size:14px;line-height:1.7}
+.approval-workflow .aw-node{font-size:13px}
+.approval-workflow .aw-header{padding-bottom:14px;border-bottom:1px solid color-mix(in srgb,var(--aw-green) 50%,var(--line));flex-wrap:wrap}
+.theme-dark .approval-workflow .aw-stage-copy>strong,
+.theme-dark .approval-workflow .aw-stage-copy time,
+.theme-dark .approval-workflow .aw-stage-copy .aw-remark,
+.theme-dark .approval-workflow .aw-progress-meta{color:#fff}
+.approval-workflow .aw-stages{grid-template-columns:repeat(var(--aw-columns),minmax(0,1fr))!important;gap:0;overflow:visible;padding:6px 0 14px}
+.approval-workflow .aw-stage{display:block;position:relative;padding-bottom:0}
+.approval-workflow .aw-track{display:flex;position:relative;align-items:center;gap:6px;padding-right:6px;min-width:0}
+.approval-workflow .aw-connector{position:relative;left:auto;top:auto;bottom:auto;flex:1;width:auto;height:2px}
+.approval-workflow .aw-connector i{height:100%}
+.approval-workflow .aw-done .aw-connector i{width:100%}
+.approval-workflow .aw-active .aw-connector i{width:35%;height:100%}
+.approval-workflow .aw-stage-copy{display:flex;flex-direction:column;align-items:flex-start;gap:7px;padding:15px 8px 0 0;min-width:0;overflow-wrap:anywhere}
+.approval-workflow .aw-stage-copy>*{max-width:100%;box-sizing:border-box;white-space:normal}
+
+/* Share row heights so each stage's corresponding details line up. */
+.approval-workflow .aw-stages{
+  grid-template-rows:auto auto auto auto auto auto;
+  column-gap:0;
+  row-gap:8px;
+}
+.approval-workflow .aw-stage{
+  display:grid;
+  grid-template-rows:subgrid;
+  grid-row:1 / span 6;
+  row-gap:8px;
+}
+.approval-workflow .aw-stage-copy{
+  display:grid;
+  grid-template-rows:subgrid;
+  grid-row:2 / span 5;
+  row-gap:8px;
+  align-items:start;
+  padding-top:8px;
+}
+.approval-workflow .aw-stage-copy>.aw-stage-label{grid-row:1}
+.approval-workflow .aw-stage-copy>strong{grid-row:2}
+.approval-workflow .aw-stage-copy>.aw-stage-status{grid-row:3;justify-self:start}
+.approval-workflow .aw-stage-copy>time{grid-row:4}
+.approval-workflow .aw-stage-copy>.aw-remark{grid-row:5;margin-top:0}
+.approval-workflow .aw-stage-copy>*{grid-column:1}
+
+@media screen {
+  #ticket-form-details,#ticket-approval-workflow{scroll-margin-top:12px}
+  .detail-layout:has(.approval-workflow){grid-template-columns:minmax(0,1fr) minmax(280px,.32fr)}
+  .detail-layout:has(.approval-workflow)>.detail-main{min-width:0}
+  .detail-layout:has(.approval-workflow)>.audit-panel{width:100%;box-sizing:border-box}
+  .detail-main .approval-workflow{width:100%;box-sizing:border-box}
+  .detail-layout:has(.approval-workflow)>.audit-panel{
+    height:calc(100dvh - 100px);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    min-height:240px;
+  }
+  .detail-layout:has(.approval-workflow)>.audit-panel>h3,
+  .detail-layout:has(.approval-workflow)>.audit-panel>p{flex:none}
+  .approval-sequence-scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:10px;scrollbar-gutter:stable;overscroll-behavior-y:contain}
+  .approval-sequence-scroll:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+}
+@media screen and (max-width:900px){
+  .detail-layout:has(.approval-workflow){grid-template-columns:minmax(0,1fr)}
+}
+@media screen and (min-width:901px){
+  html:has(.detail-layout .approval-workflow),
+  body:has(.detail-layout .approval-workflow),
+  #root:has(.detail-layout .approval-workflow){height:100%;min-height:0;overflow:hidden}
+  .app-shell:has(.detail-layout .approval-workflow){height:100dvh;min-height:0;max-height:100dvh;overflow:hidden;box-sizing:border-box}
+  .app-shell .content-shell:has(.detail-layout .approval-workflow){height:100dvh;min-height:0;max-height:100dvh;overflow:hidden;display:grid;grid-template-rows:44px minmax(0,1fr) 24px;box-sizing:border-box}
+  .app-shell .content-shell:has(.detail-layout .approval-workflow)>.topbar{position:fixed;top:0;bottom:auto;left:248px;right:0;width:auto;height:44px;min-height:0;box-sizing:border-box;margin:0}
+  .app-shell .content-shell:has(.detail-layout .approval-workflow)>.page-content{grid-row:2}
+  .app-shell .content-shell:has(.detail-layout .approval-workflow)>.page-footer{grid-row:3}
+  .app-shell .content-shell:has(.detail-layout .approval-workflow)>.page-footer{position:fixed;bottom:0;top:auto;left:248px;right:0;z-index:100;display:flex;align-items:center;height:24px;min-height:24px;margin:0;padding:4px 20px;font-size:10px;line-height:1.4;box-sizing:border-box;background:var(--bg)}
+  .content-shell:has(.detail-layout .approval-workflow)>.topbar,
+  .content-shell:has(.detail-layout .approval-workflow)>.page-footer{flex-shrink:0}
+  .app-shell .content-shell:has(.detail-layout .approval-workflow)>.page-content{height:100%;flex:1;min-height:0;overflow:hidden;box-sizing:border-box;padding:6px 20px 12px;display:flex;flex-direction:column}
+  .content-shell .detail-layout:has(.approval-workflow){flex:1;min-height:0;align-items:stretch}
+  .content-shell .detail-layout:has(.approval-workflow)>.detail-main{min-height:0;overflow-y:auto;box-sizing:border-box}
+  .content-shell .detail-layout:has(.approval-workflow)>.audit-panel{height:100%;min-height:0;max-height:100%;box-sizing:border-box}
+}
+@media screen and (min-width:901px) and (max-width:1150px){
+  .app-shell .content-shell:has(.detail-layout .approval-workflow)>.topbar{left:220px}
+  .app-shell .content-shell:has(.detail-layout .approval-workflow)>.page-footer{left:220px}
+}
+
+/* Moving light follows completed connections; paused queries keep a local pulse. */
+@keyframes aw-flow-light{
+  0%{left:-25%;opacity:0}
+  15%,80%{opacity:1}
+  100%{left:100%;opacity:0}
+}
+@keyframes aw-query-glow{
+  0%,100%{box-shadow:0 0 0 0 transparent}
+  50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--aw-amber) 18%,transparent)}
+}
+@keyframes aw-progress-fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+@media screen and (min-width:901px){
+  .detail-layout:has(.approval-workflow)>.detail-main{padding:14px 18px}
+  .detail-main:has(.approval-workflow) .ticket-detail-toolbar{margin:0 0 8px;padding:0}
+  .detail-main:has(.approval-workflow) .ticket-detail-toolbar .back-link{margin:0;line-height:1.4}
+  .detail-main:has(.approval-workflow) .detail-heading .eyebrow{margin:0 0 5px}
+  .detail-main:has(.approval-workflow) .detail-heading h1{margin:0;line-height:1.2}
+  .detail-main:has(.approval-workflow) .detail-heading .ticket-heading-systems{margin:5px 0;line-height:1.4}
+  .detail-main:has(.approval-workflow) .detail-heading p:last-child{margin:5px 0 0;line-height:1.4}
+  .detail-main:has(.approval-workflow)>.back-link{margin-bottom:10px}
+  .detail-main:has(.approval-workflow) .detail-heading h1{font-size:26px}
+  .detail-main:has(.approval-workflow) .detail-heading p{margin-top:7px;margin-bottom:7px}
+  .detail-main .approval-workflow{margin:14px 0;padding:15px 17px}
+  .approval-workflow .aw-header{padding-bottom:9px;gap:10px}
+  .approval-workflow .aw-header>div>p{margin-bottom:4px}
+  .approval-workflow .aw-header h3{font-size:20px}
+  .approval-workflow .aw-progress-meta{margin:12px 0 6px}
+  .approval-workflow .aw-stages{margin-top:15px;padding:5px 0 7px;row-gap:6px}
+  .approval-workflow .aw-stage{row-gap:6px}
+  .approval-workflow .aw-stage-copy{row-gap:6px;padding-top:5px}
+  .approval-workflow .aw-stage-copy>strong{line-height:1.45}
+  .approval-workflow .aw-stage-copy .aw-remark{line-height:1.5}
+  .approval-workflow .aw-stage-status{padding:3px 5px}
+  .approval-workflow .aw-query-note{margin-top:12px;padding:9px 11px}
+  .approval-workflow .aw-query-note p{line-height:1.5}
+  .detail-main:has(.approval-workflow) .detail-facts{margin:12px 0;padding:11px 0}
+}
+@media(prefers-reduced-motion:no-preference){
+  .approval-workflow .aw-progress>span{
+    transform-origin:left center;
+    animation:aw-progress-fill var(--aw-progress-duration,1800ms) ease-in-out both;
+  }
+  .approval-workflow .aw-stage{
+    animation:aw-enter .4s ease-out both;
+    animation-delay:var(--aw-delay);
+  }
+  .approval-workflow .aw-connector{
+    transform-origin:left center;
+    animation:aw-connect .35s ease-out both;
+    animation-delay:calc(var(--aw-delay) + 250ms);
+  }
+  .aw-live .aw-done .aw-connector::after{
+    content:'';position:absolute;top:0;bottom:0;width:25%;
+    background:linear-gradient(90deg,transparent,#fff,transparent);
+    animation:aw-flow-light 2.8s linear infinite;
+    animation-delay:var(--aw-delay);
+  }
+  .aw-live .aw-query .aw-node{animation:aw-query-glow 2.4s ease-in-out infinite}
+}

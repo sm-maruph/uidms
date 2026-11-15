@@ -1,0 +1,36 @@
+@media screen {
+  .request-modal {
+    --form-title:#0067b1;
+    --form-highlight:#25833a;
+  }
+  .theme-dark .request-modal {
+    --form-title:#70c5ff;
+    --form-highlight:#72d883;
+  }
+  .request-modal .official-form-heading h2,
+  .request-modal .new-user-fields .new-user-note strong,
+  .request-modal .new-user-person-title strong,
+  .request-modal .transfer-person-heading>strong,
+  .request-modal .system-section-accordion .system-section-overview>.system-section-title {
+    color:var(--form-title);
+  }
+  .request-modal .official-form-heading {
+    border-top-color:var(--form-highlight);
+  }
+  .request-modal .new-user-fields .new-user-note {
+    border-left:3px solid var(--form-highlight);
+  }
+  .request-modal .new-user-person-title>span,
+  .request-modal .new-user-note-icon,
+  .request-modal .new-user-note>small,
+  .request-modal .new-user-fields .new-user-section-label {
+    color:var(--form-highlight);
+  }
+  .theme-dark .request-modal .field-label,
+  .theme-dark .request-modal .transfer-field-grid>label,
+  .theme-dark .request-modal .new-user-fields .transfer-field-grid>label,
+  .theme-dark .request-modal .new-user-fields .new-user-services>label,
+  .theme-dark .request-modal .transfer-field-grid :is(input,select,textarea) {
+    color:#fff;
+  }
+}

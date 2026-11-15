@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import SecurityGuidance from './SecurityGuidance.jsx';
 import Icon from './Icon.jsx';
 import bankLogo from '../images-removebg-preview.png';
@@ -32,7 +32,7 @@ export default function Login({ users, onLogin, dark = true, onToggleTheme }) {
         </form>
         <div className="login-entry-note"><Icon name="clock" size={18}/><p>All of your activity will be logged for audit trails.</p></div>
       </div>
-      <footer className="login-entry-footer"><span>&copy; 2026 Information Technology Department, Commercial Bank of Ceylon. All rights reserved.</span><span>UIDMS · Internal use</span></footer>
+      <footer className="login-entry-footer"><span>&copy; 2026 Information Technology Department, CBC Bangladesh. All rights reserved.</span><span>UIDMS · Internal use</span></footer>
     </section>
   </main>;
 }
