@@ -1,5 +1,8 @@
 export const defaultDepartments = [
   'Operations',
+  'Card Center',
+  'Digital Banking',
+  'Call Center',
   'IT Department',
   'Human Resources',
   'Islamic Banking',

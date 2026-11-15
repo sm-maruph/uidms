@@ -120,3 +120,9 @@ body:has(.app-shell.theme-dark) .validation-popup{--surface:#132735;--surface-so
 .validation-popup-help{margin:14px 0 20px;color:var(--muted);font-size:12px;line-height:1.6}
 .validation-popup .button{width:100%;background:#006fb5;color:#fff;border-color:#006fb5}
 @media print{.validation-popup-scrim{display:none!important}}
+
+.validation-popup{max-height:calc(100dvh - 40px);overflow-y:auto}
+.validation-popup-field{display:grid;gap:8px;margin-top:16px;font-size:12px;font-weight:600;line-height:1.5}
+.validation-popup-field textarea{box-sizing:border-box;width:100%;min-height:100px;resize:vertical;padding:10px 12px;border:1px solid var(--line);border-radius:7px;background:var(--surface-soft);color:var(--text);font:inherit;font-weight:400}
+.validation-popup-field textarea::placeholder{color:var(--muted)}
+.validation-popup-field textarea:focus-visible{outline:2px solid #48a5df;outline-offset:2px}

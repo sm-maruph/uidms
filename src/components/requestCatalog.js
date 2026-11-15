@@ -23,3 +23,5 @@ export const requestRoles = {
 export const requestSystems = Object.keys(requestRoles);
 export const otherAccessSystems = ['AD ID','AMLOCK ID','Internet Access','E-Journal','FX Portal','Quantum','NID Verification','E2gen','MCAS','Jira ID'];
 export const formResetSystems = ['ICBS','RVI Web Portal Access','Query','ITMBD','T4S','Cheque Clearing','BEFTN','HRIS','LOS','WBO','Eximbills','SWIFT_Jump','SWIFT ID','SWIFT Demerged ID (ex-BNGLXXXXX / BD0XXXXXX)','CITRIX_R',...otherAccessSystems,'ITMBD Test','ICBS Test'];
+
+export const supportsAdditionalFunction = system => ['ICBS','ITMBD','HRIS','T4S'].includes(system);

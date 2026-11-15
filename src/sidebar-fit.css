@@ -52,3 +52,5 @@
  .app-shell .sidebar .profile-row strong{-webkit-line-clamp:1}
  .app-shell .sidebar .profile-row small{display:none}
 }
+
+.app-shell:not(.theme-dark) .sidebar .nav-label,.app-shell:not(.theme-dark) .sidebar .nav-item:not(.active),.app-shell:not(.theme-dark) .sidebar .nav-item:not(.active) svg{color:#000}

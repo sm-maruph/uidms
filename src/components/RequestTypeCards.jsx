@@ -1,14 +1,14 @@
 ﻿import React, { useState } from 'react';
 import Icon from './Icon.jsx';
-import { canRequestIdDeletion } from './requestPermissions.js';
+import { canRequestIdDeletion, canRequestBranchTransfer } from './requestPermissions.js';
 
 const requestTypes = [
   { title:'New ID creation', description:'Create a new ID for yourself or request one on behalf of another employee.', icon:'userPlus' },
   { title:'Employee ID deactivation', requestType:'Employee ID deactivation', description:'Deactivate an employee identity and all associated system access.', icon:'trash' },
   { title:'System ID deactivation', description:'Select one or more system IDs to deactivate while keeping other access active.', icon:'key' },
   { title:'ID Unlock / Reset', requestType:'ID reset / unlock', description:'Reset a password or unlock an account.', icon:'key' },
-  { title:'ID upgrade', description:'Request a change to an existing ID or its access.', icon:'arrowUp' },
-  { title:'Branch transfer', description:'Update access when an employee moves branch.', icon:'branch' },
+  { title:'ID Role Upgrade', requestType:'ID upgrade', description:'Request a change to an existing ID or its access.', icon:'arrowUp' },
+  { title:'Branch / Department change', description:'Initiate an employee branch or department change and access review.', icon:'branch' },
   { title:'Email creation', description:'Request an individual or shared email account.', icon:'mail' },
   { title:'Mailing group inclusion/exclusion', requestType:'Mailing group change', description:'Add or remove members from a mailing group.', icon:'users' },
   { title:'Auto-forward change', description:'Request an email auto-forwarding update.', icon:'forward' },
@@ -17,7 +17,7 @@ const requestTypes = [
   { title:'External device email access', description:'Request email access from an external device.', icon:'device' },
 ];
 
-export default function RequestTypeCards({ onContinue, department, compact = false, query = '', category = 'All requests' }) {
+export default function RequestTypeCards({ onContinue, department, role, compact = false, query = '', category = 'All requests' }) {
   const [showNewIdChoices,setShowNewIdChoices]=useState(false);
   const categoryFor = title => ['Email creation','Mailing group inclusion/exclusion','Auto-forward change'].includes(title) ? 'Email & collaboration' : ['IDrive access','N Drive access','External device email access'].includes(title) ? 'Files & devices' : 'Identity & access';
   const availableTypes = requestTypes.filter(({ title, description }) => (title !== 'Employee ID deactivation' || canRequestIdDeletion(department)) && (category === 'All requests' || categoryFor(title) === category) && (title + ' ' + description).toLowerCase().includes(query.trim().toLowerCase()));
@@ -27,7 +27,7 @@ export default function RequestTypeCards({ onContinue, department, compact = fal
     {availableTypes.map(({ title, requestType, description, icon }, index) => (
       <button className={`system-access-card${compact ? ' overview-request-card' : ''}`} key={title} onClick={() => title==='New ID creation'?setShowNewIdChoices(true):onContinue(requestType||title)}>
         <span className={`system-access-card-mark sm-${index % 5}`} aria-hidden="true"><Icon name={icon} size={compact?16:20}/></span>
-        <span className="system-access-card-copy"><strong>{title}</strong><small>{description}</small></span>
+        <span className="system-access-card-copy"><strong>{title}</strong><small>{title==='Branch / Department change'?(canRequestBranchTransfer(role)?'Initiate or review branch and department changes.':'View your initiated changes and approval workflow.'):description}</small></span>
         <span className="system-access-card-arrow" aria-hidden="true"><Icon name="arrow" size={18}/></span>
       </button>
     ))}

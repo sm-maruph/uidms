@@ -1,3 +1,5 @@
+import { isChangeRequest, canReviewChange } from './transferChangeWorkflow.js';
+import { isNewUser, matchesNewUserApprover } from './newUserWorkflow.js';
 import React from 'react';
 import Icon from './Icon.jsx';
 import '../approval-workflow.css';
@@ -6,13 +8,13 @@ const normalize=value=>String(value||'').toLowerCase().replace(/\s+(review|final
 const timestamp=value=>value?new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Dhaka',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(value)):'';
 export default function ApprovalWorkflow({ ticket, flow, users }) {
   const eventFor=stage=>(ticket.approvalHistory||[]).find(event=>normalize(event.stage)===normalize(stage)||normalize(event.role)===normalize(stage));
-  const owner=ticket.assignedRole||(ticket.state==='Query'?ticket.queryReturnRole:null);
+  const owner=(isChangeRequest(ticket)&&ticket.transferChange.stage==='employee'?'Employee review':ticket.assignedRole)||(ticket.state==='Query'?ticket.queryReturnRole:null);
   const rejectedIndex=flow.findIndex(stage=>eventFor(stage)?.status==='Rejected');
   const approvalStages=flow.map((stage,index)=>{
     const event=eventFor(stage);
     const isOwner=normalize(owner)===normalize(stage);
     const state=stage==='Requester'?'done':event?.status==='Rejected'?'rejected':event?.status==='Approved'?'done':ticket.state==='Query'&&isOwner?'query':isOwner&&!['Approved','Rejected','In progress','Completed'].includes(ticket.state)?'active':rejectedIndex>=0&&index>rejectedIndex?'stopped':'upcoming';
-    const approver=stage==='Requester'?ticket.name:event?.by||users.find(user=>user.role===stage&&(stage!=='Branch manager'||user.branch===ticket.branch))?.name;
+    const approver=stage==='Requester'?ticket.name:stage==='Employee review'?ticket.transferChange?.employee?.name:event?.by||users.find(user=>user.role===stage&&(isChangeRequest(ticket)&&['Branch manager','Department head'].includes(stage)?canReviewChange({...ticket,assignedRole:stage,transferChange:{...ticket.transferChange,stage:'approval'}},user):isNewUser(ticket)&&['Branch manager','Department head'].includes(stage)?matchesNewUserApprover(ticket.newUserDetails?.people?.[0],user):(stage!=='Branch manager'||user.branch===ticket.branch)))?.name;
     return {stage,event,state,approver};
   });
   const approved=['Approved','In progress','Completed'].includes(ticket.state);
@@ -35,7 +37,7 @@ export default function ApprovalWorkflow({ ticket, flow, users }) {
     </li>)}</ol>
     {ticket.state==='Query'&&<div className="aw-query-note"><Icon name="mail" size={16}/><p>Approval is paused while <strong>{ticket.queryHistory?.at(-1)?.targetNames?.join(', ')||'the requested employees'}</strong> respond. It will return to <strong>{ticket.queryReturnRole||'the reviewer'}</strong>.</p></div>}
     {approved&&!closed&&<div className="aw-query-note"><Icon name="settings" size={16}/><p>Your request is approved. <strong>Processing.</strong> You will be notified here when completed.</p></div>}
-    {closed&&<div className="aw-query-note"><Icon name="check" size={16}/><p>IDs have been provided. This request is completed and the ticket is closed.</p></div>}
+    {closed&&<div className="aw-query-note"><Icon name="check" size={16}/><p>{isNewUser(ticket)?`IDs have been handed to ${ticket.custodian?.name||'the approving manager or head'} for custody. The ticket is closed.`:'IDs have been provided. This request is completed and the ticket is closed.'}</p></div>}
     {ticket.state==='Rejected'&&<div className="aw-query-note aw-rejected-note"><Icon name="close" size={16}/><p>This request was rejected. Later approval stages will not proceed.</p></div>}
   </section>;
 }

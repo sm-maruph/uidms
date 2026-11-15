@@ -14,3 +14,5 @@ export function canRequestIdDeletion(department) {
   const normalized = String(department || '').toLowerCase().replace(/[^a-z]/g, '');
   return allowedDepartmentsForIdDeletion.has(normalized);
 }
+
+export const canRequestBranchTransfer = role => ['IT','HR'].includes(role);

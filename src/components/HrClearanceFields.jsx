@@ -1,0 +1,8 @@
+import React from 'react';
+export default function HrClearanceFields({ticket,value,onChange,readOnly=false}) {
+ return <section className="transfer-person-card hr-clearance-fields"><h3>HR clearance verification</h3><p>Both checks must be clear. HR may proceed with a clear reference check while police clearance is pending, with a special exception and remarks.</p>{(ticket.newUserDetails?.people||[]).map((person,index)=>{
+ const check=value[index]||{};
+ const update=(key,next)=>onChange((ticket.newUserDetails?.people||[]).map((_,i)=>i===index?{...check,[key]:next}:value[i]||{}));
+ return <fieldset key={index}><legend>{person.name} / {person.employeeId||'New employee'}</legend><div className="transfer-field-grid">{[['police','Police clearance'],['reference','Reference check']].map(([key,label])=><label key={key}>{label}<select disabled={readOnly} value={check[key]||''} onChange={event=>update(key,event.target.value)}><option value="">Select result</option>{['Pending','Clear','Not clear'].map(result=><option key={result}>{result}</option>)}</select></label>)}</div>{check.police!=='Clear'&&<><label><input type="checkbox" disabled={readOnly} checked={Boolean(check.exception)} onChange={event=>update('exception',event.target.checked)}/>Proceed with reference check only under special circumstances</label><label className="field-label">Special remarks<textarea readOnly={readOnly} value={check.specialRemarks||''} onChange={event=>update('specialRemarks',event.target.value)} placeholder="Explain the circumstances for proceeding without police clearance"/></label></>}</fieldset>;
+ })}</section>;
+}

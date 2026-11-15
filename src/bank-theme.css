@@ -33,7 +33,8 @@
 .app-shell .content-shell.overview-shell .overview-request-card:hover{border-color:var(--bank-blue);background:var(--brand-blue-soft);box-shadow:0 4px 12px #006fb51a}
 .app-shell .content-shell.overview-shell .metric-icon{background:var(--brand-blue-soft);color:var(--blue)}
 .app-shell .content-shell.overview-shell .metric-card:nth-child(even) .metric-icon{background:var(--brand-green-soft);color:var(--green)}
-.app-shell .official-section-heading,.app-shell .upgrade-access-form .transfer-access>h3,.app-shell .print-form-section>h3{background:var(--bank-blue);color:#fff}
+.app-shell .official-section-heading,.app-shell .print-form-section>h3{background:var(--bank-blue);color:#fff}
+.app-shell .upgrade-access-form .transfer-access>h3{background:transparent;color:var(--blue)}
 .app-shell .official-form-header{border-color:var(--line)}
 .app-shell .upgrade-selection-count{background:var(--brand-blue-soft);color:var(--blue)}
 .app-shell .system-role-view{border-color:var(--bank-blue);color:var(--blue)}

@@ -1,3 +1,4 @@
+import { canReceiveCredentials } from './newUserWorkflow.js';
 export function fulfilmentItems(ticket) {
  const data={...ticket,...ticket.submittedForm?.data};
  const result=[];
@@ -49,5 +50,5 @@ export function validateCredentials(ticket,rows){
  return '';
 }
 export function credentialVisible(delivery,ticket,profile,now=Date.now()){
- return Boolean(delivery&&ticket.requesterId===profile?.employeeId&&ticket.state==='Completed'&&now<delivery.expiresAt);
+ return Boolean(delivery&&canReceiveCredentials(ticket,profile)&&ticket.state==='Completed'&&now<delivery.expiresAt);
 }

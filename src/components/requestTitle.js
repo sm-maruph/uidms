@@ -16,6 +16,6 @@ export function requestTitle(ticket, compact=true) {
   if(!systems.size)String(ticket.system||'').split(/,\s*| \+ /).forEach(add);
   const names=[...systems];
   const subject=compact&&names.length>3?`${names.slice(0,3).join(', ')} +${names.length-3} more`:names.join(', ');
-  const label={'System ID creation (self-request)':'System ID creation','New ID creation':'System ID creation','New ID creation (on behalf)':'New employee ID request','ID upgrade':'ID role change','ID reset / unlock':'ID reset / unlock','System ID deactivation':'System ID deactivation','Employee ID deactivation':'Employee ID deactivation','Branch transfer':'Branch transfer'}[action]||action;
+  const label={'System ID creation (self-request)':'System ID creation','New ID creation':'System ID creation','New ID creation (on behalf)':'New employee ID request','ID upgrade':'ID Role Upgrade','ID reset / unlock':'ID reset / unlock','System ID deactivation':'System ID deactivation','Employee ID deactivation':'Employee ID deactivation','Branch transfer':'Branch transfer'}[action]||action;
   return subject?`${label} - ${subject}`:label;
 }

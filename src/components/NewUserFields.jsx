@@ -1,6 +1,6 @@
+import { newUserApproverRole, matchesNewUserApprover } from './newUserWorkflow.js';
 import React from 'react';
 import { Button } from './UI.jsx';
-import Icon from './Icon.jsx';
 import '../new-user-form.css';
 
 const blank = () => ({name:'',designation:'',employeeId:'',department:'',branch:'',adId:true,email:true,adRole:'',preferredEmail:'',msOffice:false,otherSoftwareEnabled:false,otherSoftware:''});
@@ -14,7 +14,7 @@ export default function NewUserFields({value,onChange,users=[],branches=[],depar
   const options={
     designation:unique(['Trainee Officer','Trainee Executive','Officer','Senior Officer','Assistant Manager','Manager','Assistant General Manager','General Manager','CEO',...users.map(user=>user.designation)]).filter(designation=>designation.trim().toLowerCase()!=='super admin'),
     department:unique([...departments,...users.map(user=>user.department)]),
-    branch:unique([...branchOptions,...branches]),
+    branch:unique(['Head Office','Corporate Office',...branchOptions,...branches,...users.map(user=>user.branch)]),
     adRole:unique(['Standard employee','Branch Operations',...users.map(user=>user.adRole)])
   };
   const dropdown=(person,index,key,label,required=false)=>{
@@ -23,17 +23,18 @@ export default function NewUserFields({value,onChange,users=[],branches=[],depar
   };
 
   return <div className="new-user-fields">
-    <div className="new-user-note"><span className="new-user-note-icon" aria-hidden="true"><Icon name="users" size={21}/></span><div><strong>New joiner request</strong><span>Create Active Directory and email access for your new team members.</span></div><small>AD ID & Email</small></div>
+
     {people.map((person,index)=><section className="transfer-person-card" key={index}>
       <div className="transfer-person-heading"><div className="new-user-person-title"><span aria-hidden="true">{String(index+1).padStart(2,'0')}</span><div><strong>New user {index+1}</strong><small>Employee details & access</small></div></div>{people.length>1&&<button type="button" onClick={()=>onChange({...value,people:people.filter((_,i)=>i!==index)})}>Remove</button>}</div>
       <div className="transfer-field-grid">
         <label>Full name<input required value={person.name} onChange={e=>update(index,'name',e.target.value)}/></label>
         {dropdown(person,index,'designation','Designation',true)}
         <label>Employee ID<input value={person.employeeId} onChange={e=>update(index,'employeeId',e.target.value)}/></label>
-        {dropdown(person,index,'department','Department',true)}
         {dropdown(person,index,'branch','Branch',true)}
+        {dropdown(person,index,'department','Department',true)}
         {dropdown(person,index,'adRole','AD role / group')}
       </div>
+      {person.branch&&<div className="new-user-routing" role="status"><strong>Initial approval and ID custody: {newUserApproverRole(person)}</strong><span>{newUserApproverRole(person)==='Department head'&&!person.department?'Select a department to find its department head.':`${newUserApproverRole(person)==='Department head'?person.department:person.branch} ? ${users.filter(user=>matchesNewUserApprover(person,user)).map(user=>user.name).join(', ')||'No matching approver configured'}`}</span></div>}
       <div className="new-user-services new-user-account-services">
         <strong className="new-user-section-label">Account services</strong>
         <label><input type="checkbox" checked={person.adId} onChange={e=>update(index,'adId',e.target.checked)}/> Active Directory ID</label>
