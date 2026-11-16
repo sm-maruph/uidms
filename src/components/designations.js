@@ -21,3 +21,19 @@ export const defaultDesignations = [
   'Trainee Executive',
   'Junior Officer',
 ];
+
+
+export function loadDesignations() {
+  let saved = [];
+  try {
+    const value = JSON.parse(localStorage.getItem('uidmsDesignations') || '[]');
+    if (Array.isArray(value)) saved = value.filter(item => typeof item === 'string' && item.trim());
+  } catch {}
+  const seen = new Set();
+  return [...defaultDesignations, ...saved].map(item => item.trim()).filter(item => {
+    const key = item.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}

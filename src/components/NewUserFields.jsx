@@ -2,7 +2,7 @@ import { newUserApproverRole, matchesNewUserApprover } from './newUserWorkflow.j
 import React from 'react';
 import { Button } from './UI.jsx';
 import '../new-user-form.css';
-import { defaultDesignations } from './designations.js';
+import { loadDesignations } from './designations.js';
 import { defaultDepartments } from './departments.js';
 
 const blank = () => ({name:'',designation:'',employeeId:'',department:'',branch:'',adId:true,email:true,adRole:'',preferredEmail:'',msOffice:false,otherSoftwareEnabled:false,otherSoftware:''});
@@ -14,7 +14,7 @@ export default function NewUserFields({value,onChange,users=[],branches=[],depar
   const update=(index,key,next)=>onChange({...value,people:people.map((person,i)=>i===index?{...person,[key]:next}:person)});
   const unique=items=>[...new Set(items.filter(Boolean))];
   const options={
-    designation:defaultDesignations,
+    designation:loadDesignations(),
     department:unique([...defaultDepartments,...departments]),
     branch:unique(['Head Office','Corporate Office',...branchOptions,...branches,...users.map(user=>user.branch)]),
     adRole:unique(['Standard employee','Branch Operations',...users.map(user=>user.adRole)])
