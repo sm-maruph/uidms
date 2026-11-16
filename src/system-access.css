@@ -34,3 +34,7 @@
 @media(max-width:900px){.overview-request-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:620px){.system-access-cards{grid-template-columns:1fr;padding-inline:12px}.overview-request-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding-inline:12px}.overview-request-card{min-height:44px}}
 @media(max-width:520px){.request-type-chooser{padding:22px 16px}.request-type-chooser h2{font-size:19px}.request-type-chooser-options>button{min-height:70px}}
+
+.system-access-card.has-pending-action{position:relative;padding-right:36px!important}
+.system-access-card .request-pending-badge{position:absolute;top:5px;right:6px;display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#c2410c;color:#fff;font:700 11px var(--font-ui);box-shadow:0 0 0 2px var(--surface)}
+.system-access-card.has-pending-action .system-access-card-arrow{display:none}

@@ -24,6 +24,11 @@ export function canReviewChange(ticket,profile){
  if(profile.role==='Department head')return normalized(profile.department)===normalized(ticket.transferChange.toDepartment);
  return true;
 }
+export function awaitsChangeAction(ticket,profile){
+ if(!isChangeRequest(ticket)||!profile?.employeeId||!['Pending','In review'].includes(ticket.state))return false;
+ if(ticket.transferChange?.stage==='employee')return ticket.transferChange.employee?.employeeId===profile.employeeId;
+ return canViewChange(ticket,profile)&&canReviewChange(ticket,profile);
+}
 export function validateChangeInitiation(change,actor,employee){
  if(!canRequestBranchTransfer(actor?.role))return 'Only IT and HR can initiate a branch or department change.';
  if(!employee?.employeeId||change.employeeId!==employee.employeeId)return 'Search for a valid employee ID first.';

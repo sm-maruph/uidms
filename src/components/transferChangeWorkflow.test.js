@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {CHANGE_REQUEST,validateChangeInitiation,destinationRole,canReviewChange,canViewChange,accessSelection,selectedChangeAccess,changedAccess,validateEmployeeChange,changeAccessProfile} from './transferChangeWorkflow.js';
+import {awaitsChangeAction,CHANGE_REQUEST,validateChangeInitiation,destinationRole,canReviewChange,canViewChange,accessSelection,selectedChangeAccess,changedAccess,validateEmployeeChange,changeAccessProfile} from './transferChangeWorkflow.js';
 import {canReceiveCredentials} from './newUserWorkflow.js';
 const employee={employeeId:'E1',systemId:'E1',name:'Employee',branch:'Agrabad Branch',department:'Operations',access:{systemRoles:{ICBS:['Entry']},enabledSystems:['WBO'],otherAccess:['AD ID','Email','MS Office']}};
 const change={kind:'Branch',employeeId:'E1',fromBranch:'Agrabad Branch',toBranch:'Dhanmondi Branch',fromDepartment:'Operations',toDepartment:'Operations',justification:'New assignment',employee,stage:'employee'};
@@ -75,4 +75,18 @@ test('movement visibility is restricted to the employee, branch, department and 
  assert.equal(canViewChange(ticket,{employeeId:'CITO',role:'CITO'}),false);
  assert.equal(canViewChange({...ticket,assignedRole:'CITO'},{employeeId:'CITO',role:'CITO'}),true);
  assert.equal(canViewChange(ticket,null),false);
+});
+
+test('pending badge counts only changes awaiting this employee or the current scoped approver',()=>{
+ const employeeReview={...ticket,state:'Pending'};
+ assert.equal(awaitsChangeAction(employeeReview,{...employee,role:'User'}),true);
+ assert.equal(awaitsChangeAction(employeeReview,{employeeId:'HR1',role:'HR'}),false);
+ const approval={...ticket,state:'In review',assignedRole:'Branch manager',transferChange:{...change,stage:'approval'}};
+ const manager={employeeId:'M1',role:'Branch manager',branch:'Dhanmondi Branch'};
+ assert.equal(awaitsChangeAction(approval,manager),true);
+ assert.equal(awaitsChangeAction(approval,{...manager,branch:'Agrabad Branch'}),false);
+ assert.equal(awaitsChangeAction(approval,{...manager,role:'User'}),false);
+ for(const state of ['Approved','Completed','Rejected','Query','In progress'])assert.equal(awaitsChangeAction({...approval,state},manager),false);
+ assert.equal(awaitsChangeAction({...approval,action:'ID upgrade'},manager),false);
+ assert.equal(awaitsChangeAction(approval,null),false);
 });

@@ -6,8 +6,8 @@ import '../approvals-page.css';
 const statuses=['All','Pending','In review','Query','Approved','Rejected'];
 const dates=['All time','Today','Yesterday','This week','This month'];
 const cards=[['All','Total requests','inbox'],['Pending','Pending','clock'],['In review','In review','search'],['Query','Queries','mail'],['Approved','Approved','check'],['Rejected','Rejected','close']];
-export default function ApprovalsPage({ rows, role, filter, onFilter, renderRows }) {
-  const [range,setRange]=useState('Today');
+export default function ApprovalsPage({ initialRange='Today', rows, role, filter, onFilter, renderRows }) {
+  const [range,setRange]=useState(initialRange);
   const [search,setSearch]=useState('');
   const [approvalOwner,setApprovalOwner]=useState(null);
   const [sort,setSort]=useState('newest');
