@@ -18,7 +18,7 @@ test('head office and department changes select the relevant department head',()
   const office={...ticket,branch:'Corporate Office',requesterProfile:{department:'IT'}};
   assert.deepEqual(queryRecipientsFor(users,actor,office).map(user=>user.employeeId),['U1','D1']);
   const movement={...ticket,action:'Branch / Department change',transferChange:{kind:'Department',toBranch:'Corporate Office',toDepartment:'IT'}};
-  assert.deepEqual(queryRecipientsFor(users,actor,movement).map(user=>user.employeeId),['U1','D1']);
+  assert.deepEqual(queryRecipientsFor(users,actor,movement).map(user=>user.employeeId),['U1','HR1','D1']);
 });
 test('recorded IT approver takes precedence over another IT account',()=>{
   const recorded={...ticket,approvalHistory:[{role:'IT',employeeId:'IT2'}]};
@@ -33,4 +33,24 @@ test('approval defaults to Recommended and preserves an entered recommendation',
   assert.equal(approvalRecommendation('  '),'Recommended');
   assert.equal(approvalRecommendation(undefined),'Recommended');
   assert.equal(approvalRecommendation('  Access is required for daily duties.  '),'Access is required for daily duties.');
+});
+
+test('HR is queryable throughout new-user and branch-transfer workflows',()=>{
+ for(const workflow of [{action:'New ID creation (on behalf)',newUserDetails:{people:[{branch:'Dhanmondi Branch',department:'Operations'}]}},{action:'Branch transfer'},{action:'Branch / Department change',transferChange:{kind:'Branch',toBranch:'Dhanmondi Branch',toDepartment:'Operations'}}]){
+  const request={...ticket,...workflow};
+  for(const role of ['Branch manager','IT','CITO','COO']){
+   const reviewer=users.find(user=>user.role===role);
+   assert.ok(queryRecipientsFor(users,reviewer,request).some(user=>user.employeeId==='HR1'));
+   assert.equal(validateReviewQuery({targetIds:['HR1'],message:'Please confirm HR clearance.'},users,reviewer,request),'');
+  }
+  const hr=users.find(user=>user.role==='HR');
+  assert.deepEqual(queryRecipientsFor(users,hr,request).map(user=>user.employeeId),['U1','M1']);
+  assert.equal(queryRecipientsFor(users,hr,request).some(user=>user.employeeId===hr.employeeId),false);
+ }
+});
+test('unrelated workflows do not add HR and current roles determine HR eligibility',()=>{
+ assert.equal(queryRecipientsFor(users,actor,ticket).some(user=>user.role==='HR'),false);
+ const request={...ticket,action:'Branch transfer'};
+ const changed=users.map(user=>user.employeeId==='HR1'?{...user,role:'User'}:user);
+ assert.equal(queryRecipientsFor(changed,actor,request).some(user=>user.employeeId==='HR1'),false);
 });

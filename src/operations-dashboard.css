@@ -6,3 +6,22 @@
 .report-records{margin:18px 17px 20px;padding:15px;border:1px solid var(--line);border-radius:8px;background:var(--surface-soft)}.report-records>.section-title{padding:0}.report-filters{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));align-items:end;gap:9px;margin:14px 0}.report-filters label{display:flex;flex-direction:column;gap:5px;min-width:0;color:var(--muted);font-size:12px}.report-filters input,.report-filters select{width:100%;min-width:0;height:38px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--text);font:inherit}.report-filters .report-search{grid-column:span 2}.report-filters>button{height:38px;padding:0 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--text);cursor:pointer}.report-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:7px}.report-table{width:100%;min-width:850px;border-collapse:collapse;font-size:13px}.report-table th,.report-table td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}.report-table th{position:sticky;top:0;background:var(--surface);color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em}.report-table tbody tr{cursor:pointer;transition:background .12s}.report-table tbody tr:hover,.report-table tbody tr:focus{background:var(--surface);background:color-mix(in srgb,var(--blue) 9%,var(--surface));color:var(--text)}.report-table tbody tr:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}.report-table td:first-child strong,.report-table td:first-child small{display:block}.report-table td:first-child small{margin-top:4px;color:var(--muted);font-size:12px}.report-table td{white-space:nowrap}.report-table td:first-child{min-width:190px;white-space:normal}.report-table tr:last-child td{border-bottom:0}
 @media(max-width:900px){.report-filters{grid-template-columns:repeat(3,minmax(0,1fr))}.report-filters .report-search{grid-column:span 2}}
 @media(max-width:620px){.report-records{margin:14px 10px;padding:11px}.report-filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.report-filters .report-search{grid-column:1/-1}.report-filters label{font-size:11px}}
+
+.app-shell .content-shell.overview-shell .metrics-grid.operations-metrics{grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:minmax(72px,auto);gap:10px}
+.app-shell .operations-metrics .metric-card[aria-pressed="true"]{border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}
+.app-shell .content-shell.overview-shell .operations-metrics .metric-top>span{white-space:normal;line-height:1.3}
+@media(min-width:900px){.app-shell .content-shell.overview-shell:has(.operations-metrics){overflow:hidden}.app-shell .content-shell.overview-shell:has(.operations-metrics)>.page-content{height:0;min-height:0;flex:1 1 0;overflow:hidden;grid-template-rows:clamp(80px,12dvh,110px) auto minmax(0,1fr)}.app-shell .content-shell.overview-shell .operations-metrics .metric-card{grid-template-rows:minmax(26px,auto) 24px;min-height:72px}}
+@media(max-width:1100px){.app-shell .content-shell.overview-shell .metrics-grid.operations-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.app-shell .content-shell.overview-shell .metrics-grid.operations-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.app-shell .status-it-processing{background:#e7f0ff;color:#1d4ed8}.app-shell .status-ho-processing{background:#f1eaff;color:#6d28d9}.app-shell .status-closed{background:#e4f3ec;color:#287047}.app-shell.theme-dark .status-it-processing{background:#203e61;color:#a7d4ff}.app-shell.theme-dark .status-ho-processing{background:#3b2c57;color:#dcc0ff}.app-shell.theme-dark .status-closed{background:#234335;color:#82d29e}
+
+@media(min-width:900px){
+ .app-shell .content-shell.overview-shell{min-height:0;height:100dvh;overflow:hidden}
+ .app-shell .content-shell.overview-shell .main-grid{min-height:0;overflow:hidden}
+ .app-shell .content-shell.overview-shell .overview-paginated-queue{height:100%;min-height:0;max-height:100%;overflow:hidden}
+ .app-shell .content-shell.overview-shell .metrics-grid.operations-metrics{grid-template-columns:repeat(5,minmax(0,1fr));grid-auto-rows:64px;gap:8px}
+ .app-shell .content-shell.overview-shell .operations-metrics .metric-card{min-height:0;padding:6px 10px;grid-template-rows:26px 22px}
+}
+
+.app-shell .content-shell.overview-shell .main-grid.personal-query-grid{grid-template-columns:minmax(0,1fr)}

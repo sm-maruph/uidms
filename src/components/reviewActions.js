@@ -1,6 +1,6 @@
 import { newUserApproverRole, isNewUser } from './newUserWorkflow.js';
 import { isChangeRequest, destinationRole } from './transferChangeWorkflow.js';
-const ranks={'User':0,'Branch manager':1,'Department head':1,'IT':2,'CITO':3,'COO':4};
+const ranks={'User':0,'Branch manager':1,'Department head':1,'HR':2,'IT':3,'CITO':4,'COO':5};
 const normalized=value=>String(value||'').trim().toLowerCase();
 
 export function queryRecipientsFor(users,profile,ticket) {
@@ -10,8 +10,11 @@ export function queryRecipientsFor(users,profile,ticket) {
   const managerRole=isChangeRequest(ticket)?destinationRole(ticket.transferChange):newUserApproverRole(subject);
   const rank=ranks[profile.role];
   if(rank===undefined)return [];
+  const includesHr=isNewUser(ticket)||isChangeRequest(ticket)||ticket.action==='Branch transfer';
+  if(profile.role==='HR'&&!includesHr)return [];
   return users.filter(user=>{
     if(user.employeeId===profile.employeeId)return false;
+    if(user.role==='HR'&&includesHr&&rank>=1)return true;
     // The requester is available to managers and higher reviewers on this ticket.
     if(rank===1)return user.employeeId===ticket.requesterId;
     if(rank<2)return false;
@@ -27,8 +30,8 @@ export function queryRecipientsFor(users,profile,ticket) {
 }
 
 export function validateReviewQuery(details,users,profile,ticket) {
-  if(details.targetIds?.length!==1)return 'Select one lower-level user.';
-  if(!queryRecipientsFor(users,profile,ticket).some(user=>user.employeeId===details.targetIds[0]))return 'Select a lower-level user from this request’s approval chain.';
+  if(details.targetIds?.length!==1)return 'Select one query recipient.';
+  if(!queryRecipientsFor(users,profile,ticket).some(user=>user.employeeId===details.targetIds[0]))return 'Select an eligible participant from this request’s workflow.';
   if(!details.message?.trim())return 'Enter your query.';
   if(details.message.length>350)return 'Keep your query within 350 characters.';
   return '';

@@ -27,17 +27,32 @@ export function canReviewNewUser(ticket, profile) {
  if (['Branch manager','Department head'].includes(profile.role)) return matchesNewUserApprover(person,profile);
  return true;
 }
-export function validateHrClearance(ticket, checks = []) {
+export const policeClearanceOptions = ['Completed','Pending','Special recommendation'];
+export const referenceCheckOptions = ['Both checked','One checked','Pending'];
+export function normalizeHrCheck(check = {}) {
+ const police=check.police==='Clear'?'Completed':check.police==='Pending'&&check.exception&&check.specialRemarks?.trim()?'Special recommendation':check.police||'';
+ return {police,reference:check.reference==='Clear'?'Both checked':check.reference||'',recommendation:police==='Special recommendation'?(check.recommendation||check.specialRemarks||''):''};
+}
+export function validateHrClearance(ticket, checks = [], {forApproval=true} = {}) {
  const people = ticket.newUserDetails?.people || [];
  if (!people.length) return 'Employee details are required before HR clearance.';
  for (const [index, person] of people.entries()) {
-  const check = checks[index] || {};
-  if (!['Clear','Pending','Not clear'].includes(check.police)) return `Record police clearance for ${person.name}.`;
-  if (check.reference !== 'Clear') return `Reference check must be clear for ${person.name}.`;
-  if (check.police === 'Not clear') return `Police clearance is not clear for ${person.name}; approval cannot proceed.`;
-  if (check.police !== 'Clear' && (!check.exception || !check.specialRemarks?.trim())) return `Reference-only approval for ${person.name} requires a special exception and remarks.`;
+  const check = normalizeHrCheck(checks[index]);
+  if (!policeClearanceOptions.includes(check.police)) return `Record police clearance for ${person.name}.`;
+  if (!referenceCheckOptions.includes(check.reference)) return `Record reference check status for ${person.name}.`;
+  if (check.police==='Special recommendation'&&!check.recommendation.trim()) return `Enter a special recommendation for ${person.name}.`;
+  if (forApproval&&check.reference!=='Both checked') return `Both references must be checked for ${person.name} before approval.`;
+  if (forApproval&&check.police==='Pending') return `Complete police clearance or select Special recommendation for ${person.name} before approval.`;
  }
  return '';
+}
+export function updateHrClearance(ticket, actor, checks, at=new Date().toISOString(), ip='Not recorded') {
+ if(!isNewUser(ticket)||actor?.role!=='HR'||!actor.employeeId)throw new Error('Only HR can update new employee clearance statuses.');
+ const error=validateHrClearance(ticket,checks,{forApproval:false});
+ if(error)throw new Error(error);
+ const next=ticket.newUserDetails.people.map((_,index)=>normalizeHrCheck(checks[index]));
+ const entry={by:actor.name,employeeId:actor.employeeId,role:actor.role,at,ip,previousChecks:(ticket.hrClearance?.checks||[]).map(normalizeHrCheck),checks:next};
+ return {...ticket,hrClearance:{checks:next,by:actor.name,employeeId:actor.employeeId,at},hrClearanceHistory:[...(ticket.hrClearanceHistory||[]),entry]};
 }
 export const canReceiveCredentials = (ticket, profile) => isNewUser(ticket)
  ? Boolean(ticket.custodian?.employeeId && ticket.custodian.employeeId === profile?.employeeId)

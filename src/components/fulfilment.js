@@ -1,4 +1,4 @@
-import { canReceiveCredentials } from './newUserWorkflow.js';
+import { canReceiveCredentials, isNewUser } from './newUserWorkflow.js';
 export function fulfilmentItems(ticket) {
  const data={...ticket,...ticket.submittedForm?.data};
  const result=[];
@@ -24,7 +24,7 @@ export const citoApproved=ticket=>(ticket.approvalHistory||[]).some(event=>event
 export const readyForFulfilment=ticket=>['Approved','In progress'].includes(ticket.state);
 export function processingEmail(ticket){
  const items=fulfilmentItems(ticket);
- return {to:'',cc:ticket.requesterProfile?.email||'',subject:`[${ticket.id}] ${ticket.action} - IT processing`,body:`Dear Team,
+ return {to:'',cc:isNewUser(ticket)?'':ticket.requesterProfile?.email||'',subject:`[${ticket.id}] ${ticket.action} - IT processing`,body:`Dear Team,
 
 Please process the following approved identity service request.
 
@@ -43,6 +43,14 @@ Please confirm completion to IT. Credentials should be delivered through the app
 
 Regards,
 Information Technology Department`};
+}
+export function processingEmailDraft(ticket) {
+ const draft={...(ticket.fulfilment?.email||processingEmail(ticket))};
+ if(isNewUser(ticket)&&ticket.requesterProfile?.email){
+  const requester=ticket.requesterProfile.email.trim().toLowerCase();
+  draft.cc=String(draft.cc||'').split(/[,;]/).map(email=>email.trim()).filter(email=>email&&email.toLowerCase()!==requester&&email.match(/<([^>]+)>/)?.[1]?.trim().toLowerCase()!==requester).join(', ');
+ }
+ return draft;
 }
 export function validateCredentials(ticket,rows){
  const items=fulfilmentItems(ticket);

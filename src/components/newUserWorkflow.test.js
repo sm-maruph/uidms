@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {newUserManagerRole,canReviewNewUser,validateNewUserRouting,validateHrClearance,canReceiveCredentials} from './newUserWorkflow.js';
+import {newUserManagerRole,canReviewNewUser,validateNewUserRouting,validateHrClearance,updateHrClearance,normalizeHrCheck,canReceiveCredentials} from './newUserWorkflow.js';
 import {credentialVisible} from './fulfilment.js';
 const person={name:'New employee',branch:'Dhanmondi Branch',department:'Operations'};
 const ticket={action:'New ID creation (on behalf)',requesterId:'requester',assignedRole:'Branch manager',newUserDetails:{people:[person]}};
@@ -20,18 +20,44 @@ test('batch requests cannot mix approving scopes',()=>{
  assert.ok(validateNewUserRouting({people:[{...person,branch:'Head Office'},{...person,branch:'Head Office',department:'IT'}]}));
  assert.ok(validateNewUserRouting({people:[]}));
 });
-test('HR requires reference clearance and either police clearance or a documented pending exception',()=>{
- assert.equal(validateHrClearance(ticket,[{police:'Clear',reference:'Clear'}]),'');
+test('HR approval requires both references and completed police clearance or a written recommendation',()=>{
+ assert.equal(validateHrClearance(ticket,[{police:'Completed',reference:'Both checked'}]),'');
  assert.ok(validateHrClearance(ticket,[]));
- assert.ok(validateHrClearance(ticket,[{police:'Clear',reference:'Pending'}]));
- assert.ok(validateHrClearance(ticket,[{police:'Pending',reference:'Clear'}]));
- assert.ok(validateHrClearance(ticket,[{police:'Pending',reference:'Clear',exception:true,specialRemarks:'   '}]));
- assert.equal(validateHrClearance(ticket,[{police:'Pending',reference:'Clear',exception:true,specialRemarks:'Urgent joining; police verification pending'}]),'');
- assert.ok(validateHrClearance(ticket,[{police:'Not clear',reference:'Clear',exception:true,specialRemarks:'Urgent'}]));
+ for(const reference of ['One checked','Pending'])assert.ok(validateHrClearance(ticket,[{police:'Completed',reference}]));
+ assert.ok(validateHrClearance(ticket,[{police:'Pending',reference:'Both checked'}]));
+ assert.ok(validateHrClearance(ticket,[{police:'Special recommendation',reference:'Both checked',recommendation:'   '}]));
+ assert.equal(validateHrClearance(ticket,[{police:'Special recommendation',reference:'Both checked',recommendation:'Verified by HR; proceed under recommendation'}]),'');
 });
 test('HR must verify every employee in a batch',()=>{
  const batch={...ticket,newUserDetails:{people:[person,{...person,name:'Second employee'}]}};
- assert.ok(validateHrClearance(batch,[{police:'Clear',reference:'Clear'}]));
+ assert.ok(validateHrClearance(batch,[{police:'Completed',reference:'Both checked'}]));
+});
+test('HR can revise statuses at every workflow stage without changing approval or custody',()=>{
+ const actor={employeeId:'HR1',name:'HR reviewer',role:'HR'};
+ for(const state of ['Pending','In review','Query','Approved','In progress','Completed','Rejected']){
+  const current={...ticket,state,assignedRole:'IT',custodian:{employeeId:'M1'},approvalHistory:[{status:'Approved',role:'HR'}]};
+  const updated=updateHrClearance(current,actor,[{police:'Pending',reference:'One checked'}],'2026-11-16T06:00:00Z','192.0.2.5');
+  assert.equal(updated.state,state);
+  assert.equal(updated.assignedRole,'IT');
+  assert.deepEqual(updated.custodian,current.custodian);
+  assert.deepEqual(updated.approvalHistory,current.approvalHistory);
+  assert.equal(updated.hrClearance.checks[0].reference,'One checked');
+  assert.equal(updated.hrClearanceHistory[0].ip,'192.0.2.5');
+  const revised=updateHrClearance(updated,actor,[{police:'Completed',reference:'Both checked'}]);
+  assert.equal(revised.hrClearanceHistory.length,2);
+  assert.equal(revised.hrClearanceHistory[1].previousChecks[0].police,'Pending');
+ }
+});
+test('only HR may save and special recommendations require text even on status-only updates',()=>{
+ for(const role of ['User','IT','CITO','COO','Branch manager','Super Admin'])assert.throws(()=>updateHrClearance(ticket,{role,employeeId:'1'},[{police:'Completed',reference:'Both checked'}]),/Only HR/);
+ assert.throws(()=>updateHrClearance(ticket,{role:'HR',employeeId:'HR1'},[{police:'Special recommendation',reference:'Pending',recommendation:' '}]),/recommendation/);
+ assert.equal(validateHrClearance(ticket,[{police:'Pending',reference:'Pending'}],{forApproval:false}),'');
+});
+test('legacy clearances retain their meaning and obsolete recommendation text is removed',()=>{
+ assert.deepEqual(normalizeHrCheck({police:'Clear',reference:'Clear'}),{police:'Completed',reference:'Both checked',recommendation:''});
+ assert.equal(normalizeHrCheck({police:'Pending',exception:true,specialRemarks:'Urgent joining'}).police,'Special recommendation');
+ assert.equal(normalizeHrCheck({police:'Completed',recommendation:'Old recommendation'}).recommendation,'');
+ assert.ok(validateHrClearance(ticket,[{police:'Not clear',reference:'Clear'}]));
 });
 test('new user credentials go only to the recorded custodian and expire',()=>{
  const completed={...ticket,state:'Completed',custodian:{employeeId:'manager'}};

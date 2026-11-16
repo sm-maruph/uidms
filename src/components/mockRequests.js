@@ -1,3 +1,4 @@
+import {demoQueryRequests} from './demoQueryRequests.js';
 ﻿import { extraMockRequests } from './extraMockRequests.js';
 
 const t = value => new Date(value).toISOString();
@@ -43,5 +44,6 @@ export const mockRequests = [
     remarks:[{by:'Sabin Rahman',role:'HR',at:t('2026-11-09T14:20:00+06:00'),message:'Exit documentation and employee record have been verified.'},{by:'Haily Algawatte',role:'COO',at:t('2026-11-09T16:06:00+06:00'),message:'Confirm completion in the audit log.'}],
   },
   ...extraMockRequests,
+  ...demoQueryRequests,
 ];
 

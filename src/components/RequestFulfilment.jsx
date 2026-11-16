@@ -1,11 +1,11 @@
 import { canReceiveCredentials, isNewUser } from './newUserWorkflow.js';
 import React,{useEffect,useState} from 'react';
-import {readyForFulfilment,fulfilmentItems,processingEmail,credentialVisible} from './fulfilment.js';
+import {readyForFulfilment,fulfilmentItems,processingEmailDraft,credentialVisible} from './fulfilment.js';
 import Icon from './Icon.jsx';
 import '../fulfilment.css';
 const stamp=value=>new Intl.DateTimeFormat('en-GB',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Dhaka'}).format(new Date(value));
 export default function RequestFulfilment({ticket,profile,onAction,delivery}){
- const [draft,setDraft]=useState(()=>ticket.fulfilment?.email||processingEmail(ticket));
+ const [draft,setDraft]=useState(()=>processingEmailDraft(ticket));
  const [opened,setOpened]=useState(false);
  const [sent,setSent]=useState(false);
  const [rows,setRows]=useState({});
@@ -22,7 +22,7 @@ export default function RequestFulfilment({ticket,profile,onAction,delivery}){
  if(!final&&ticket.state!=='Completed')return null;
  const update=(key,field,value)=>setRows(current=>({...current,[key]:{...current[key],[field]:value}}));
  const credentials=items.map(item=>({...item,username:rows[item.key]?.username||'',password:rows[item.key]?.password||''}));
- return <section className="fulfilment-panel"><header><span><Icon name="settings" size={20}/></span><div><p>IT FULFILMENT</p><h2>{ticket.state==='Completed'?'Request completed and ticket closed':final?'Processing':'Prepare processing email'}</h2></div></header>
+ return <section className="fulfilment-panel"><header><span><Icon name="settings" size={20}/></span><div><p>IT FULFILMENT</p><h2>{ticket.state==='Completed'?'Request completed and ticket closed':final?(emailSent?'HO processing':'Processing'):'Prepare processing email'}</h2></div></header>
  {!final&&ticket.state!=='Completed'&&<p className="fulfilment-note">CITO approval is recorded. IT may prepare the draft; sending and fulfilment become available after final approval.</p>}
  {requester&&ticket.state!=='Completed'&&<p className="fulfilment-note">{final?'Your request is approved. IT is processing the requested systems. You will be notified here when completed.':'Your request is awaiting final approval.'}</p>}
  {it&&ticket.state!=='Completed'&&!emailSent&&<form onSubmit={event=>{event.preventDefault();if(final&&opened&&sent)onAction('Email sent',{email:draft});}}><h3>Processing email draft</h3><div className="fulfilment-email-addresses"><label>To (required)<input type="email" multiple required value={draft.to} onChange={e=>{setDraft({...draft,to:e.target.value});setOpened(false);setSent(false);}} placeholder="Processing team email"/></label><label>CC<input type="email" multiple value={draft.cc} onChange={e=>setDraft({...draft,cc:e.target.value})}/></label></div><label>Subject<input required value={draft.subject} onChange={e=>setDraft({...draft,subject:e.target.value})}/></label><label>Body<textarea rows="8" required value={draft.body} onChange={e=>setDraft({...draft,body:e.target.value})}/></label><div className="fulfilment-buttons"><button className="button button-subtle" type="button" onClick={()=>{navigator.clipboard?.writeText(`To: ${draft.to}

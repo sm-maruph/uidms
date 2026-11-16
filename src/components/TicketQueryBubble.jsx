@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Icon from './Icon.jsx';
 import { Button } from './UI.jsx';
-import { queriesForUser } from './queryInbox.js';
+import { queriesForUser, queryRaisedBy } from './queryInbox.js';
 import '../ticket-query-bubble.css';
 
 function QueryPopup({ entry, reply, responder, onClose, onReply }) {
@@ -41,11 +41,11 @@ function QueryPopup({ entry, reply, responder, onClose, onReply }) {
   </div>,document.querySelector('.app-shell')||document.body);
 }
 
-export default function TicketQueryBubble({ ticket, profile, users=[], onReply, autoOpen=false }) {
+export default function TicketQueryBubble({ ticket, profile, users=[], onReply, autoOpen=false, mode=null }) {
   const [open,setOpen]=useState(false);
   useEffect(()=>{if(autoOpen)setOpen(true);},[autoOpen,ticket.id]);
-  const pending=queriesForUser([ticket],profile?.employeeId).filter(entry=>entry.pending);
-  const replies=(ticket.queryHistory||[]).filter(query=>query.by===profile?.name&&query.role===profile?.role).flatMap(query=>(query.responses||[]).map(reply=>({query,reply,ticket}))).sort((a,b)=>String(b.reply.responseAt||'').localeCompare(String(a.reply.responseAt||'')));
+  const pending=mode==='mine'?[]:queriesForUser([ticket],profile?.employeeId).filter(entry=>entry.pending);
+  const replies=(mode==='received'?[]:ticket.queryHistory||[]).filter(query=>queryRaisedBy(query,profile)).flatMap(query=>(query.responses||[]).map(reply=>({query,reply,ticket}))).sort((a,b)=>String(b.reply.responseAt||'').localeCompare(String(a.reply.responseAt||'')));
   const entry=pending[0]||replies[0];
   const reply=pending.length?null:entry?.reply;
   if(!entry)return null;

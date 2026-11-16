@@ -28,6 +28,7 @@ export function ticketAuditEvents(ticket) {
     (item.responses||[]).forEach((response,n)=>add(`query:${index}:response:${n}`,'Response',response,response.response||''));
   });
   (ticket.remarks||[]).forEach((item,index)=>add(`remark:${index}`,'Remark',item,item.message||''));
+  (ticket.hrClearanceHistory||[]).forEach((item,index)=>add(`hr-clearance:${index}`,'Update',item,`HR clearance updated: ${(item.checks||[]).map((check,n)=>{const previous=item.previousChecks?.[n];return `${ticket.newUserDetails?.people?.[n]?.name||'Employee'} — Police: ${previous?.police||'Not recorded'} → ${check.police}; Reference: ${previous?.reference||'Not recorded'} → ${check.reference}${check.recommendation?`; Recommendation: ${check.recommendation}`:''}`;}).join(' | ')}`));
   (ticket.fulfilmentHistory||[]).forEach((item,index)=>add(`fulfilment:${index}`,item.status==='Fulfilled'?'Complete':'Processing',item,item.status));
   if(ticket.transferChange?.employeeSubmittedAt&&!events.some(event=>event.type==='Approval'&&event.at===ticket.transferChange.employeeSubmittedAt)) add('employee-review','Update',{by:ticket.transferChange.employee?.name,employeeId:ticket.transferChange.employee?.employeeId,at:ticket.transferChange.employeeSubmittedAt},'Employee access review submitted');
   return events;
