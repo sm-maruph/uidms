@@ -4,6 +4,14 @@ export function queriesRaisedBy(requests,profile) {
  return requests.flatMap(ticket=>(ticket.queryHistory||[]).flatMap((query,index)=>queryRaisedBy(query,profile)?[{ticket,query,index,key:`${ticket.id}:${index}`}]:[]));
 }
 
+export function queryInboxGroups(requests,profile) {
+ const query=queriesForUser(requests,profile.employeeId);
+ const response=queriesRaisedBy(requests,profile).map(entry=>({...entry,pending:false,response:entry.query.responses?.at(-1),sent:true}));
+ const all=[...new Map([...response,...query].map(entry=>[entry.key,entry])).values()]
+   .sort((a,b)=>Number(b.pending)-Number(a.pending)||String(b.query.at||'').localeCompare(String(a.query.at||'')));
+ return {query,response,all};
+}
+
 export function queriesForUser(requests, employeeId) {
   return requests.flatMap(ticket => (ticket.queryHistory || []).flatMap((query,index) => {
     if (!(query.targetIds || []).includes(employeeId)) return [];

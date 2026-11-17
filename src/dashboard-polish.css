@@ -1,0 +1,90 @@
+/* Commercial Bank blue and green, with restrained depth for compact workspaces. */
+.app-shell .content-shell.overview-shell {
+  --dashboard-title:var(--bank-blue-deep,#00558d);
+  --dashboard-elevation:0 3px 10px #00558d0b,0 1px 3px #00558d08;
+  background:radial-gradient(ellipse at 95% 0%,#51b44b09,transparent 45%),var(--bg);
+}
+.app-shell.theme-dark .content-shell.overview-shell {
+  --dashboard-title:#8dcef5;
+  --dashboard-elevation:0 4px 12px #020c1838,0 1px 3px #020c1826;
+}
+.app-shell .content-shell.overview-shell .welcome-banner {
+  background:linear-gradient(115deg,var(--bank-blue) 0%,var(--bank-blue-deep) 75%,#164c67 100%);
+  box-shadow:0 5px 15px #00558d20,inset 0 1px 0 #ffffff24;
+  border-color:#ffffff20;
+  border-left:3px solid var(--bank-green);
+  border-bottom:2px solid var(--bank-green);
+}
+.app-shell .content-shell.overview-shell .metrics-grid .metric-card {
+  position:relative;
+  border-color:color-mix(in srgb,var(--bank-blue) 16%,var(--line));
+  background:linear-gradient(120deg,var(--surface),color-mix(in srgb,var(--brand-blue-soft) 25%,var(--surface)));
+  box-shadow:var(--dashboard-elevation);
+  border-radius:10px;
+}
+.app-shell .content-shell.overview-shell .metrics-grid .metric-card[aria-pressed=true] {
+  border-color:var(--bank-green);
+  background:linear-gradient(120deg,var(--surface),var(--brand-green-soft));
+  box-shadow:inset 3px 0 0 var(--bank-green),var(--dashboard-elevation);
+}
+.app-shell .content-shell.overview-shell .metrics-grid .metric-value {
+  color:var(--dashboard-title);
+  font-weight:800;
+  font-variant-numeric:tabular-nums;
+}
+.app-shell .content-shell.overview-shell .metrics-grid .metric-icon {
+  border:1px solid color-mix(in srgb,var(--blue) 15%,transparent);
+  box-shadow:inset 0 1px 0 #ffffff18;
+}
+.app-shell .content-shell.overview-shell :is(.request-panel,.query-inbox) {
+  box-shadow:var(--dashboard-elevation);
+  border-color:var(--line);
+  border-top:2px solid var(--bank-green);
+  border-radius:12px;
+}
+.app-shell .content-shell.overview-shell :is(.request-panel>.section-title,.query-inbox-heading) {
+  background:linear-gradient(110deg,color-mix(in srgb,var(--brand-blue-soft) 35%,var(--surface)),var(--surface));
+}
+.app-shell .content-shell.overview-shell .section-title h2,
+.app-shell .content-shell.overview-shell .query-inbox-heading h2 {
+  color:var(--dashboard-title);
+  font-weight:750;
+}
+.app-shell .content-shell.overview-shell .request-head {
+  background:var(--brand-blue-soft);
+  color:var(--dashboard-title);
+  font-weight:700;
+}
+.app-shell .content-shell.overview-shell .request-row:nth-child(odd) {
+  background:color-mix(in srgb,var(--brand-blue-soft) 15%,var(--surface));
+}
+.app-shell .content-shell.overview-shell .request-row:hover {
+  background:var(--brand-blue-soft);
+  box-shadow:inset 3px 0 0 var(--bank-green);
+}
+.app-shell .content-shell.overview-shell :is(.request-person,.system-role,.submitted) strong {
+  color:var(--text);
+}
+.app-shell .content-shell.overview-shell :is(.request-person,.system-role,.submitted,.status-cell) small {
+  color:var(--muted);
+}
+.app-shell .content-shell.overview-shell .query-inbox-ticket {
+  background:linear-gradient(130deg,var(--brand-blue-soft),var(--surface));
+  border-left:3px solid var(--bank-blue);
+  box-shadow:0 2px 6px #00558d09;
+}
+.app-shell .content-shell.overview-shell .query-inbox-message {
+  border-left-color:var(--bank-green);
+}
+.app-shell .content-shell.overview-shell :is(.queue-pagination,.query-inbox-footer) {
+  background:color-mix(in srgb,var(--brand-blue-soft) 25%,var(--surface));
+}
+.app-shell .content-shell.overview-shell :is(.tabs button.selected,.query-inbox-tabs button[aria-pressed=true]) {
+  color:var(--dashboard-title);
+  border-bottom-color:var(--bank-green);
+  font-weight:700;
+}
+.app-shell .content-shell.overview-shell .metric-card-action:focus-visible {
+  outline:2px solid var(--blue);
+  outline-offset:-3px;
+}

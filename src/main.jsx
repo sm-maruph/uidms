@@ -15,6 +15,7 @@ import './system-selector.css';
 import './form-brand-accents.css';
 import './dashboard-readability.css';
 import './dashboard-responsive.css';
+import './dashboard-polish.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
