@@ -12,3 +12,17 @@
 @keyframes query-caption-blink{0%,100%{opacity:1}50%{opacity:.55}}@keyframes query-chat-nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media(prefers-reduced-motion:reduce){.is-announcing .floating-query-caption strong,.is-announcing .floating-query-trigger{animation:none}}
 @media(max-width:620px){.floating-query-chat{right:16px;bottom:16px}.floating-query-trigger{width:50px;height:50px}}
+.floating-query-trigger{touch-action:none;cursor:grab;user-select:none}
+.is-dragging .floating-query-trigger{cursor:grabbing;animation:none}
+.is-dragging .floating-query-caption{display:none}
+.floating-query-panel{position:fixed;right:16px;bottom:88px;max-height:calc(100dvh - 112px);display:flex;flex-direction:column}
+.floating-query-panel header{flex:none}
+.floating-query-list{min-height:0}
+.floating-query-caption{position:absolute;right:calc(100% + 12px);bottom:0;width:max-content;max-width:min(300px,calc(50vw - 80px));box-sizing:border-box}
+.caption-on-right .floating-query-caption{right:auto;left:calc(100% + 12px)}
+.floating-query-chat:has(.floating-query-panel) .floating-query-caption{display:none}
+.floating-query-entry{padding:12px 15px;border-bottom:1px solid var(--line)}
+.floating-query-entry-summary{display:flex;align-items:center;gap:12px}
+.floating-query-entry-summary>div{flex:1;min-width:0}
+.floating-query-entry-actions{display:flex;gap:8px;margin:10px 0 0 46px}
+.floating-query-entry-actions .button{font-size:12px;min-height:30px;cursor:pointer}

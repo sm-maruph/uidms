@@ -14,6 +14,7 @@ import './new-user-form.css';
 import './system-selector.css';
 import './form-brand-accents.css';
 import './dashboard-readability.css';
+import './dashboard-responsive.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

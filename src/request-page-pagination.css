@@ -1,0 +1,51 @@
+.app-shell .content-shell:has(.requests-paginated-page) {
+  position:fixed;
+  inset:0 0 0 248px;
+  margin-left:0;
+  height:100dvh;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.app-shell .content-shell:has(.requests-paginated-page)>.topbar {
+  position:relative;
+  inset:auto;
+  width:100%;
+  height:44px;
+  min-height:44px;
+  flex:none;
+}
+.app-shell .content-shell:has(.requests-paginated-page)>.page-content {
+  display:flex;
+  flex:1 1 0;
+  min-height:0;
+  padding:10px 16px;
+  overflow:hidden;
+}
+.app-shell .requests-paginated-page {
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  height:100%;
+  min-height:0;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+.requests-paginated-page>.section-title,
+.requests-paginated-page>.directory-intro,
+.requests-paginated-page>.table-toolbar,
+.requests-paginated-page>.queue-pagination {flex:none}
+.requests-paginated-page>.table-toolbar {flex-wrap:wrap;height:auto;gap:8px}
+.requests-paginated-page .tabs {max-width:100%;height:auto;overflow-x:auto;overflow-y:hidden}
+.requests-page-table {flex:1 1 0;min-height:0;overflow:hidden}
+.app-shell .requests-paginated-page .request-row {
+  height:62px;
+  min-height:62px;
+  max-height:62px;
+  box-sizing:border-box;
+}
+.requests-paginated-page>.queue-pagination {margin-top:auto;background:var(--surface)}
+@media(max-width:1150px){.app-shell .content-shell:has(.requests-paginated-page){left:220px}}
+@media(max-width:900px){.app-shell .content-shell:has(.requests-paginated-page){left:0}}
+@media(max-height:600px){.requests-paginated-page>.directory-intro{display:none}}
