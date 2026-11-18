@@ -164,6 +164,11 @@
 
 /* Desktop sections share the available height; only panel contents scroll. */
 @media(min-width:901px) {
+  .app-shell .content-shell.overview-shell {
+    position:relative;
+    inset:auto;
+    margin-left:248px;
+  }
   .app-shell .content-shell.overview-shell,
   .app-shell .content-shell.overview-shell:has(.operations-metrics) {
     height:100dvh;
@@ -215,4 +220,7 @@
     min-height:0;
     overflow-y:auto;
   }
+}
+@media(min-width:901px) and (max-width:1150px) {
+  .app-shell .content-shell.overview-shell {margin-left:220px}
 }

@@ -109,15 +109,13 @@
  .app-shell .content-shell.overview-shell .quick-card>p{display:none}
  .app-shell .content-shell.overview-shell .quick-actions button{min-height:38px;padding:5px 0}
 }
-@keyframes dashboard-arrive{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes dashboard-orbit{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-6px) rotate(4deg)}}
-.app-shell .content-shell.overview-shell .welcome-banner{animation:dashboard-arrive .4s ease-out both}
-.app-shell .content-shell.overview-shell .metric-card{animation:dashboard-arrive .45s ease-out both}
+@keyframes dashboard-arrive{from{opacity:0}to{opacity:1}}
+.app-shell .content-shell.overview-shell .welcome-banner{animation:dashboard-arrive .4s ease-out backwards}
+.app-shell .content-shell.overview-shell .metric-card{animation:dashboard-arrive .45s ease-out backwards}
 .app-shell .content-shell.overview-shell .metric-card:nth-child(2){animation-delay:.06s}
 .app-shell .content-shell.overview-shell .metric-card:nth-child(3){animation-delay:.12s}
 .app-shell .content-shell.overview-shell .metric-card:nth-child(4){animation-delay:.18s}
-.app-shell .content-shell.overview-shell .main-grid{animation:dashboard-arrive .5s .15s ease-out both}
-.app-shell .content-shell.overview-shell .art-shield{animation:dashboard-orbit 6s ease-in-out infinite}
+.app-shell .content-shell.overview-shell .main-grid{animation:dashboard-arrive .5s .15s ease-out backwards}
 .app-shell .content-shell.overview-shell .overview-request-card,.app-shell .content-shell.overview-shell .quick-actions button,.app-shell .content-shell.overview-shell .request-row{transition:background .18s,border-color .18s,box-shadow .18s,transform .18s}
 .app-shell .content-shell.overview-shell .overview-request-card:hover{transform:translateY(-2px);box-shadow:0 5px 14px #163c7120}
 .app-shell .content-shell.overview-shell .overview-request-card .system-access-card-mark{transition:transform .2s}
@@ -151,12 +149,12 @@
 @media(min-width:900px) and (max-height:760px){.app-shell .content-shell.overview-shell>.page-content{grid-template-rows:96px 58px auto minmax(0,1fr)}}
 @keyframes metric-value-reveal{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:no-preference){
- .app-shell .content-shell.overview-shell .metric-value{animation:metric-value-reveal .5s .2s ease-out both}
- .app-shell .content-shell.overview-shell .metric-icon{transition:transform .2s,box-shadow .2s}
- .app-shell .content-shell.overview-shell .metric-card:hover .metric-icon{transform:rotate(-8deg) scale(1.1);box-shadow:0 3px 10px #0072ce20}
+ .app-shell .content-shell.overview-shell .metric-value{animation:metric-value-reveal .5s .2s ease-out backwards}
+ .app-shell .content-shell.overview-shell .metric-icon svg{transition:transform .2s}
+ .app-shell .content-shell.overview-shell .metric-card:hover .metric-icon svg{transform:rotate(-8deg) scale(1.1)}
  .app-shell .content-shell.overview-shell .request-row .row-chevron{transition:transform .2s,color .2s}
  .app-shell .content-shell.overview-shell .request-row:hover .row-chevron{transform:translateX(3px);color:var(--blue)}
- .app-shell .content-shell.overview-shell .request-row{animation:dashboard-arrive .25s ease-out both}
+ .app-shell .content-shell.overview-shell .request-row{animation:dashboard-arrive .25s ease-out backwards}
  .app-shell .content-shell.overview-shell .request-row:nth-child(3){animation-delay:.035s}
  .app-shell .content-shell.overview-shell .request-row:nth-child(4){animation-delay:.07s}
  .app-shell .content-shell.overview-shell .request-row:nth-child(5){animation-delay:.105s}

@@ -1,0 +1,96 @@
+.system-email-workspace{display:grid;gap:12px;min-width:0;color:var(--text)}
+.system-email-panel>header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.system-email-panel h2,.system-email-panel h3,.email-draft-card h3{margin:0}
+.system-email-form,.system-email-workflow,.system-email-list,.email-draft-card,.email-draft-card fieldset{display:grid;gap:10px;min-width:0}
+.system-email-form,.system-email-list>article,.email-draft-card{padding:16px;margin:12px 0;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.system-email-saved{margin-top:20px}
+.system-email-tabs{display:flex;gap:8px;border-bottom:1px solid var(--line)}
+.system-email-tabs button{padding:9px 14px;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--muted);font:inherit;cursor:pointer}
+.system-email-tabs button[aria-pressed=true]{border-bottom-color:var(--blue);color:var(--blue);font-weight:700}
+.system-email-saved ul{list-style:none;padding:0;margin:10px 0 0;gap:0;border:1px solid var(--line);border-radius:8px}
+.system-email-saved li{padding:12px 16px;overflow-wrap:anywhere}
+.system-email-saved li+li{border-top:1px solid var(--line)}
+.system-email-saved li p{margin:5px 0;color:var(--muted)}
+.system-email-form label,.system-email-workflow label{display:grid;gap:6px;font-size:13px}
+.system-email-form input,.system-email-form textarea,.system-email-workflow select{min-width:0;padding:9px;border:1px solid var(--line);border-radius:6px;background:var(--surface-soft);color:var(--text);font:inherit}
+.system-email-panel.panel{padding:clamp(16px,3vw,28px)}
+.system-email-heading{margin-bottom:20px}
+.app-shell .page-content:has(>.system-email-service-panel){display:grid;place-items:center}
+.app-shell .page-content:has(>.system-email-panel){padding-block-start:56px}
+.system-email-service-panel{width:100%;max-width:1320px;min-width:0}
+.system-email-service-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:12px}
+.system-email-service-card{display:grid;grid-template-rows:auto 1fr auto;gap:8px;padding:16px;text-align:start;color:var(--text);background:var(--surface-soft);border:1px solid var(--line);border-radius:9px;cursor:pointer}
+.system-email-service-card:hover,.system-email-service-card:focus-visible{border-color:var(--blue);background:var(--brand-blue-soft,var(--surface-soft))}
+.system-email-service-card span,.system-email-service-card small{color:var(--muted);line-height:1.45}
+.system-email-group-content{padding:14px;min-width:0}
+.system-email-group-content>header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.system-email-variable-help>.fulfilment-email-addresses{margin:8px 0}
+.system-email-heading p,.system-email-empty p{margin:6px 0 0;color:var(--muted);line-height:1.5}
+.system-email-form.system-email-editor{padding:0;gap:0;overflow:hidden;background:var(--surface);border-radius:12px;box-shadow:0 6px 18px #12384a12}
+.system-email-editor-title,.system-email-editor-actions{padding:14px clamp(14px,2vw,22px);background:var(--surface-soft)}
+.system-email-editor-title{display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(112deg,var(--bank-blue-deep,#00558d),var(--bank-blue,#006fb5));color:#fff;border-bottom:3px solid var(--bank-green,#51b44b)}
+.system-email-editor-title img{display:block;width:110px;max-width:42%;height:38px;padding:4px 7px;object-fit:contain;background:#fff;border-radius:6px}
+.system-email-editor-actions{display:flex;justify-content:flex-end;gap:10px;border-top:1px solid var(--line)}
+.system-email-editor-grid{display:grid;grid-template-columns:minmax(240px,1fr) minmax(0,1.8fr)}
+.system-email-editor-section{display:grid;align-content:start;gap:16px;min-width:0;padding:clamp(14px,2vw,22px)}
+.system-email-editor-section h4{display:flex;align-items:center;gap:8px;margin:0;padding-bottom:10px;border-bottom:1px solid var(--line);font-size:15px}
+.system-email-editor-section h4::before{content:'';width:4px;height:16px;border-radius:3px;background:var(--bank-green,#51b44b)}
+.system-email-message{border-inline-start:1px solid var(--line)}
+.system-email-editor-section input:not([type=checkbox]),.system-email-editor-section textarea{width:100%;box-sizing:border-box;padding:10px 12px;min-height:42px}
+.system-email-editor-section :is(input,textarea):focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.system-email-editor-section textarea{line-height:1.55;resize:vertical}
+.system-email-editor-section label{font-weight:600}
+.system-email-optional{margin-inline-start:4px;color:var(--muted);font-weight:400}
+.system-email-picker{min-width:0;margin:0;padding:0;border:0}
+.system-email-picker legend{padding:0;margin-bottom:8px;font-size:13px;font-weight:600}
+.system-email-picker .system-email-search{margin-bottom:10px}
+.system-email-selection{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:10px;color:var(--muted);font-size:12px}
+.system-email-selection button{max-width:100%;padding:4px 8px;border:1px solid var(--line);border-radius:14px;background:var(--brand-blue-soft,var(--surface-soft));color:var(--text);font:inherit;overflow-wrap:anywhere;cursor:pointer}
+.system-email-checkboxes{display:grid;gap:4px;max-height:256px;overflow:auto;overscroll-behavior:contain;padding:5px;border:1px solid var(--line);border-radius:8px;background:var(--surface-soft)}
+.system-email-checkboxes label{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid transparent;border-radius:5px;font-weight:500;line-height:1.35;cursor:pointer;overflow-wrap:anywhere}
+.system-email-checkboxes label:hover{border-color:var(--line);background:var(--surface)}
+.system-email-checkboxes label.is-selected{border-color:color-mix(in srgb,var(--blue) 34%,var(--line));background:var(--brand-blue-soft,var(--surface))}
+.system-email-checkboxes input{flex:none;width:16px;height:16px;margin:0;accent-color:var(--blue)}
+.system-email-checkboxes label:has(input:disabled){color:var(--muted);cursor:default}
+.system-email-checkboxes small{display:block;color:var(--muted);font-weight:400}
+.system-email-checkboxes p{margin:8px;color:var(--muted);font-size:13px}
+.system-email-variable-help{padding:11px 13px;border:1px solid var(--line);border-radius:8px;background:var(--surface-soft);font-size:13px}
+.system-email-variable-help summary{cursor:pointer;font-weight:600}
+.system-email-variable-help p{color:var(--muted)}
+.system-email-empty{padding:28px 16px;border:1px dashed var(--line);border-radius:8px;text-align:center}
+@media(max-width:900px){.system-email-editor-grid{grid-template-columns:1fr}.system-email-message{border-inline-start:0;border-top:1px solid var(--line)}}
+.system-email-variables{display:flex;gap:8px;flex-wrap:wrap}
+.system-email-variables code{background:var(--surface-soft);padding:3px 6px;border-radius:4px}
+.system-email-variables button{min-height:30px;padding:1px 3px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--text);cursor:pointer}
+.system-email-variables button code{background:transparent}
+.system-email-variables button:hover,.system-email-variables button:focus-visible{border-color:var(--blue);color:var(--blue)}
+.system-email-editor-actions .button-primary{background:var(--bank-green-deep,#287d2f);border-color:var(--bank-green-deep,#287d2f);color:#fff}
+.system-email-editor-actions .button-primary:hover:not(:disabled){filter:brightness(1.08)}
+.system-email-group-content:has(.system-email-editor)>header{display:none}
+.system-email-panel:has(.system-email-editor){padding:clamp(10px,1.3vw,18px)}
+.system-email-panel:has(.system-email-editor)>.system-email-heading{margin-bottom:6px}
+.system-email-group-content:has(.system-email-editor){padding:4px 0 0}
+.system-email-editor.system-email-form{margin:8px 0 0}
+.system-email-editor .system-email-editor-title,.system-email-editor .system-email-editor-actions{padding-block:8px}
+.system-email-editor .system-email-editor-section{gap:7px;padding:10px clamp(10px,1.2vw,16px)}
+.system-email-editor .system-email-editor-section h4{padding-bottom:6px}
+.system-email-editor .system-email-editor-section input:not([type=checkbox]){min-height:36px;padding-block:7px}
+.system-email-editor .system-email-checkboxes{max-height:clamp(180px,35dvh,330px);grid-template-columns:repeat(auto-fit,minmax(min(100%,145px),1fr));grid-auto-rows:min-content}
+.system-email-editor .system-email-checkboxes label{padding:6px}
+.system-email-editor .system-email-editor-section textarea{min-height:clamp(155px,24dvh,240px)}
+.system-email-editor .system-email-variable-help{padding:8px 10px}
+.system-email-editor .system-email-variable-help p{margin:5px 0}
+.system-email-editor .system-email-variables{gap:5px;max-block-size:104px;overflow-x:hidden;overflow-y:auto;scrollbar-gutter:stable;overscroll-behavior-y:contain;padding:3px}
+.system-email-preview{padding:16px clamp(14px,3vw,28px);min-height:0;overflow:auto;overflow-wrap:anywhere}
+.system-email-preview h4{margin:0}
+.system-email-preview dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.system-email-preview dt{color:var(--muted);font-weight:600}.system-email-preview dd{margin:0}
+.system-email-preview-body{white-space:pre-wrap;padding:14px;border:1px solid var(--line);border-radius:8px;background:var(--surface-soft)}
+@media(min-width:901px) and (min-height:650px){
+ .system-email-form.system-email-editor{grid-template-rows:auto minmax(0,1fr) auto;max-height:calc(100dvh - 160px)}
+ .system-email-editor-grid{min-height:0;overflow:auto}
+}
+.system-email-workflow{margin-top:12px}.system-email-workflow summary{cursor:pointer}.system-email-workflow li>*{margin-inline-end:8px}
+.system-email-panel [role=alert],.system-email-workspace [role=alert]{color:var(--danger,#b33);overflow-wrap:anywhere}
+.email-draft-card p{margin:0;overflow-wrap:anywhere}.email-draft-card fieldset{border:0;padding:0}
+@media print{.system-email-panel,.email-draft-card{display:none!important}}

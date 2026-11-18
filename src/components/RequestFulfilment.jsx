@@ -1,13 +1,11 @@
 import { canReceiveCredentials, isNewUser } from './newUserWorkflow.js';
 import React,{useEffect,useState} from 'react';
-import {readyForFulfilment,fulfilmentItems,processingEmailDraft,credentialVisible} from './fulfilment.js';
+import {readyForFulfilment,fulfilmentItems,mockProcessingDrafts,credentialVisible} from './fulfilment.js';
 import Icon from './Icon.jsx';
+import EmailDraftCard from './EmailDraftCard.jsx';
 import '../fulfilment.css';
 const stamp=value=>new Intl.DateTimeFormat('en-GB',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Dhaka'}).format(new Date(value));
-export default function RequestFulfilment({ticket,profile,onAction,delivery}){
- const [draft,setDraft]=useState(()=>processingEmailDraft(ticket));
- const [opened,setOpened]=useState(false);
- const [sent,setSent]=useState(false);
+export default function RequestFulfilment({ticket,profile,onAction,delivery,templates}){
  const [rows,setRows]=useState({});
  const [reveal,setReveal]=useState(false);
  const [now,setNow]=useState(Date.now());
@@ -17,6 +15,7 @@ export default function RequestFulfilment({ticket,profile,onAction,delivery}){
  const owner=canReceiveCredentials(ticket,profile);
  const final=readyForFulfilment(ticket);
  const emailSent=ticket.fulfilment?.emailSentAt;
+ const drafts=it?(ticket.fulfilment?.emailDrafts||mockProcessingDrafts(ticket,templates)):[];
  const items=fulfilmentItems(ticket);
  if(!it&&!owner&&!requester)return null;
  if(!final&&ticket.state!=='Completed')return null;
@@ -25,11 +24,10 @@ export default function RequestFulfilment({ticket,profile,onAction,delivery}){
  return <section className="fulfilment-panel"><header><span><Icon name="settings" size={20}/></span><div><p>IT FULFILMENT</p><h2>{ticket.state==='Completed'?'Request completed and ticket closed':final?(emailSent?'HO processing':'Processing'):'Prepare processing email'}</h2></div></header>
  {!final&&ticket.state!=='Completed'&&<p className="fulfilment-note">CITO approval is recorded. IT may prepare the draft; sending and fulfilment become available after final approval.</p>}
  {requester&&ticket.state!=='Completed'&&<p className="fulfilment-note">{final?'Your request is approved. IT is processing the requested systems. You will be notified here when completed.':'Your request is awaiting final approval.'}</p>}
- {it&&ticket.state!=='Completed'&&!emailSent&&<form onSubmit={event=>{event.preventDefault();if(final&&opened&&sent)onAction('Email sent',{email:draft});}}><h3>Processing email draft</h3><div className="fulfilment-email-addresses"><label>To (required)<input type="email" multiple required value={draft.to} onChange={e=>{setDraft({...draft,to:e.target.value});setOpened(false);setSent(false);}} placeholder="Processing team email"/></label><label>CC<input type="email" multiple value={draft.cc} onChange={e=>setDraft({...draft,cc:e.target.value})}/></label></div><label>Subject<input required value={draft.subject} onChange={e=>setDraft({...draft,subject:e.target.value})}/></label><label>Body<textarea rows="8" required value={draft.body} onChange={e=>setDraft({...draft,body:e.target.value})}/></label><div className="fulfilment-buttons"><button className="button button-subtle" type="button" onClick={()=>{navigator.clipboard?.writeText(`To: ${draft.to}
-CC: ${draft.cc}
-Subject: ${draft.subject}
-
-${draft.body}`);}}>Copy draft</button><button className="button button-primary" type="button" disabled={!final||!draft.to.trim()||!draft.subject.trim()||!draft.body.trim()} onClick={event=>{if(!event.currentTarget.form.reportValidity())return;const params=new URLSearchParams({view:'cm',fs:'1',to:draft.to,cc:draft.cc,su:draft.subject,body:draft.body});window.open(`https://mail.google.com/mail/?${params.toString()}`,'_blank','noopener,noreferrer');setOpened(true);}}>Open Gmail</button></div>{opened&&<label className="fulfilment-consent"><input type="checkbox" checked={sent} onChange={e=>setSent(e.target.checked)}/>I confirm I have sent this processing email.</label>}<button type="submit" className="button button-primary" disabled={!final||!opened||!sent}>Mark email sent</button><small className="fulfilment-help">Gmail opens in a new browser tab. Sign in if needed, review the draft, and send it in Gmail before confirming here.</small></form>}
+ {it&&ticket.state!=='Completed'&&(!emailSent||ticket.fulfilment?.emailDrafts)&&<>
+  <h3>Processing email drafts ({drafts.filter(draft=>draft.sentAt).length}/{drafts.length} sent)</h3>
+  {drafts.map(draft=><EmailDraftCard key={draft.id} draft={draft} canSend={final&&!emailSent} onSent={(row,email)=>onAction('Email sent',{draftId:row.id,email})}/>)}
+ </>}
  {emailSent&&<p className="fulfilment-note">Processing email marked sent by {ticket.fulfilment.emailSentBy} / {stamp(emailSent)}</p>}
  {it&&emailSent&&ticket.state!=='Completed'&&<form onSubmit={event=>{event.preventDefault();if(onAction('Fulfilled',{credentials}))setRows({});}}><h3>Provide system IDs / credentials</h3><p className="fulfilment-help">{isNewUser(ticket)?`The approving ${ticket.custodian?.role||'manager or head'}, ${ticket.custodian?.name||'not recorded'}, receives these IDs for custody and can view them for 24 hours.`:'The requester can view credentials for 24 hours after completion.'} Credentials are excluded from the ticket audit and submitted form.</p>{items.map(item=><fieldset key={item.key}><legend>{item.system} / {item.person}</legend><div className="fulfilment-email-addresses"><label>ID / email (required)<input required autoComplete="off" value={rows[item.key]?.username||''} onChange={e=>update(item.key,'username',e.target.value)}/></label><label>Temporary password (required)<input required type="password" autoComplete="new-password" value={rows[item.key]?.password||''} onChange={e=>update(item.key,'password',e.target.value)}/></label></div></fieldset>)}<button className="button button-primary" type="submit">{isNewUser(ticket)?'Hand IDs to custodian and close ticket':'Provide IDs and close ticket'}</button></form>}
  {isNewUser(ticket)&&ticket.state==='Completed'&&<p className="fulfilment-note">IDs handed to {ticket.fulfilment?.custodyRecipient?.name||ticket.custodian?.name||'the approving manager or department head'} for custody.</p>}

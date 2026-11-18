@@ -8,6 +8,14 @@
   --dashboard-title:#8dcef5;
   --dashboard-elevation:0 4px 12px #020c1838,0 1px 3px #020c1826;
 }
+.app-shell .content-shell.overview-shell>.topbar {
+  backdrop-filter:none;
+}
+.app-shell .content-shell.overview-shell>.topbar::before {
+  animation:none;
+  text-indent:0;
+  text-overflow:ellipsis;
+}
 .app-shell .content-shell.overview-shell .welcome-banner {
   background:linear-gradient(115deg,var(--bank-blue) 0%,var(--bank-blue-deep) 75%,#164c67 100%);
   box-shadow:0 5px 15px #00558d20,inset 0 1px 0 #ffffff24;
@@ -16,16 +24,36 @@
   border-bottom:2px solid var(--bank-green);
 }
 .app-shell .content-shell.overview-shell .metrics-grid .metric-card {
+  --metric-accent:transparent;
   position:relative;
+  /* Keep hover repainting inside the card while its outer shadow stays fixed. */
+  contain:paint;
+  overflow:clip;
   border-color:color-mix(in srgb,var(--bank-blue) 16%,var(--line));
   background:linear-gradient(120deg,var(--surface),color-mix(in srgb,var(--brand-blue-soft) 25%,var(--surface)));
-  box-shadow:var(--dashboard-elevation);
+  box-shadow:inset 0 0 0 1px var(--metric-accent),var(--dashboard-elevation);
   border-radius:10px;
+}
+.app-shell .content-shell.overview-shell .metrics-grid .metric-card:is(:hover,:focus-visible) {
+  --metric-accent:color-mix(in srgb,var(--blue) 25%,transparent);
+}
+.app-shell .content-shell.overview-shell .metrics-grid .metric-card-action:hover:not([aria-pressed=true]) {
+  border-color:var(--blue);
+}
+@media (prefers-reduced-motion:no-preference) {
+  .app-shell .content-shell.overview-shell .metrics-grid .metric-card-action :is(.metric-top>span,.metric-value) {
+    position:relative;
+    top:0;
+    transition:top .15s ease;
+  }
+  .app-shell .content-shell.overview-shell .metrics-grid .metric-card-action:hover :is(.metric-top>span,.metric-value) {
+    top:-2px;
+  }
 }
 .app-shell .content-shell.overview-shell .metrics-grid .metric-card[aria-pressed=true] {
   border-color:var(--bank-green);
   background:linear-gradient(120deg,var(--surface),var(--brand-green-soft));
-  box-shadow:inset 3px 0 0 var(--bank-green),var(--dashboard-elevation);
+  box-shadow:inset 3px 0 0 var(--bank-green),inset 0 0 0 1px var(--metric-accent),var(--dashboard-elevation);
 }
 .app-shell .content-shell.overview-shell .metrics-grid .metric-value {
   color:var(--dashboard-title);

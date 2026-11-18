@@ -30,15 +30,14 @@
 @media(max-width:620px){.operations-finder{width:100%}.operations-finder-controls{gap:5px;padding:5px}.operations-finder-controls select{width:120px;font-size:10px}.operations-finder-controls label{gap:4px;padding:0 6px}.operations-finder-controls input{font-size:10px}.finder-access-modal{padding:14px}}
 @media(max-width:620px){.operations-finder:before{font-size:9px}.operations-finder-controls select,.operations-finder-controls label{height:38px}.operations-finder-controls select{width:128px;font-size:11px}.operations-finder-controls label{gap:6px;padding:0 8px}.operations-finder-controls input{font-size:11px}}
 .app-shell .overview-shell .metrics-grid{order:2}
-.app-shell .overview-shell .metric-card-action{width:100%;font:inherit;color:var(--text);text-align:left;cursor:pointer;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
-.app-shell .overview-shell .metric-card-action:hover{transform:translateY(-2px);border-color:var(--blue);box-shadow:0 8px 22px #0072ce24}
+.app-shell .overview-shell .metric-card-action{width:100%;font:inherit;color:var(--text);text-align:left;cursor:pointer}
 .app-shell .overview-shell .metric-card-action:focus-visible{outline:3px solid #67b7f0;outline-offset:2px}
 .app-shell .overview-shell .overview-request-panel{order:3;position:relative;z-index:5;overflow:visible;border-color:#c9e0f1;background:linear-gradient(112deg,#f3f9fd 0%,#edf6fc 48%,#f6fbfe 100%);box-shadow:0 5px 18px #24658b0b}
 .app-shell .overview-shell .overview-request-panel:has(.request-type-chooser-scrim){z-index:130}
 .app-shell .overview-shell .main-grid{order:4}
 .app-shell .overview-shell .main-grid{align-items:stretch}
 .app-shell .overview-shell .request-panel{height:100%;box-sizing:border-box}
-.app-shell .overview-shell .overview-request-panel:before{position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#0877bc,#73c7e9,#53b58a,#0877bc);background-size:220% 100%;animation:request-band-shift 9s linear infinite;content:''}
+.app-shell .overview-shell .overview-request-panel:before{position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#0877bc,#73c7e9,#53b58a,#0877bc);background-size:220% 100%;content:''}
 .app-shell .overview-shell .overview-request-panel>.section-title{position:relative;z-index:1;padding-top:2px}
 .app-shell .overview-shell .overview-request-grid{position:relative;z-index:1}
 .theme-dark .overview-shell .overview-request-panel{color:#21374d}
@@ -53,11 +52,7 @@
 .app-shell .overview-shell .overview-request-card:active{transform:translateY(-1px) scale(.985)}
 .app-shell .overview-shell .overview-request-card .system-access-card-mark{transition:transform .18s ease,box-shadow .18s ease}
 .app-shell .overview-shell .overview-request-card:hover .system-access-card-mark{transform:scale(1.08);box-shadow:0 3px 9px #17649c20}
-.app-shell .overview-shell .metric-card{transition:transform .18s ease,box-shadow .18s ease}
-.app-shell .overview-shell .metric-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px #173e5c12}
-.app-shell .overview-shell .orbit-one{animation:orbit-drift 22s linear infinite}
-.app-shell .overview-shell .orbit-two{animation:orbit-drift 28s linear infinite reverse}
-.app-shell .overview-shell .art-shield{animation:shield-float 4.2s ease-in-out infinite}
+.app-shell .overview-shell .metric-card{transition:border-color .15s ease,box-shadow .15s ease}
 /* Keep overview text comfortable to read at the compact viewport height. */
 .app-shell .overview-shell .welcome-banner .eyebrow{font-size:12px}
 .app-shell .overview-shell .welcome-banner h1{font-size:29px}
@@ -78,10 +73,6 @@
 .app-shell .overview-shell .quick-actions strong{font-size:13px}
 .app-shell .overview-shell .quick-actions small,.app-shell .overview-shell .quick-card>p{font-size:11px}
 .app-shell .overview-shell .overview-request-card .system-access-card-copy strong{font-size:14px}
-@keyframes request-band-shift{to{background-position:220% 0}}
-@keyframes orbit-drift{to{transform:rotate(332deg)}}
-@keyframes shield-float{0%,100%{translate:0 0}50%{translate:0 -5px}}
 @media(prefers-reduced-motion:reduce){
-  .app-shell .overview-shell .overview-request-panel:before,.app-shell .overview-shell .orbit-one,.app-shell .overview-shell .orbit-two,.app-shell .overview-shell .art-shield{animation:none!important}
   .app-shell .overview-shell .overview-request-card,.app-shell .overview-shell .metric-card,.app-shell .overview-shell .system-access-card-mark{transition:none!important}
 }

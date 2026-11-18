@@ -56,3 +56,5 @@
 .app-shell:not(.theme-dark) .sidebar .nav-label,.app-shell:not(.theme-dark) .sidebar .nav-item:not(.active),.app-shell:not(.theme-dark) .sidebar .nav-item:not(.active) svg{color:#000}
 
 .app-shell .sidebar .nav-item .nav-pending-count{flex:none;margin-left:auto;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#c2410c;color:#fff;font:700 11px var(--font-ui)}
+.app-shell>.sidebar-scrim{display:none}
+@media(max-width:900px){.app-shell>.sidebar-scrim.visible{display:block}}
