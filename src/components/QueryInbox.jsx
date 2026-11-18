@@ -1,3 +1,4 @@
+import {requestTypeLabel} from './requestTitle.js';
 import React, { useState } from 'react';
 import Icon from './Icon.jsx';
 import { queryInboxGroups } from './queryInbox.js';
@@ -15,7 +16,7 @@ export default function QueryInbox({requests,profile,onOpen}) {
     <header className="query-inbox-heading"><span className="query-inbox-symbol"><Icon name="search" size={19}/></span><div><p>YOUR RESPONSE NEEDED</p><h2>Query inbox <b>{pending.length}</b></h2></div></header>
     <div className="query-inbox-tabs">{[['query','Query'],['response','Response'],['all','All']].map(([key,label])=><button key={key} type="button" aria-pressed={filter===key} onClick={()=>{setFilter(key);setSelected(null);}}>{label} <b>{groups[key].length}</b></button>)}</div>
     {active?<><label className="query-inbox-picker">Ticket / query<select value={active.key} onChange={event=>setSelected(event.target.value)}>{visible.map(item=><option key={item.key} value={item.key}>{item.ticket.id} - {item.query.by} - {status(item)}</option>)}</select></label>
-      <div className="query-inbox-content"><article className="query-inbox-ticket"><div><button type="button" onClick={()=>onOpen(active.ticket)}>{active.ticket.id}<Icon name="arrow" size={13}/></button><span className={active.pending?'query-needs-reply':'query-replied'}>{status(active)}</span></div><h3>{active.ticket.action}</h3><p>{active.ticket.name}</p><small>{active.ticket.system} / {active.ticket.branch}</small></article>
+      <div className="query-inbox-content"><article className="query-inbox-ticket"><div><button type="button" onClick={()=>onOpen(active.ticket)}>{active.ticket.id}<Icon name="arrow" size={13}/></button><span className={active.pending?'query-needs-reply':'query-replied'}>{status(active)}</span></div><h3>{requestTypeLabel(active.ticket.action)}</h3><p>{active.ticket.name}</p><small>{active.ticket.system} / {active.ticket.branch}</small></article>
       <div className="query-inbox-message"><div className="query-sender"><strong>From {active.query.by}</strong><small>{active.query.role} / {timestamp(active.query.at)}</small></div><p>{active.query.message}</p></div>
       {(active.query.responses||[]).map((reply,index)=><div className="query-inbox-response" key={`${reply.employeeId}:${index}`}><strong>Response from {reply.responseBy||reply.employeeId}</strong><small>{reply.role} / {timestamp(reply.responseAt)}</small><p>{reply.response}</p></div>)}
       </div>

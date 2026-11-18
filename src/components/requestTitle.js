@@ -1,3 +1,5 @@
+export const requestTypeLabel=type=>({'IDrive access':'I Drive / S Drive Access','N Drive access':'N Drive Access','ID reset / unlock':'Unlock / Reset','ID Unlock / Reset':'Unlock / Reset','ID Reset / Unlock':'Unlock / Reset','Branch / Department change':'Branch / Department Transfer','Branch / Department Change':'Branch / Department Transfer'}[type]||type);
+
 export function requestTitle(ticket, compact=true) {
   const data={...ticket,...ticket.submittedForm?.data};
   const action=data.type||ticket.action;
@@ -17,5 +19,6 @@ export function requestTitle(ticket, compact=true) {
   const names=[...systems];
   const subject=compact&&names.length>3?`${names.slice(0,3).join(', ')} +${names.length-3} more`:names.join(', ');
   const label={'System ID creation (self-request)':'System ID creation','New ID creation':'System ID creation','New ID creation (on behalf)':'New employee ID request','ID upgrade':'ID Role Upgrade','ID reset / unlock':'ID reset / unlock','System ID deactivation':'System ID deactivation','Employee ID deactivation':'Employee ID deactivation','Branch transfer':'Branch transfer'}[action]||action;
-  return subject?`${label} - ${subject}`:label;
+  const displayLabel=requestTypeLabel(label);
+  return subject?`${displayLabel} - ${subject}`:displayLabel;
 }

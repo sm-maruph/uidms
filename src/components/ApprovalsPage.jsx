@@ -1,3 +1,4 @@
+import {requestTypeLabel} from './requestTitle.js';
 ﻿import React, { useLayoutEffect, useRef, useState } from 'react';
 import Icon from './Icon.jsx';
 import { matchesApprovalDate } from './approvalFilters.js';
@@ -19,7 +20,7 @@ export default function ApprovalsPage({ initialRange='Today', rows, role, filter
   const awaiting=dated.filter(row=>['Pending','In review'].includes(row.state)&&row.assignedRole);
   const approvalOwners=[...new Set(['Branch manager','IT','CITO','COO',...awaiting.map(row=>row.assignedRole)])];
   const count=status=>status==='All'?dated.length:dated.filter(row=>row.state===status).length;
-  const filtered=dated.filter(row=>(filter==='All'||row.state===filter)&&(!approvalOwner||(['Pending','In review'].includes(row.state)&&row.assignedRole===approvalOwner))&&`${row.id} ${row.name} ${row.action} ${row.system} ${row.branch}`.toLowerCase().includes(search.trim().toLowerCase())).sort((a,b)=>sort==='oldest'?a.createdAt.localeCompare(b.createdAt):b.createdAt.localeCompare(a.createdAt));
+  const filtered=dated.filter(row=>(filter==='All'||row.state===filter)&&(!approvalOwner||(['Pending','In review'].includes(row.state)&&row.assignedRole===approvalOwner))&&`${row.id} ${row.name} ${requestTypeLabel(row.action)} ${row.system} ${row.branch}`.toLowerCase().includes(search.trim().toLowerCase())).sort((a,b)=>sort==='oldest'?a.createdAt.localeCompare(b.createdAt):b.createdAt.localeCompare(a.createdAt));
   const pages=Math.max(1,Math.ceil(filtered.length/pageSize));
   const current=Math.min(page,pages);
   const start=(current-1)*pageSize;

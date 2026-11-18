@@ -1,3 +1,4 @@
+import {requestTypeLabel} from './requestTitle.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Icon from './Icon.jsx';
@@ -31,7 +32,7 @@ function QueryPopup({ entry, reply, responder, onClose, onReply }) {
       <div className="received-query-sender"><span className="review-recipient-avatar" aria-hidden="true">{sender.split(' ').map(part=>part[0]).slice(0,2).join('')}</span><div><small>{reply?'Replied by':'Sent by'}</small><strong>{sender}</strong><span>{reply?responder?.role:query.role}{time&&` · ${time}`}</span></div></div>
       {reply&&<><dl className="query-response-profile">{[['Employee ID',responder?.employeeId||reply.employeeId],['Designation',responder?.designation],['Department',responder?.department],['Branch',responder?.branch]].filter(([,value])=>value).map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><small className="query-reply-recipient">Reply to {query.by} · {query.role}</small><p className="received-query-original">{query.message}</p></>}
       <p className="received-query-message">{reply?reply.response:query.message}</p>
-      <p className="review-dialog-intro">{entry.ticket.id} · {entry.ticket.action}</p>
+      <p className="review-dialog-intro">{entry.ticket.id} · {requestTypeLabel(entry.ticket.action)}</p>
       {reply?<footer className="modal-actions"><Button type="button" variant="subtle" onClick={onClose}>Close</Button></footer>:<form onSubmit={event=>{event.preventDefault();if(!response.trim())return;if(onReply(response.trim())!==true)setError('Your response could not be sent. Please check the query is still awaiting your reply.');}}>
         <label className="field-label">Reply to {query.by||'query sender'}<textarea required rows="4" value={response} onChange={event=>{setResponse(event.target.value);setError('');}} placeholder="Write your response here"/></label>
         {error&&<p className="form-error" role="alert">{error}</p>}

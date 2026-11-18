@@ -1,3 +1,4 @@
+import {requestTypeLabel} from './requestTitle.js';
 import { canReceiveCredentials, isNewUser } from './newUserWorkflow.js';
 export function fulfilmentItems(ticket) {
  const data={...ticket,...ticket.submittedForm?.data};
@@ -24,12 +25,12 @@ export const citoApproved=ticket=>(ticket.approvalHistory||[]).some(event=>event
 export const readyForFulfilment=ticket=>['Approved','In progress'].includes(ticket.state);
 export function processingEmail(ticket){
  const items=fulfilmentItems(ticket);
- return {to:'',cc:isNewUser(ticket)?'':ticket.requesterProfile?.email||'',subject:`[${ticket.id}] ${ticket.action} - IT processing`,body:`Dear Team,
+ return {to:'',cc:isNewUser(ticket)?'':ticket.requesterProfile?.email||'',subject:`[${ticket.id}] ${requestTypeLabel(ticket.action)} - IT processing`,body:`Dear Team,
 
 Please process the following approved identity service request.
 
 Ticket: ${ticket.id}
-Request: ${ticket.action}
+Request: ${requestTypeLabel(ticket.action)}
 Requester: ${ticket.name}
 Branch: ${ticket.branch}
 

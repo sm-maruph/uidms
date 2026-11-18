@@ -94,7 +94,7 @@ test('my queries card count matches tickets rather than number of replies',()=>{
  const metric=operationsMetrics(data,profile).find(card=>card.key==='my-queries');
  assert.equal(metric.value,2);
  assert.equal(metric.value,metric.rows.length);
- assert.equal(metric.label,'My queries');
+ assert.equal(metric.label,'Response');
 });
 
 test('query cards use the actual author and recipients, independent of role or ticket ownership',()=>{

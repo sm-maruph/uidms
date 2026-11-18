@@ -9,7 +9,7 @@ const scenarios = [
   [0,'Email creation','Email','Individual mailbox','Approved',null,'Create a mailbox to coordinate daily branch customer service activities.'],
   [1,'Mailing group change','Email','Group inclusion','Query','IT','Include the branch manager in the operations announcements mailing group.'],
   [2,'External device email access','Email','Mobile access','In review','COO','Mobile email access is required during scheduled out-of-hours IT support.'],
-  [0,'ID reset / unlock','WBO','Account unlock','Pending','Branch manager','The account is locked and must be restored for daily trade processing.'],
+  [0,'ID reset / unlock','WBO','Account unlock','Pending','CITO',''],
   [5,'Employee ID deactivation','All systems','Deactivate existing IDs','In review','IT','Disable the accounts of a departing employee after the final working day.'],
   [6,'ID upgrade','ITMBD','Manager','Rejected',null,'Request elevated access for a temporary support assignment.'],
   [0,'Branch transfer','ICBS, WBO','Entry','Query','Branch manager','Move branch system access to the new Gulshan Branch assignment.'],
@@ -40,7 +40,7 @@ export const extraMockRequests = scenarios.map(([userIndex, action, system, requ
   const user = initialUsers[userIndex];
   const created = new Date(Date.UTC(2026, 10, 9 - Math.floor(index / 4), 2 + index % 4, 10));
   const at = minutes => new Date(created.getTime() + minutes * 60000).toISOString();
-  const flow = action === 'System ID deactivation' && user.role === 'Branch manager' ? reviewers.slice(1) : action === 'ID reset / unlock' ? reviewers.slice(0, 3) : reviewers;
+  const flow = action === 'System ID deactivation' && user.role === 'Branch manager' ? reviewers.slice(1) : action === 'ID reset / unlock' ? ['CITO'] : reviewers;
   const completedCount = ['Approved','Rejected'].includes(state) ? flow.length : Math.max(0, flow.indexOf(owner));
   const approvalHistory = flow.slice(0, completedCount).map((role, stageIndex) => ({
     stage:role, role, by:reviewerFor(role).name, at:at(20 + stageIndex * 25),

@@ -17,7 +17,7 @@ export const requestRoles = {
   'ITMBD Test':['Inquiry','Entry','Supervisor','Assistant Manager','Manager'],
   'ICBS Test':['Inquiry','Entry','Supervisor','Assistant Manager','Manager'],
   'AD ID':[], 'AMLOCK ID':[], 'Internet Access':[], 'E-Journal':[], 'FX Portal':[], Quantum:[],
-  'NID Verification':[], E2gen:[], MCAS:[], 'Jira ID':[], 'Wi-Fi Access':[], 'External Device Access':[], IDrive:[], 'N Drive':[], Email:[],
+  'NID Verification':[], E2gen:[], MCAS:[], 'Jira ID':[], 'Wi-Fi Access':[], 'External Device Access':[], IDrive:[], 'S Drive':[], 'N Drive':[], Email:[],
 };
 
 export const requestSystems = Object.keys(requestRoles);
