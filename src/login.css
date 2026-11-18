@@ -144,3 +144,5 @@ html:has(.uidms-login),body:has(.uidms-login){height:100%;overflow:hidden}
 @media(prefers-reduced-motion:no-preference){.uidms-login .login-submit:not(:disabled)::after{animation:login-button-shimmer 5s ease-in-out infinite}}
 @keyframes login-button-shimmer{0%,55%{transform:translateX(-130%)}85%,100%{transform:translateX(130%)}}
 @media(prefers-reduced-motion:reduce){.uidms-login .login-submit,.uidms-login .login-submit>svg{transition:none}.uidms-login .login-submit:hover:not(:disabled),.uidms-login .login-submit:active:not(:disabled),.uidms-login .login-submit:hover:not(:disabled)>svg{transform:none}}
+.uidms-login .login-create-mock{min-height:40px;padding:8px 12px;border:1px solid currentColor;border-radius:8px;background:transparent;color:inherit;font:inherit;font-weight:600;cursor:pointer}
+.uidms-login .login-create-mock:hover,.uidms-login .login-create-mock:focus-visible{color:#1681c4}

@@ -4,8 +4,8 @@ import Icon from './Icon.jsx';
 import bankLogo from '../images-removebg-preview.png';
 import '../login.css';
 
-export default function Login({ users, onLogin, dark = true, onToggleTheme }) {
-  const [error,setError] = useState('');
+export default function Login({ users, onLogin, onCreateMockUser, dark = true, onToggleTheme, initialError='' }) {
+  const [error,setError] = useState(initialError);
   const [employeeId, setEmployeeId] = useState(users[0]?.employeeId || '');
   const selected = users.find(user => user.employeeId === employeeId);
   const initials = selected?.name.split(' ').filter(Boolean).map(part => part[0]).slice(0, 2).join('');
@@ -29,6 +29,7 @@ export default function Login({ users, onLogin, dark = true, onToggleTheme }) {
           <div className="login-select-wrap"><Icon name="idCard" size={20}/><select id="login-employee" value={employeeId} onChange={event => setEmployeeId(event.target.value)} required disabled={!users.length}>{!users.length && <option value="">No accounts available</option>}{users.map(user => <option key={user.employeeId} value={user.employeeId}>{user.employeeId} · {user.name}</option>)}</select><Icon name="chevron" size={17}/></div>
           <div className="login-profile" aria-live="polite" aria-atomic="true">{selected ? <><span className="login-profile-avatar">{initials}</span><div className="login-profile-info"><strong>{selected.name}</strong><span>{selected.branch}</span></div><span className="login-profile-role">{selected.role}</span></> : <p>No employee accounts are available. Contact your administrator.</p>}</div>
           <button className="login-submit" type="submit" disabled={!selected}>Continue to workspace <Icon name="arrow" size={19}/></button>
+          {onCreateMockUser&&<button className="login-create-mock" type="button" onClick={onCreateMockUser}>Create mock user</button>}
           <p className="login-demo-note"><Icon name="key" size={15}/> Demo accounts only. No password required.</p>
         </form>
         <div className="login-entry-note"><Icon name="clock" size={18}/><p>All of your activity will be logged for audit trails.</p></div>
