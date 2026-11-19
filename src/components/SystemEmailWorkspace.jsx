@@ -2,6 +2,8 @@ import React,{useEffect,useState} from 'react';
 import SystemEmailTemplates from './SystemEmailTemplates.jsx';
 import EmailDraftCard from './EmailDraftCard.jsx';
 import {useSqlRefresh} from './useSqlRefresh.js';
+import {retryAfterSeconds} from './rateLimit.js';
+import {mfaErrorMessages} from './mfaErrors.js';
 import '../system-email.css';
 
 const origin=import.meta.env.VITE_UIDMS_API_ORIGIN||(import.meta.env.DEV?`${window.location.protocol}//${window.location.hostname}:4000`:'');
@@ -19,8 +21,8 @@ export async function api(path,{method='GET',body,csrfToken,signal,format}={}){
  const data=await response.json().catch(()=>null);
  if(!response.ok||!data){
   const {code,message}=data?.error||{};
-  const text=message&&message!==code?message:errorMessages[code]||(response.status===429?'Too many requests. Wait a moment and try again.':'UIDMS could not complete this action.');
-  throw Object.assign(new Error(text),{status:response.status,code});
+  const text=message&&message!==code?message:mfaErrorMessages[code]||errorMessages[code]||(response.status===429?'Too many requests. Wait a moment and try again.':'UIDMS could not complete this action.');
+  throw Object.assign(new Error(text),{status:response.status,code,...(response.status===429?{retryAfterSeconds:retryAfterSeconds(response.headers.get('Retry-After'),data?.error?.retryAfterSeconds)}:{})});
  }
  return data;
 }

@@ -1,4 +1,4 @@
-.profile-onboarding{min-height:100dvh;display:grid;place-items:center;padding:clamp(14px,4vw,40px);background:radial-gradient(ellipse at 10% 12%,#1687c324,transparent 55%),var(--bg);color:var(--text)}
+.profile-onboarding{box-sizing:border-box;min-height:100dvh;display:grid;place-items:center;padding:clamp(14px,4vw,40px);background:radial-gradient(ellipse at 10% 12%,#1687c324,transparent 55%),var(--bg);color:var(--text)}
 .profile-onboarding-card{width:min(100%,870px);display:grid;grid-template-columns:minmax(200px,1fr) minmax(0,2fr);border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--surface);box-shadow:0 22px 64px #003b5a30;animation:profile-onboarding-enter .35s ease-out}
 .profile-onboarding-rail{display:flex;flex-direction:column;justify-content:space-between;gap:24px;padding:24px;background:radial-gradient(circle at 100% 0%,#0084c9,transparent 60%),#00486e;color:#fff;border-block-end:4px solid #51b44b}
 .profile-onboarding-rail img{width:146px;max-width:100%;height:auto;object-fit:contain;background:#fff;padding:6px 8px;border-radius:7px}
@@ -21,6 +21,7 @@
 .profile-onboarding-card progress{width:100%;height:10px;accent-color:var(--bank-green,#51b44b)}
 .profile-onboarding-card :is(input,select){width:100%;min-height:42px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:var(--surface-soft);color:var(--text);font:inherit}
 .profile-onboarding-actions{margin-top:12px}
+.profile-onboarding-identity{font-size:14px;line-height:1.6;color:var(--muted);margin:0 0 20px}.profile-onboarding-field small{font-size:12px;color:var(--muted)}.profile-onboarding-field [role=alert]{color:#b52f40}.profile-onboarding-card button:disabled{opacity:.65;cursor:wait}
 .profile-onboarding-loading{text-align:center;padding:24px 0 12px}
 .profile-onboarding-loading h1{margin-top:14px}
 .profile-onboarding-tip{min-height:85px;margin:16px 0 0;padding:12px 14px;text-align:start;border:1px solid var(--line);border-inline-start:3px solid #51b44b;border-radius:8px;background:var(--surface-soft)}
@@ -28,5 +29,5 @@
 .profile-onboarding-spinner{display:inline-block;width:36px;height:36px;border:3px solid var(--line);border-top-color:var(--bank-blue,#006fb5);border-radius:50%;animation:profile-onboarding-spin .8s linear infinite}
 @keyframes profile-onboarding-spin{to{transform:rotate(360deg)}}
 @keyframes profile-onboarding-enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-@media(max-width:620px){.profile-onboarding-card{grid-template-columns:1fr}.profile-onboarding-rail{gap:10px;padding:15px}.profile-onboarding-rail h2{display:none}.profile-onboarding-rail ol{grid-template-columns:repeat(5,1fr);gap:4px}.profile-onboarding-rail li{flex-direction:column;text-align:center;font-size:10px;padding:0}.profile-onboarding-rail img{width:114px}}
+@media(max-width:620px){.profile-onboarding-card{grid-template-columns:1fr}.profile-onboarding-rail{gap:10px;padding:15px}.profile-onboarding-rail h2{display:none}.profile-onboarding-rail ol{grid-template-columns:repeat(4,1fr);gap:4px}.profile-onboarding-rail li{flex-direction:column;text-align:center;font-size:10px;padding:0}.profile-onboarding-rail img{width:114px}}
 @media(prefers-reduced-motion:reduce){.profile-onboarding-card,.profile-onboarding-field,.profile-onboarding-tip,.profile-onboarding-loading,.profile-onboarding-spinner{animation:none}.profile-onboarding-progress-track span{transition:none}}

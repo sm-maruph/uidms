@@ -154,3 +154,6 @@ html:has(.uidms-login),body:has(.uidms-login){height:100%;overflow:hidden}
 .uidms-login .login-switch-demo{margin:8px 0;font-size:12px}
 .uidms-login .login-switch-demo summary{cursor:pointer}
 .uidms-login .login-switch-demo select{display:block;width:100%;margin-top:6px;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--text);font:inherit}
+
+.uidms-login .login-method-wrap{margin-bottom:18px}
+.uidms-login .login-method-note{margin:-8px 0 16px;color:#6d7f8e;font-size:12px;line-height:1.5}.uidms-login.login-dark .login-method-note{color:#c2cfdd}

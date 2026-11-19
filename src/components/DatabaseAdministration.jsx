@@ -4,7 +4,7 @@ import {Button} from './UI.jsx';
 import {api} from './SystemEmailWorkspace.jsx';
 import {useSqlRefresh} from './useSqlRefresh.js';
 
-const empty={employeeId:'',name:'',email:'',role:'User',branchId:'',departmentId:'',designationId:'',active:true};
+const empty={employeeId:'',name:'',email:'',role:'User',branchId:'',departmentId:'',designationId:'',active:true,mock:true};
 
 export default function DatabaseAdministration({users,catalog,write,onRefresh,notify,role}){
  const [form,setForm]=useState(empty);
@@ -24,19 +24,19 @@ export default function DatabaseAdministration({users,catalog,write,onRefresh,no
   return save(async()=>{
    const {id,version,employeeId,name,email,role,branchId,departmentId,designationId,active}=form;
    const body={name,email,role,branchId,departmentId,designationId:designationId||null};
-   const result=id?await write('/users/'+id,'PATCH',{...body,version,active}):await write('/users','POST',{...body,employeeId});
-   if(result?.activationToken)setActivation(result.activationToken);
+   const result=id?await write('/users/'+id,'PATCH',{...body,version,active}):await write('/users','POST',{...body,employeeId,mock:Boolean(catalog.mockLoginEnabled)&&form.mock!==false});
+   setActivation(result?.activationToken||'');if(result?.mock)notify('Mock user created. Sign in with its employee ID and password 1234.');
    setForm(empty);
   });
  };
  return <section className="panel directory-panel">
   <h2>Organization setup</h2>
   <form className="admin-user-form" onSubmit={saveUser}>
-   <h3>{form.id?'Edit user':'Create user'}</h3>
+   <h3>{form.id?'Edit user':'Create user'}</h3>{!form.id&&catalog.mockLoginEnabled&&<label><input type="checkbox" checked={form.mock!==false} onChange={event=>update('mock',event.target.checked)}/>Mock account (password 1234, local development only)</label>}
    <div className="transfer-field-grid">
     <label>Employee ID<input value={form.employeeId} disabled={Boolean(form.id)} required onChange={event=>update('employeeId',event.target.value)}/></label>
     <label>Full name<input value={form.name} required onChange={event=>update('name',event.target.value)}/></label>
-    <label>Work email<input type="email" value={form.email} required onChange={event=>update('email',event.target.value)}/></label>
+    <label>Work email (optional)<input type="email" value={form.email||''} onChange={event=>update('email',event.target.value)}/></label>
     <label>Role<select value={form.role} onChange={event=>update('role',event.target.value)}>{portalRoles.map(role=><option key={role}>{role}</option>)}</select></label>
     {['branch','department','designation'].map(kind=><label key={kind}>{kind[0].toUpperCase()+kind.slice(1)}<select required={kind!=='designation'} value={form[kind+'Id']||''} onChange={event=>update(kind+'Id',event.target.value)}><option value="">Select {kind}</option>{catalog.organizations.filter(row=>row.Kind===kind).map(row=><option key={row.Id} value={row.Id}>{row.Name}</option>)}</select></label>)}
     {form.id&&<label><input type="checkbox" checked={form.active} onChange={event=>update('active',event.target.checked)}/>Active account</label>}
