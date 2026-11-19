@@ -15,7 +15,7 @@ export default function RequestFulfilment({ticket,profile,onAction,delivery,temp
  const owner=canReceiveCredentials(ticket,profile);
  const final=readyForFulfilment(ticket);
  const emailSent=ticket.fulfilment?.emailSentAt;
- const drafts=it?(ticket.fulfilment?.emailDrafts||mockProcessingDrafts(ticket,templates)):[];
+ const drafts=it?(ticket.fulfilment?.emailDrafts||(ticket.sqlId?[]:mockProcessingDrafts(ticket,templates))):[];
  const items=fulfilmentItems(ticket);
  if(!it&&!owner&&!requester)return null;
  if(!final&&ticket.state!=='Completed')return null;

@@ -146,3 +146,11 @@ html:has(.uidms-login),body:has(.uidms-login){height:100%;overflow:hidden}
 @media(prefers-reduced-motion:reduce){.uidms-login .login-submit,.uidms-login .login-submit>svg{transition:none}.uidms-login .login-submit:hover:not(:disabled),.uidms-login .login-submit:active:not(:disabled),.uidms-login .login-submit:hover:not(:disabled)>svg{transform:none}}
 .uidms-login .login-create-mock{min-height:40px;padding:8px 12px;border:1px solid currentColor;border-radius:8px;background:transparent;color:inherit;font:inherit;font-weight:600;cursor:pointer}
 .uidms-login .login-create-mock:hover,.uidms-login .login-create-mock:focus-visible{color:#1681c4}
+.uidms-login .login-select-wrap input{width:100%;min-width:0;min-height:42px;padding:8px 12px 8px 44px;border:1px solid #d4dfe6;border-radius:8px;background:#fff;color:#284356;font:inherit;font-size:13px}
+.uidms-login.login-dark .login-select-wrap input{background:#13263a;border-color:#36536c;color:#edf5fc}
+.uidms-login .login-select-wrap input:disabled{opacity:.65;cursor:default}
+.uidms-login .login-select-wrap input:focus-visible{outline:2px solid var(--login-brand-green);outline-offset:2px}
+.uidms-login .login-password-label,.uidms-login .login-submit{margin-top:10px}
+.uidms-login .login-switch-demo{margin:8px 0;font-size:12px}
+.uidms-login .login-switch-demo summary{cursor:pointer}
+.uidms-login .login-switch-demo select{display:block;width:100%;margin-top:6px;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--text);font:inherit}

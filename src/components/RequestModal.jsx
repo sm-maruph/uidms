@@ -70,7 +70,7 @@ export default function RequestModal({ onClose, onSubmit, profile, users=[], bra
   useEffect(() => { if (previewRef.current) previewRef.current.inert = stage !== 'edit'; }, [stage]);
   const officialForm = type === 'Branch transfer' || type === 'System ID creation (self-request)';
   const formTitle = {'ID reset / unlock':'Unlock / Reset','ID upgrade':'ID Role Upgrade','Email creation':'Email Creation','Auto-forward change':'Email Auto-forwarding','Mailing group change':'Mailing Group Inclusion / Exclusion','New ID creation (on behalf)':'New ID Creation','Employee ID deactivation':'Employee ID Deactivation','System ID deactivation':'System ID Deactivation','IDrive access':selectedDrive==='S Drive'?'S Drive Access':'I Drive Access','N Drive access':'N Drive Access','External device email access':'External Device Email Access'}[type] || type;
-  const signature = readOnly ? ticket.signature : localStorage.getItem('uidmsSignature') || profile?.signature;
+  const signature = readOnly ? ticket.signature : profile?.signature;
   useEffect(() => {
     if (!readOnly || embedded) return;
     document.body.classList.add('approval-form-open');

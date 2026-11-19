@@ -1,20 +1,27 @@
 import React,{useEffect,useState} from 'react';
 import SystemEmailTemplates from './SystemEmailTemplates.jsx';
 import EmailDraftCard from './EmailDraftCard.jsx';
+import {useSqlRefresh} from './useSqlRefresh.js';
 import '../system-email.css';
 
 const origin=import.meta.env.VITE_UIDMS_API_ORIGIN||(import.meta.env.DEV?`${window.location.protocol}//${window.location.hostname}:4000`:'');
 const adminRoles=['Platform Admin','Super Admin'];
 const allowedRoles=['IT',...adminRoles];
+const errorMessages={UNAUTHENTICATED:'Sign in again to continue.',SESSION_EXPIRED:'Your session expired. Sign in again to continue.',CSRF_INVALID:'Your session changed. Sign in again and retry.',FORBIDDEN:'Your account does not have permission for this action.',REQUEST_NOT_FOUND:'This request is no longer available to your account.',NOT_ASSIGNED:'This request is assigned to another approver.',REAUTHENTICATION_REQUIRED:'Sign in again before completing this action.',CONFLICT:'Another record already uses those details.',INTERNAL_ERROR:'UIDMS could not complete this action. Try again shortly.'};
 
-async function api(path,{method='GET',body,csrfToken,signal}={}){
+export async function api(path,{method='GET',body,csrfToken,signal,format}={}){
  const response=await fetch(`${origin}/api${path}`,{method,signal,credentials:'include',headers:{...(body!==undefined?{'Content-Type':'application/json'}:{}),...(csrfToken?{'X-CSRF-Token':csrfToken}:{})},...(body!==undefined?{body:JSON.stringify(body)}:{})}).catch(error=>{
   if(signal?.aborted)throw error;
   throw new Error('Could not connect to the UIDMS API.');
  });
  if(response.status===204)return;
+ if(response.ok&&format==='blob')return response.blob();
  const data=await response.json().catch(()=>null);
- if(!response.ok||!data)throw Object.assign(new Error(data?.error?.message||'Could not reach the UIDMS API.'),{status:response.status});
+ if(!response.ok||!data){
+  const {code,message}=data?.error||{};
+  const text=message&&message!==code?message:errorMessages[code]||(response.status===429?'Too many requests. Wait a moment and try again.':'UIDMS could not complete this action.');
+  throw Object.assign(new Error(text),{status:response.status,code});
+ }
  return data;
 }
 
@@ -35,7 +42,8 @@ function SqlTemplates({session,admin}){
  const [error,setError]=useState('');
  const load=async signal=>{
   const [catalog,lookups]=await Promise.all([api('/system-email-templates',{signal}),admin?api('/lookups',{signal}):null]);
-  setCatalog(catalog);
+  if(signal?.aborted)return;
+  setCatalog(catalog);setError('');
   if(lookups)setRequestTypes(lookups.requestTypes.map(row=>({code:row.Code,name:row.Name,steps:lookups.workflowSteps.filter(step=>step.TypeCode===row.Code).map(step=>step.Role)})));
  };
  useEffect(()=>{
@@ -43,16 +51,16 @@ function SqlTemplates({session,admin}){
   load(controller.signal).catch(error=>{if(!controller.signal.aborted)setError(error.message);});
   return ()=>controller.abort();
  },[admin]);
+ useSqlRefresh(true,load,error=>setError(error.message));
  const update=async(path,method,body)=>{
   await api(`/system-email-templates${path}`,{method,body,csrfToken:session.csrfToken});
   await load();
  };
- if(error)return <p role="alert">{error}</p>;
- if(!catalog)return <p>Loading templates…</p>;
- return <SystemEmailTemplates {...catalog} allowCategories requestTypes={requestTypes}
+ if(!catalog)return error?<p role="alert">{error}</p>:<p>Loading templates…</p>;
+ return <>{error&&<p role="alert">{error}</p>}<SystemEmailTemplates {...catalog} allowCategories requestTypes={requestTypes}
   onSave={({id,...body})=>update(id?`/${id}`:'',id?'PUT':'POST',body)}
   onDelete={item=>update(`/${item.id}`,'DELETE',{version:item.version})}
-  onWorkflow={admin?(item,code,steps)=>update(`/${item.id}/workflows/${code}`,'PUT',{steps}):undefined}/>;
+  onWorkflow={admin?(item,code,steps)=>update(`/${item.id}/workflows/${code}`,'PUT',{steps}):undefined}/></>;
 }
 
 function ProcessingDrafts({session}){
@@ -66,6 +74,15 @@ function ProcessingDrafts({session}){
  const [error,setError]=useState('');
  const [busy,setBusy]=useState(false);
  const path=ticket&&`/requests/${ticket.id}/email-drafts`;
+ useSqlRefresh(!busy,async signal=>{
+  if(path){
+   const [data,current]=await Promise.all([api(path,{signal}),api('/requests/'+ticket.id,{signal})]);
+   if(!signal.aborted){setDrafts(data.items);setTicket(previous=>previous?.id===current.id?{...previous,...current}:previous);}
+  }else{
+   const data=await api(`/requests?${new URLSearchParams({scope:'visible',status,search:filter,page})}`,{signal});
+   if(!signal.aborted)setTickets(data);
+  }
+ },error=>setError(error.message),10000,path||`${status}:${filter}:${page}`);
  useEffect(()=>{
   const controller=new AbortController();
   setTickets(null);setError('');

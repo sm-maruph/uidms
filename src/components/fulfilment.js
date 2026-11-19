@@ -25,7 +25,7 @@ export function fulfilmentItems(ticket) {
  return result;
 }
 export const citoApproved=ticket=>(ticket.approvalHistory||[]).some(event=>event.role==='CITO'&&event.status==='Approved');
-export const readyForFulfilment=ticket=>['Approved','In progress'].includes(ticket.state);
+export const readyForFulfilment=ticket=>['Approved','In progress','IT processing','HO processing'].includes(ticket.state);
 export function processingEmail(ticket,items=fulfilmentItems(ticket)){
  return {to:'',cc:isNewUser(ticket)?'':ticket.requesterProfile?.email||'',subject:`[${ticket.id}] ${requestTypeLabel(ticket.action)} - IT processing`,body:`Dear Team,
 
