@@ -469,7 +469,7 @@ export default function App() {
   try{await refreshOrganization();notify('Profile saved to SQL Server.');}
   catch{notify('Profile saved. Refresh the page to load the latest access records.');}
  };
- if(!profile&&pendingEnrollment)return <ProfileOnboarding enrollment={pendingEnrollment} api={api} onCancel={()=>setPendingEnrollment(null)} onComplete={result=>{setPendingAuth(result);setPendingEnrollment(null);}}/>;
+ if(!profile&&pendingEnrollment)return <ProfileOnboarding enrollment={pendingEnrollment} api={api} onCancel={()=>setPendingEnrollment(null)} onComplete={async result=>{if(result.challenge)setPendingAuth(result);else await completeDatabaseSignIn(result);setPendingEnrollment(null);}}/>;
  if(!profile)return <><Login users={switchUsers} dark={dark} onToggleTheme={()=>setDark(value=>!value)} onLogin={signInWithDatabase} passwordRequired mockLogin={mockLogin} loginOptions={loginOptions}/>{pendingAuth&&<LoginVerification challenge={pendingAuth} api={api} onCancel={()=>setPendingAuth(null)} onVerify={async code=>{const result=await verifyPortalMfa(api,pendingAuth.challenge,code);await completeDatabaseSignIn(result);setPendingAuth(null);}}/>}</>;
  const unreadNotifications=sqlNotifications.filter(row=>!row.ReadAt).length;
  const nav=navFor(role); const displayName=profile.name||'Rahim Ahmed'; const initials=displayName.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();

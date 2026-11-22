@@ -51,7 +51,7 @@ export default function ProfileOnboarding({enrollment,api,onCancel,onComplete}){
       {key==='email'&&<small>Leave this blank if you do not have a work email address yet.</small>}
       {cooldown.blocked?<p role="alert">Try again in {cooldown.label}.</p>:error&&<p role="alert">{error}</p>}
      </div>
-     <div className="profile-onboarding-actions"><button type="button" className="button button-subtle" disabled={busy} onClick={()=>{setError('');if(step)setStep(step-1);else onCancel();}}>{step?'Back':'Cancel'}</button><button type="submit" className="button button-primary" disabled={busy||cooldown.blocked}>{busy?'Saving…':step===fields.length-1?'Continue to authenticator':'Continue'}</button></div>
+     <div className="profile-onboarding-actions"><button type="button" className="button button-subtle" disabled={busy} onClick={()=>{setError('');if(step)setStep(step-1);else onCancel();}}>{step?'Back':'Cancel'}</button><button type="submit" className="button button-primary" disabled={busy||cooldown.blocked}>{busy?'Saving…':step===fields.length-1?'Complete profile':'Continue'}</button></div>
     </form>}
    </div>
   </section>
