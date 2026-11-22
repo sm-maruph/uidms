@@ -29,7 +29,7 @@ import SqlCredentialDelivery from './components/SqlCredentialDelivery.jsx';
 import DatabaseAdministration,{DatabaseAudit,DatabaseWorkflows} from './components/DatabaseAdministration.jsx';
 import {useSqlRefresh} from './components/useSqlRefresh.js';
 import SystemEmailWorkspace,{api} from './components/SystemEmailWorkspace.jsx';
-import {organizationId,requestFromDatabase,requestPayload,systemItems} from './components/databaseRequests.js';
+import {organizationId,requestFromDatabase,requestListItem,requestPayload,requestSubmittedDate,systemItems} from './components/databaseRequests.js';
 import { readyForFulfilment, validateCredentials, mockProcessingDrafts } from './components/fulfilment.js';
 import DeleteRequestDialog from './components/DeleteRequestDialog.jsx';
 import ReviewActionDialog from './components/ReviewActionDialog.jsx';
@@ -267,11 +267,7 @@ export default function App() {
     targetIds:[row.RecipientEmployeeId],targetNames:[row.RecipientName],responses:row.ResponseAt?[{employeeId:row.RecipientEmployeeId,response:row.Response,responseBy:row.RecipientName,responseAt:row.ResponseAt}]:[]});
    threads.set(row.RequestId,history);
   }
-  return rows.map(({demoRecord,...row})=>({
-   ...demoRecord,...row,id:row.ticketNumber,sqlId:row.id,action:row.typeCode==='movement'?CHANGE_REQUEST:demoRecord?.action||row.action,
-   approvalHistory:demoRecord?.approvalHistory||[],queryHistory:threads.get(row.id)||[],
-   queryTargetIds:(threads.get(row.id)||[]).filter(query=>!query.closedAt).flatMap(query=>query.targetIds),remarks:demoRecord?.remarks||[],
-  }));
+  return rows.map(row=>requestListItem(row,threads.get(row.id)||[]));
  };
 
  const sqlWrite=(path,method,body)=>api(path,{method,body,csrfToken:apiSession.csrfToken});
@@ -440,7 +436,7 @@ export default function App() {
     }
     return row;
    }));
-   const signature=await api('/profile/signature',{format:'blob'}).catch(error=>{if(error.status!==404)throw error;return null;});
+   const signature=await api('/profile/signature',{format:'blob'}).catch(error=>{if(error.status!==404||error.code!=='SIGNATURE_NOT_FOUND')throw error;return null;});
    if(signature)current.signature=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('Could not read your saved signature.'));reader.readAsDataURL(signature);});
    enterWorkspace(current);
    setSqlCatalog(catalog);
@@ -479,7 +475,12 @@ export default function App() {
  </div><footer className="page-footer"><span>&copy; 2026 Information Technology Department, CBC Bangladesh. All rights reserved.</span><span><i/> SQL-backed workspace</span></footer></main>{requestChooserOpen&&<NewRequestModal pendingChangeCount={pendingChangeCount} department={profile?.department} role={role} onClose={()=>setRequestChooserOpen(false)} onContinue={(type,drive)=>{setRequestDrive(drive||null);setRequestChooserOpen(false);if(type===CHANGE_REQUEST||type==='Branch transfer'){setSelected(null);setFilter(pendingChangeCount?'Awaiting me':'All');setSearch('');setActive(CHANGE_REQUEST);return;}setEditingTicket(null);setRequestType(type);setModal(true);}}/>}{changeModal&&<TransferChangeModal key={changeModal.id||'new-change'} ticket={changeModal==='new'?null:changeModal} profile={profile} users={users} branches={branches} departments={departments} onClose={()=>setChangeModal(null)} onSubmit={submitChange}/ >}{modal&&<RequestModal key={editingTicket?.id||'new'} ticket={editingTicket} editable={Boolean(editingTicket)} onClose={()=>{setModal(false);setEditingTicket(null);}} onSubmit={submit} profile={profile} users={users} branches={branches} departments={departments} mailingGroups={mailingGroups} initialType={requestType} initialDrive={requestDrive}/ >}{finderProfile&&<div className="modal-scrim" role="presentation" onClick={()=>setFinderProfile(null)}><section className="request-modal finder-access-modal" role="dialog" aria-modal="true" aria-label={`Current access for ${finderProfile.name}`} onClick={event=>event.stopPropagation()}><header className="modal-header"><div><p className="eyebrow">CURRENT ACCESS</p><h2>{finderProfile.name}</h2><p className="modal-subtitle">{finderProfile.employeeId} / {finderProfile.department} / {finderProfile.branch}</p></div><button type="button" className="icon-button" onClick={()=>setFinderProfile(null)} aria-label="Close current access"><Icon name="close"/></button></header><MyAccess profile={users.find(user=>user.employeeId===finderProfile.employeeId)||finderProfile} readOnly/></section></div>}<FloatingQueryChat key={profile.employeeId} profile={profile} requests={requests.filter(request=>canViewChange(request,profile))} onOpen={(ticket,reply=false)=>{setSelected(ticket);setReplyTicketId(null);if(reply)requestAnimationFrame(()=>setReplyTicketId(ticket.id));}}/>{toast&&<div key={toast} className="toast" role="status"><span><Icon name="check" size={17}/></span>{toast}</div>}</div>;
 }
 
-function RequestRows({rows,onOpen}) {return <div className="request-list"><div className="request-head"><span>REQUESTER / TICKET</span><span>SYSTEM & ROLE</span><span>SUBMITTED</span><span>STATUS</span><span/></div>{rows.length?rows.map(r=><button className="request-row" key={r.id} onClick={()=>onOpen(r)}><span className="request-person"><Avatar initials={r.initials} tone="blue"/><span><strong>{r.name}</strong><small>{r.id}  |  {requestTypeLabel(r.action)}</small></span></span><span className="system-role"><strong>{r.system}</strong><small>{r.role}</small></span><span className="submitted"><strong>{r.date.split(', ')[0]}</strong><small>{r.date.split(', ').slice(1).join(', ')}</small></span><span className="status-cell"><Status>{requestStatusLabel(r)}</Status><small>{requestStageLabel(r)}</small></span><Icon name="chevron" size={16} className="row-chevron"/></button>):<div className="empty-state">No requests match these filters.</div>}</div>;}
+function RequestRows({rows,onOpen}) {
+ return <div className="request-list"><div className="request-head"><span>REQUESTER / TICKET</span><span>SYSTEM & ROLE</span><span>SUBMITTED</span><span>STATUS</span><span/></div>{rows.length?rows.map(r=>{
+  const [submitted,...detail]=requestSubmittedDate(r).split(', ');
+  return <button className="request-row" key={r.id} onClick={()=>onOpen(r)}><span className="request-person"><Avatar initials={r.initials} tone="blue"/><span><strong>{r.name}</strong><small>{r.id}  |  {requestTypeLabel(r.action)}</small></span></span><span className="system-role"><strong>{r.system}</strong><small>{r.role}</small></span><span className="submitted"><strong>{submitted}</strong><small>{detail.join(', ')}</small></span><span className="status-cell"><Status>{requestStatusLabel(r)}</Status><small>{requestStageLabel(r)}</small></span><Icon name="chevron" size={16} className="row-chevron"/></button>;
+ }):<div className="empty-state">No requests match these filters.</div>}</div>;
+}
 function RequestsPage({title,rows,role,onOpen,onRequest,onFilter,filter,sort,onSort,notify,showCreate=true}) {return <section className="panel directory-panel requests-paginated-page"><SectionTitle eyebrow={title==='Approvals'?'REVIEW QUEUE':'REQUEST MANAGEMENT'} title={requestTypeLabel(title)}>{showCreate&&<Button icon={title==='Approvals'?'check':'plus'} onClick={title==='Approvals'?()=>notify('Showing requests assigned to your role.'):onRequest}>{title==='Approvals'?'Bulk review':title===CHANGE_REQUEST?'Initiate transfer':'New request'}</Button>}</SectionTitle><p className="directory-intro">{title==='Approvals'?`Review, query or decide requests routed to ${role}. Decisions and remarks are recorded on the ticket.`:'Search and review tickets with their current approval owner and status.'}</p><div className="table-toolbar"><div className="tabs">{['All',...(title===CHANGE_REQUEST?['Awaiting me']:[]),'Pending','In review','Query','Approved'].map(t=><button key={t} className={filter===t?'selected':''} onClick={()=>onFilter(t)}>{t}</button>)}</div><label className="sort-control">Sort <select value={sort} onChange={e=>onSort(e.target.value)}><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="ticket">Ticket ID</option></select></label></div><RequestPagePagination rows={rows} resetKey={`${title}:${filter}:${sort}:${rows.map(row=>row.id).join(",")}`} renderRows={pageRows=><RequestRows rows={pageRows} onOpen={onOpen}/>}/></section>;}
 function UserDirectory({users,requests,onViewAccess,onOpenRequest,onBack}) {
  const [userSearch,setUserSearch]=useState('');const [requestSearch,setRequestSearch]=useState('');const [systemFilter,setSystemFilter]=useState('All');const [requestedRoleFilter,setRequestedRoleFilter]=useState('All');const [fromDate,setFromDate]=useState('');const [toDate,setToDate]=useState('');const [sortBy,setSortBy]=useState('newest');

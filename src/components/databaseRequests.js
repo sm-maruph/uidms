@@ -11,6 +11,22 @@ const normalize=value=>String(value||'').trim().toLowerCase();
 const unique=rows=>[...new Map(rows.map(row=>[JSON.stringify(row),row])).values()];
 const equal=(a,b)=>normalize(a)===normalize(b);
 
+const submittedDateFormat=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'Asia/Dhaka'});
+export function requestSubmittedDate(request){
+ const value=request.createdAt;
+ if((typeof value==='string'&&value.trim()||value instanceof Date)&&Number.isFinite(new Date(value).getTime()))return submittedDateFormat.format(new Date(value));
+ return typeof request.date==='string'&&request.date.trim()?request.date.trim():'Date unavailable';
+}
+
+export function requestListItem({demoRecord,...row},queryHistory=[]){
+ const request={...demoRecord,...row};
+ return {...request,id:row.ticketNumber,sqlId:row.id,action:row.typeCode==='movement'?'Branch / Department change':demoRecord?.action||row.action,
+  date:requestSubmittedDate(request),initials:request.initials||String(request.name||'').trim().split(/\s+/).filter(Boolean).map(part=>part[0]).join('').slice(0,2).toUpperCase(),
+  approvalHistory:demoRecord?.approvalHistory||[],queryHistory,
+  queryTargetIds:queryHistory.filter(query=>!query.closedAt).flatMap(query=>query.targetIds),remarks:demoRecord?.remarks||[],
+ };
+}
+
 export function organizationId(catalog,kind,name){
  const found=catalog.organizations.find(row=>row.Kind===kind&&equal(row.Name,name));
  if(!found)throw new Error(`Choose a ${kind} from the UIDMS directory.`);
