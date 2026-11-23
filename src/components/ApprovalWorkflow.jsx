@@ -1,6 +1,6 @@
 import { isChangeRequest, canReviewChange } from './transferChangeWorkflow.js';
 import { isNewUser, matchesNewUserApprover } from './newUserWorkflow.js';
-import {processingStage} from './requestLifecycle.js';
+import {isTicketClosed,isFullyApproved,processingStage} from './requestLifecycle.js';
 import React from 'react';
 import Icon from './Icon.jsx';
 import '../approval-workflow.css';
@@ -8,25 +8,26 @@ import '../approval-workflow.css';
 const normalize=value=>String(value||'').toLowerCase().replace(/\s+(review|final approval)$/,'').trim();
 const timestamp=value=>value?new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Dhaka',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(value)):'';
 export default function ApprovalWorkflow({ ticket, flow, users }) {
-  const eventFor=stage=>(ticket.approvalHistory||[]).find(event=>normalize(event.stage)===normalize(stage)||normalize(event.role)===normalize(stage));
-  const owner=(isChangeRequest(ticket)&&ticket.transferChange.stage==='employee'?'Employee review':ticket.assignedRole)||(ticket.state==='Query'?ticket.queryReturnRole:null);
+  const eventFor=stage=>(ticket.workflowSteps||ticket.approvalHistory||[]).find(event=>normalize(event.stage)===normalize(stage)||normalize(event.role)===normalize(stage));
+  const awaitingEmployee=ticket.state==='Employee review'||isChangeRequest(ticket)&&ticket.transferChange?.stage==='employee';
+  const owner=(awaitingEmployee?'Employee review':ticket.assignedRole)||(ticket.state==='Query'?ticket.queryReturnRole:null);
   const rejectedIndex=flow.findIndex(stage=>eventFor(stage)?.status==='Rejected');
   const approvalStages=flow.map((stage,index)=>{
     const event=eventFor(stage);
     const isOwner=normalize(owner)===normalize(stage);
-    const state=stage==='Requester'?'done':event?.status==='Rejected'?'rejected':event?.status==='Approved'?'done':ticket.state==='Query'&&isOwner?'query':isOwner&&!['Approved','Rejected','In progress','Completed'].includes(ticket.state)?'active':rejectedIndex>=0&&index>rejectedIndex?'stopped':'upcoming';
-    const approver=stage==='Requester'?ticket.name:stage==='Employee review'?ticket.transferChange?.employee?.name:event?.by||users.find(user=>user.role===stage&&(isChangeRequest(ticket)&&['Branch manager','Department head'].includes(stage)?canReviewChange({...ticket,assignedRole:stage,transferChange:{...ticket.transferChange,stage:'approval'}},user):isNewUser(ticket)&&['Branch manager','Department head'].includes(stage)?matchesNewUserApprover(ticket.newUserDetails?.people?.[0],user):(stage!=='Branch manager'||user.branch===ticket.branch)))?.name;
+    const state=stage==='Requester'||stage==='Employee review'&&!awaitingEmployee?'done':event?.status==='Rejected'?'rejected':event?.status==='Approved'?'done':ticket.state==='Query'&&isOwner?'query':isOwner&&!isFullyApproved(ticket)&&ticket.state!=='Rejected'?'active':rejectedIndex>=0&&index>rejectedIndex?'stopped':'upcoming';
+    const approver=stage==='Requester'?ticket.name:stage==='Employee review'?ticket.transferChange?.employee?.name:event?.by||event?.eligibleApprovers?.map(user=>user.name).join(', ')||event?.assignedName||users.find(user=>user.role===stage&&(isChangeRequest(ticket)&&['Branch manager','Department head'].includes(stage)?canReviewChange({...ticket,assignedRole:stage,transferChange:{...ticket.transferChange,stage:'approval'}},user):isNewUser(ticket)&&['Branch manager','Department head'].includes(stage)?matchesNewUserApprover(ticket.newUserDetails?.people?.[0],user):(stage!=='Branch manager'||user.branch===ticket.branch)))?.name;
     return {stage,event,state,approver};
   });
-  const approved=['Approved','In progress','Completed'].includes(ticket.state);
-  const closed=ticket.state==='Completed';
+  const approved=isFullyApproved(ticket);
+  const closed=isTicketClosed(ticket);
   const stages=[...approvalStages,
     {stage:'IT fulfilment',state:closed?'done':approved?'active':ticket.state==='Rejected'?'stopped':'upcoming',approver:ticket.fulfilment?.emailSentBy||users.find(user=>user.role==='IT')?.name,event:ticket.fulfilment?.emailSentAt?{at:ticket.fulfilment.emailSentAt}:null},
     {stage:'Ticket closed',state:closed?'done':ticket.state==='Rejected'?'stopped':'upcoming',approver:ticket.fulfilment?.completedBy,event:closed?{at:ticket.fulfilment?.completedAt}:null},
   ];
   const completed=stages.filter(stage=>stage.state==='done').length;
   const current=stages.find(stage=>['active','query','rejected'].includes(stage.state));
-  const label=ticket.state==='Completed'?'Request completed - ticket closed':['Approved','In progress'].includes(ticket.state)?'Approved - Processing':ticket.state==='Rejected'?'Request rejected':ticket.state==='Query'?'Awaiting query response':current?`Waiting for ${current.stage}`:'Awaiting approval';
+  const label=closed?'Request completed - ticket closed':approved?'Approved - Processing':ticket.state==='Rejected'?'Request rejected':ticket.state==='Query'?'Awaiting query response':current?`Waiting for ${current.stage}`:'Awaiting approval';
   const labels={done:'Completed',rejected:'Rejected',query:'Query raised',active:'Awaiting approval',upcoming:'Upcoming',stopped:'Not reached'};
   return <section className={`approval-workflow${!closed&&ticket.state!=='Rejected'?' aw-live':''}`} aria-labelledby="approval-workflow-title">
     <header className="aw-header"><div><p>APPROVAL JOURNEY</p><h3 id="approval-workflow-title">Approval workflow</h3></div><span className={`aw-state aw-state-${ticket.state.toLowerCase().replace(' ','-')}`}><i/>{label}</span></header>
@@ -38,7 +39,7 @@ export default function ApprovalWorkflow({ ticket, flow, users }) {
     </li>)}</ol>
     {ticket.state==='Query'&&<div className="aw-query-note"><Icon name="mail" size={16}/><p>Approval is paused while <strong>{ticket.queryHistory?.at(-1)?.targetNames?.join(', ')||'the requested employees'}</strong> respond. It will return to <strong>{ticket.queryReturnRole||'the reviewer'}</strong>.</p></div>}
     {approved&&!closed&&<div className="aw-query-note"><Icon name="settings" size={16}/><p>Your request is approved. <strong>Processing.</strong> You will be notified here when completed.</p></div>}
-    {closed&&<div className="aw-query-note"><Icon name="check" size={16}/><p>{isNewUser(ticket)?`IDs have been handed to ${ticket.custodian?.name||'the approving manager or head'} for custody. The ticket is closed.`:'IDs have been provided. This request is completed and the ticket is closed.'}</p></div>}
+    {closed&&<div className="aw-query-note"><Icon name="check" size={16}/><p>{isNewUser(ticket)?`IDs have been handed to ${ticket.custodian?.name||'the scoped manager or department head'} for custody. The ticket is closed.`:'IDs have been provided. This request is completed and the ticket is closed.'}</p></div>}
     {ticket.state==='Rejected'&&<div className="aw-query-note aw-rejected-note"><Icon name="close" size={16}/><p>This request was rejected. Later approval stages will not proceed.</p></div>}
   </section>;
 }

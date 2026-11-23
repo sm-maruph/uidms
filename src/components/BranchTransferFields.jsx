@@ -67,7 +67,7 @@ export default function BranchTransferFields({ value, onChange, mode='transfer',
     {checkRows('newAccess',mode==='transfer'?'B. New ID required after transfer — Systems Required':'Systems Required',coreSystems,true)}
     {checkRows('newOtherAccess',mode==='transfer'?'B. New ID required after transfer — Other Access': 'Other Access (if required)',availableOtherAccessSystems,true)}
     {checkRows('newTestSystems',mode==='transfer'?'B. New ID required after transfer — Specialized Test Systems':'Specialized Test Systems',testSystems,true)}
-    {checkRows('additionalTestSystems','Specialized Test Systems (Specialized Dept / Purpose only)',testSystems)}
+    {(mode==='transfer'||previewOnly)&&checkRows('additionalTestSystems','Specialized Test Systems (Specialized Dept / Purpose only)',testSystems)}
 
   </div>;
 }

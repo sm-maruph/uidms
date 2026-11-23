@@ -3,7 +3,7 @@ import Icon from './Icon.jsx';
 import RequestTypeCards from './RequestTypeCards.jsx';
 import '../new-request-modal.css';
 
-export default function NewRequestModal({ pendingChangeCount=0, department, role, onClose, onContinue }) {
+export default function NewRequestModal({ pendingChangeCount=0, department, role, profile, onClose, onContinue }) {
   const closeButton = useRef(null);
   useEffect(() => {
     const previousFocus = document.activeElement;
@@ -27,7 +27,7 @@ export default function NewRequestModal({ pendingChangeCount=0, department, role
     }}>
       <header className="modal-header"><div><p className="eyebrow">START A REQUEST</p><h2 id="new-request-title">New request</h2></div><button ref={closeButton} type="button" className="icon-button" aria-label="Close new request" onClick={onClose}><Icon name="close"/></button></header>
       <p className="modal-subtitle">Choose a service to get started.</p>
-      <RequestTypeCards pendingChangeCount={pendingChangeCount} compact department={department} role={role} onContinue={onContinue}/>
+      <RequestTypeCards pendingChangeCount={pendingChangeCount} compact department={department} role={role} profile={profile} onContinue={onContinue}/>
     </section>
   </div>;
 }

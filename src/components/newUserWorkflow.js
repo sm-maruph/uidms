@@ -1,3 +1,4 @@
+import {canReviewDatabaseTicket} from './workflowReview.js';
 export const isNewUser = ticket => ticket?.action === 'New ID creation (on behalf)';
 const normalize = value => String(value||'').trim().toLowerCase().replace(/centre/g,'center').replace(/[^a-z0-9]/g,'');
 const departmentLed = new Set(['cardcenter','digitalbanking','callcenter','digitalbankingandcardcenter']);
@@ -21,6 +22,7 @@ export function validateNewUserRouting(details = {}) {
  return '';
 }
 export function canReviewNewUser(ticket, profile) {
+ if(ticket.sqlId)return canReviewDatabaseTicket(ticket,profile);
  if (!isNewUser(ticket)) return ticket.assignedRole === profile?.role;
  if (ticket.assignedRole !== profile?.role) return false;
  const person = ticket.newUserDetails?.people?.[0];

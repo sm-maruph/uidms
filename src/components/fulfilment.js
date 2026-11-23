@@ -1,5 +1,6 @@
 import {emailTemplateCategory,requestTypeLabel} from './requestTitle.js';
-import { canReceiveCredentials, isNewUser } from './newUserWorkflow.js';
+import { canReceiveCredentials } from './newUserWorkflow.js';
+import {mergeProcessingCc,requiredProcessingCc} from './processingRecipients.js';
 export function fulfilmentItems(ticket) {
  const data={...ticket,...ticket.submittedForm?.data};
  const result=[];
@@ -27,7 +28,8 @@ export function fulfilmentItems(ticket) {
 export const citoApproved=ticket=>(ticket.approvalHistory||[]).some(event=>event.role==='CITO'&&event.status==='Approved');
 export const readyForFulfilment=ticket=>['Approved','In progress','IT processing','HO processing'].includes(ticket.state);
 export function processingEmail(ticket,items=fulfilmentItems(ticket)){
- return {to:'',cc:isNewUser(ticket)?'':ticket.requesterProfile?.email||'',subject:`[${ticket.id}] ${requestTypeLabel(ticket.action)} - IT processing`,body:`Dear Team,
+ const requiredCc=requiredProcessingCc(ticket.requesterProfile?.email);
+ return {to:'',requiredCc,cc:requiredCc.join(', '),subject:`[${ticket.id}] ${requestTypeLabel(ticket.action)} - IT processing`,body:`Dear Team,
 
 Please process the following approved identity service request.
 
@@ -49,10 +51,8 @@ Information Technology Department`};
 }
 export function processingEmailDraft(ticket) {
  const draft={...(ticket.fulfilment?.email||processingEmail(ticket))};
- if(isNewUser(ticket)&&ticket.requesterProfile?.email){
-  const requester=ticket.requesterProfile.email.trim().toLowerCase();
-  draft.cc=String(draft.cc||'').split(/[,;]/).map(email=>email.trim()).filter(email=>email&&email.toLowerCase()!==requester&&email.match(/<([^>]+)>/)?.[1]?.trim().toLowerCase()!==requester).join(', ');
- }
+ draft.requiredCc=requiredProcessingCc(ticket.requesterProfile?.email);
+ draft.cc=mergeProcessingCc(draft.cc,draft.requiredCc).join(', ');
  return draft;
 }
 export function generalProcessingDraft(ticket){
@@ -95,7 +95,8 @@ export function mockProcessingDrafts(ticket,templates){
    additionalFunction:join(rows.map(row=>data.upgradeDetails?.additionalFunctions?.[row.system]||['newAccess','newOtherAccess','newTestSystems','additionalTestSystems'].map(key=>data.transferDetails?.[key+'Extra']?.[row.system]?.additionalFunction))),
   });
   const render=value=>value.replace(/\{\{\s*(\w+)\s*\}\}/g,(_,key)=>Object.hasOwn(values,key)?values[key]||'':'');
-  return [{id:template.id,name:template.name,systems,to:template.to,cc:template.cc,subject:render(template.subject).replace(/[\r\n]+/g,' '),body:render(template.body)}];
+  const requiredCc=requiredProcessingCc(ticket.requesterProfile?.email);
+  return [{id:template.id,name:template.name,systems,to:template.to,requiredCc,cc:mergeProcessingCc(template.cc,requiredCc),subject:render(template.subject).replace(/[\r\n]+/g,' '),body:render(template.body)}];
  });
  if(!drafts.length)return [generalProcessingDraft(ticket)];
  const unassigned=matching.filter(row=>!row.template).map(row=>row.item);

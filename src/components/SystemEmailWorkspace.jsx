@@ -1,3 +1,4 @@
+import {hasPortalRole} from './portalRoles.js';
 import React,{useEffect,useState} from 'react';
 import SystemEmailTemplates from './SystemEmailTemplates.jsx';
 import EmailDraftCard from './EmailDraftCard.jsx';
@@ -7,7 +8,7 @@ import {mfaErrorMessages} from './mfaErrors.js';
 import '../system-email.css';
 
 const origin=import.meta.env.VITE_UIDMS_API_ORIGIN||(import.meta.env.DEV?`${window.location.protocol}//${window.location.hostname}:4000`:'');
-const adminRoles=['Platform Admin','Super Admin'];
+const adminRoles=['Admin','Platform Admin','Super Admin'];
 const allowedRoles=['IT',...adminRoles];
 const errorMessages={UNAUTHENTICATED:'Sign in again to continue.',SESSION_EXPIRED:'Your session expired. Sign in again to continue.',CSRF_INVALID:'Your session changed. Sign in again and retry.',FORBIDDEN:'Your account does not have permission for this action.',REQUEST_NOT_FOUND:'This request is no longer available to your account.',NOT_ASSIGNED:'This request is assigned to another approver.',REAUTHENTICATION_REQUIRED:'Sign in again before completing this action.',CONFLICT:'Another record already uses those details.',INTERNAL_ERROR:'UIDMS could not complete this action. Try again shortly.'};
 
@@ -30,11 +31,11 @@ export async function api(path,{method='GET',body,csrfToken,signal,format}={}){
 // Ready for the portal-wide session supplied by the future AD integration.
 export default function SystemEmailWorkspace({session}){
  const [view,setView]=useState('templates');
- if(!session||!allowedRoles.includes(session.user.role))return null;
- const it=session.user.role==='IT';
+ if(!session||!hasPortalRole(session.user,...allowedRoles))return null;
+ const it=hasPortalRole(session.user,'IT','Admin','Super Admin');
  return <div className="system-email-workspace">
   {it&&<nav className="fulfilment-buttons" aria-label="Email workspace"><button type="button" className="button button-subtle" aria-pressed={view==='templates'} onClick={()=>setView('templates')}>System Email Templates</button><button type="button" className="button button-subtle" aria-pressed={view==='drafts'} onClick={()=>setView('drafts')}>Processing drafts</button></nav>}
-  {view==='templates'?<SqlTemplates session={session} admin={adminRoles.includes(session.user.role)}/>:<ProcessingDrafts session={session}/>}
+  {view==='templates'?<SqlTemplates session={session} admin={hasPortalRole(session.user,...adminRoles)}/>:<ProcessingDrafts session={session}/>}
  </div>;
 }
 
@@ -123,7 +124,7 @@ function ProcessingDrafts({session}){
   {error&&<p role="alert">{error}</p>}
   {ticket?<><div className="fulfilment-buttons"><button className="button button-subtle" type="button" disabled={busy} onClick={()=>{setTicket(null);setDrafts(null);setError('');}}>Back to tickets</button></div>
    <h3>{ticket.ticketNumber} · {ticket.action}</h3>
-   {drafts===null?<p>Loading drafts…</p>:drafts.length?<div className="fulfilment-panel"><p>{drafts.filter(draft=>draft.sentAt).length} of {drafts.length} drafts confirmed sent</p>{drafts.map(draft=><EmailDraftCard key={draft.id} draft={draft} canSend={ticket.state!=='Completed'&&canProcess} onSent={markSent}/>)}</div>:<><p>No drafts are recorded for this ticket.</p>{ticket.state==='Approved'&&canProcess&&<button className="button button-primary" type="button" disabled={busy} onClick={initialize}>Create processing drafts</button>}</>}
+   {drafts===null?<p>Loading drafts…</p>:drafts.length?<div className="fulfilment-panel"><p>{drafts.filter(draft=>draft.sentAt).length} of {drafts.length} drafts confirmed sent</p>{drafts.map(draft=><EmailDraftCard key={draft.id} draft={draft} requesterEmail={ticket.requesterProfile?.email} canSend={ticket.state!=='Completed'&&canProcess} onSent={markSent}/>)}</div>:<><p>No drafts are recorded for this ticket.</p>{ticket.state==='Approved'&&canProcess&&<button className="button button-primary" type="button" disabled={busy} onClick={initialize}>Create processing drafts</button>}</>}
    {canProcess&&['Approved','IT processing'].includes(ticket.state)&&drafts?.length>0&&drafts.every(draft=>draft.sentAt)&&<form className="system-email-form" onSubmit={recordProcessing}>
     <h3>Record processing</h3><label>Processing reference<input name="reference" required maxLength={250}/></label><label>Notes<textarea name="notes" rows="3" maxLength={2000}/></label><button className="button button-primary" disabled={busy} type="submit">Record processing</button>
    </form>}

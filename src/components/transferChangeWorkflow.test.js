@@ -5,9 +5,9 @@ import {canReceiveCredentials} from './newUserWorkflow.js';
 const employee={employeeId:'E1',systemId:'E1',name:'Employee',branch:'Agrabad Branch',department:'Operations',access:{systemRoles:{ICBS:['Entry']},enabledSystems:['WBO'],otherAccess:['AD ID','Email','MS Office']}};
 const change={kind:'Branch',employeeId:'E1',fromBranch:'Agrabad Branch',toBranch:'Dhanmondi Branch',fromDepartment:'Operations',toDepartment:'Operations',justification:'New assignment',employee,stage:'employee'};
 const ticket={id:'CHANGE-1',action:CHANGE_REQUEST,requesterId:'HR1',transferChange:change,assignedRole:null};
-test('only IT and HR can initiate a known employee movement',()=>{
- for(const role of ['IT','HR'])assert.equal(validateChangeInitiation(change,{role},employee),'');
- for(const role of ['User','Branch manager','Department head','CITO','COO','Super Admin'])assert.ok(validateChangeInitiation(change,{role},employee));
+test('IT, HR and administrators can initiate a known employee movement',()=>{
+ for(const role of ['IT','HR','Admin','Super Admin'])assert.equal(validateChangeInitiation(change,{role},employee),'');
+ for(const role of ['User','Branch manager','Department head','CITO','COO'])assert.ok(validateChangeInitiation(change,{role},employee));
  assert.ok(validateChangeInitiation(change,{role:'IT'},null));
  assert.ok(validateChangeInitiation({...change,fromBranch:'Wrong branch'},{role:'IT'},employee));
  assert.ok(validateChangeInitiation({...change,toBranch:employee.branch},{role:'IT'},employee));
@@ -71,7 +71,7 @@ test('movement visibility is restricted to the employee, branch, department and 
  assert.equal(canViewChange(ticket,{employeeId:'MANAGER',role:'Branch manager',branch:'Gulshan Branch'}),false);
  for(const department of [change.fromDepartment,'IT Department'])assert.equal(canViewChange({...ticket,transferChange:{...change,toDepartment:'IT Department'}},{employeeId:'HEAD',role:'Department head',department}),true);
  assert.equal(canViewChange(ticket,{employeeId:'HEAD',role:'Department head',department:'Treasury'}),false);
- for(const role of ['IT','HR'])assert.equal(canViewChange(ticket,{employeeId:role,role}),true);
+ for(const role of ['IT','HR','Admin','Super Admin'])assert.equal(canViewChange(ticket,{employeeId:role,role}),true);
  assert.equal(canViewChange(ticket,{employeeId:'CITO',role:'CITO'}),false);
  assert.equal(canViewChange({...ticket,assignedRole:'CITO'},{employeeId:'CITO',role:'CITO'}),true);
  assert.equal(canViewChange(ticket,null),false);

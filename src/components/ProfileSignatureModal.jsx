@@ -58,7 +58,7 @@ export default function ProfileSignatureModal({ profile, onClose, onSave, onSave
       <fieldset className="profile-editor-fields" disabled={!loaded||busy}>
         <label className="field-label">Designation<select value={designationId} onChange={event=>setDesignationId(event.target.value)}><option value="">Not specified</option>{designationId&&!(catalog?.organizations||[]).some(row=>row.Id===designationId&&row.Kind==='designation')&&<option value={designationId}>{profile.designation||'Recorded designation'}</option>}{(catalog?.organizations||[]).filter(row=>row.Kind==='designation').map(row=><option key={row.Id} value={row.Id}>{row.Name}</option>)}</select></label>
         <section className="profile-editor-access"><h3>Current access <span>{access.length}</span></h3>
-          <p>{canEditAccess?'Record the systems and roles for this mock profile.':'Request access changes through Create a request.'}</p>
+          <p>{canEditAccess?'Record the systems and roles for your profile. Changes are audited.':'Request access changes through Create a request.'}</p>
           {access.map((row,index)=>{
             const systems=catalog?.systems||[];
             const roles=(catalog?.systemRoles||[]).filter(role=>role.SystemId===row.systemId);

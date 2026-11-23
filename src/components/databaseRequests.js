@@ -21,7 +21,7 @@ export function requestSubmittedDate(request){
 export function requestListItem({demoRecord,...row},queryHistory=[]){
  const request={...demoRecord,...row};
  return {...request,id:row.ticketNumber,sqlId:row.id,action:row.typeCode==='movement'?'Branch / Department change':demoRecord?.action||row.action,
-  date:requestSubmittedDate(request),initials:request.initials||String(request.name||'').trim().split(/\s+/).filter(Boolean).map(part=>part[0]).join('').slice(0,2).toUpperCase(),
+  date:requestSubmittedDate(request),initials:request.initials||String(request.name||'').trim().split(/\s+/).filter(Boolean).map(part=>part[0]).join('').slice(0,2).toUpperCase(),step:row.assignedRole?`${row.state==='Query'?'Query response · ':''}${row.assignedRole}${row.state==='Query'?'':' review'}`:row.state,
   approvalHistory:demoRecord?.approvalHistory||[],queryHistory,
   queryTargetIds:queryHistory.filter(query=>!query.closedAt).flatMap(query=>query.targetIds),remarks:demoRecord?.remarks||[],
  };

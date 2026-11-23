@@ -2,7 +2,7 @@ import {queryRaisedBy} from './queryInbox.js';
 import {awaitsApproval} from './pendingApprovals.js';
 import {isTicketClosed,isFullyApproved,processingStage} from './requestLifecycle.js';
 
-export const operationsRoles=['IT','HR','CITO','COO'];
+export const operationsRoles=['IT','HR','CITO','COO','Admin','Super Admin'];
 export function operationsMetrics(requests,profile) {
   const active=requests.filter(ticket=>!isTicketClosed(ticket)&&ticket.state!=='Rejected');
   const awaitingRole=role=>requests.filter(ticket=>ticket.assignedRole===role&&['Pending','In review'].includes(ticket.state));

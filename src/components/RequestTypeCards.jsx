@@ -19,18 +19,18 @@ const requestTypes = [
   { title:'External device email access', description:'Request email access from an external device.', icon:'device' },
 ];
 
-export default function RequestTypeCards({ pendingChangeCount=0, onContinue, department, role, compact = false, query = '', category = 'All requests' }) {
+export default function RequestTypeCards({ pendingChangeCount=0, onContinue, department, role, profile, compact = false, query = '', category = 'All requests' }) {
   const [showNewIdChoices,setShowNewIdChoices]=useState(false);
   const [showDriveChoices,setShowDriveChoices]=useState(false);
   const categoryFor = title => ['Email creation','Mailing group inclusion/exclusion','Auto-forward change'].includes(title) ? 'Email & collaboration' : ['I Drive / S Drive Access','N Drive Access','External device email access'].includes(title) ? 'Files & devices' : 'Identity & access';
-  const availableTypes = requestTypes.filter(({ title, description }) => (title !== 'Employee ID deactivation' || canRequestIdDeletion(department)) && (category === 'All requests' || categoryFor(title) === category) && (title + ' ' + requestTypeLabel(title) + ' ' + description).toLowerCase().replace(/\s+/g,'').includes(query.trim().toLowerCase().replace(/\s+/g,'')));
+  const availableTypes = requestTypes.filter(({ title, description }) => (title !== 'Employee ID deactivation' || canRequestIdDeletion(department,profile||role)) && (category === 'All requests' || categoryFor(title) === category) && (title + ' ' + requestTypeLabel(title) + ' ' + description).toLowerCase().replace(/\s+/g,'').includes(query.trim().toLowerCase().replace(/\s+/g,'')));
   const choose = type => {setShowNewIdChoices(false);onContinue(type);};
   return <div className={`system-access-cards${compact ? ' overview-request-grid' : ''}`}>
     {!availableTypes.length && <div className="rc-empty" role="status"><Icon name="search" size={28}/><strong>No matching requests</strong><p>Try another search or choose a different category.</p></div>}
     {availableTypes.map(({ title, requestType, description, icon }, index) => (
       <button className={`system-access-card${compact ? ' overview-request-card' : ''}${title==='Branch / Department change'&&pendingChangeCount?' has-pending-action':''}`} key={title} onClick={() => title==='New ID creation'?setShowNewIdChoices(true):requestType==='IDrive access'?setShowDriveChoices(true):onContinue(requestType||title)}>
         <span className={`system-access-card-mark sm-${index % 5}`} aria-hidden="true"><Icon name={icon} size={compact?16:20}/></span>
-        <span className="system-access-card-copy"><strong>{requestTypeLabel(title)}</strong><small>{title==='Branch / Department change'?(canRequestBranchTransfer(role)?'Initiate or review branch and department changes.':'View your initiated changes and approval workflow.'):description}</small></span>
+        <span className="system-access-card-copy"><strong>{requestTypeLabel(title)}</strong><small>{title==='Branch / Department change'?(canRequestBranchTransfer(profile||role)?'Initiate or review branch and department changes.':'View your initiated changes and approval workflow.'):description}</small></span>
         {title==='Branch / Department change'&&pendingChangeCount>0&&<span className="request-pending-badge" title={`${pendingChangeCount} changes awaiting your action`} aria-label={`${pendingChangeCount} changes awaiting your action`}>{pendingChangeCount}</span>}
         <span className="system-access-card-arrow" aria-hidden="true"><Icon name="arrow" size={18}/></span>
       </button>

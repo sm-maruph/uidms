@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import SecurityGuidance from './SecurityGuidance.jsx';
 import Icon from './Icon.jsx';
 import bankLogo from '../images-removebg-preview.png';
@@ -9,10 +9,14 @@ export default function Login({ users, onLogin, onCreateMockUser, dark = true, o
   const [error,setError] = useState(initialError);
   const [employeeId, setEmployeeId] = useState('');
   const [password,setPassword]=useState('');
+  const [showPassword,setShowPassword]=useState(false);
+  const [capsLock,setCapsLock]=useState(false);
+  const passwordInput=useRef(null);
   const [busy,setBusy]=useState(false);
   const cooldown=useRateLimitCooldown();
   const [provider,setProvider]=useState(loginOptions.localLogin?'local':'ad');
-  useEffect(()=>{setProvider(loginOptions.localLogin?'local':'ad');setPassword('');setError('');},[loginOptions.localLogin,loginOptions.adLogin]);
+  useEffect(()=>{setProvider(loginOptions.localLogin?'local':'ad');setPassword('');setShowPassword(false);setError('');},[loginOptions.localLogin,loginOptions.adLogin]);
+  const checkCapsLock=event=>{if(typeof event.getModifierState==='function')setCapsLock(event.getModifierState('CapsLock'));};
   const usingAd=provider==='ad';
   const enteredId=employeeId.trim().toUpperCase();
   const selected=enteredId?(users.find(user=>user.employeeId.toUpperCase()===enteredId)||users.find(user=>user.systemId?.toUpperCase()===enteredId)):undefined;
@@ -23,7 +27,7 @@ export default function Login({ users, onLogin, onCreateMockUser, dark = true, o
     event.preventDefault();
     if(busy||cooldown.blocked)return;
     if(!selected&&!passwordRequired){setError('That employee or system ID was not found. Check the ID or use Switch demo user.');return;}
-    setBusy(true);setError('');
+    setBusy(true);setShowPassword(false);setError('');
     try{setError(await onLogin(usingAd?{employeeId:employeeId.trim()}:selected||{employeeId:enteredId},password,provider)||'');}
     catch(error){cooldown.register(error);setError(error.status===429?'':error.status===401?(usingAd?'AD could not verify this account. Check the AD account and domain password.':loginOptions.adLogin?'Local sign-in failed. Use your UIDMS password, or select Active Directory for your domain password.':'Local sign-in failed. Use your UIDMS password. AD sign-in has not been enabled on this server.'):error.message);}
     finally{setBusy(false);}
@@ -43,13 +47,13 @@ export default function Login({ users, onLogin, onCreateMockUser, dark = true, o
       <div className="login-form-wrap">
         <img className="login-bank-logo" src={bankLogo} alt="Commercial Bank of Ceylon"/>
         <div className="login-form-heading"><p className="login-form-eyebrow">CBC UIDMS Awaits</p><h2 id="login-heading">Welcome back.</h2><p>{usingAd?'Use your AD account and domain password.':mockLogin?'Use a mock employee ID and password 1234.':passwordRequired?'Sign in using your UIDMS employee ID and portal passphrase.':'Enter your employee or system ID to open your demo profile.'}</p></div>
-        <form id="login-form" className="login-entry-form" onSubmit={submit}>
+        <form id="login-form" className="login-entry-form" onSubmit={submit} onKeyDownCapture={checkCapsLock} onKeyUpCapture={checkCapsLock} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget))setCapsLock(false);}}>
           {cooldown.blocked?<p role="alert">Too many sign-in requests. Try again in {cooldown.label}.</p>:error&&<p role="alert">{error}</p>}
-          {passwordRequired&&loginOptions.localLogin&&<><label htmlFor="login-method">Sign-in method</label><div className="login-select-wrap login-method-wrap"><Icon name="key" size={18}/><select id="login-method" value={provider} disabled={busy} onChange={event=>{setProvider(event.target.value);setPassword('');setError('');}}><option value="local">Local login</option><option value="ad" disabled={!loginOptions.adLogin}>{loginOptions.adLogin?'Active Directory':'Active Directory (not enabled)'}</option></select><Icon name="chevron" size={14}/></div>{!loginOptions.adLogin&&<p className="login-method-note">AD sign-in is not enabled on this server. Local login uses your UIDMS password.</p>}</>}
+          {passwordRequired&&loginOptions.localLogin&&<><label htmlFor="login-method">Sign-in method</label><div className="login-select-wrap login-method-wrap"><Icon name="key" size={18}/><select id="login-method" value={provider} disabled={busy} onChange={event=>{setProvider(event.target.value);setPassword('');setShowPassword(false);setError('');}}><option value="local">Local login</option><option value="ad" disabled={!loginOptions.adLogin}>{loginOptions.adLogin?'Active Directory':'Active Directory (not enabled)'}</option></select><Icon name="chevron" size={14}/></div>{!loginOptions.adLogin&&<p className="login-method-note">AD sign-in is not enabled on this server. Local login uses your UIDMS password.</p>}</>}
           <label htmlFor="login-employee">{usingAd?'AD account':'Employee / system ID'}</label>
           <div className="login-select-wrap"><Icon name="idCard" size={20}/><input id="login-employee" value={employeeId} onChange={event=>setId(event.target.value)} placeholder="Enter your ID" autoComplete="off" required maxLength={160}/></div>
-          <label htmlFor="login-password" className="login-password-label">Password</label>
-          <div className="login-select-wrap"><Icon name="key" size={18}/><input id="login-password" type="password" value={password} onChange={event=>setPassword(event.target.value)} disabled={!passwordRequired} required={passwordRequired} autoComplete={passwordRequired?'current-password':'off'} aria-describedby="demo-password-help"/></div>
+          <label htmlFor="login-password" className="login-password-label">Password{capsLock&&passwordRequired&&<span id="login-caps-lock" className="login-caps-lock" role="status" aria-live="polite"><Icon name="capsLock" size={13}/>Caps Lock is on</span>}</label>
+          <div className="login-select-wrap login-password-wrap"><Icon name="key" size={18}/><input ref={passwordInput} id="login-password" type={showPassword?'text':'password'} value={password} onChange={event=>setPassword(event.target.value)} onFocus={checkCapsLock} disabled={!passwordRequired} required={passwordRequired} autoComplete={passwordRequired?'current-password':'off'} autoCapitalize="none" autoCorrect="off" spellCheck={false} aria-describedby={`demo-password-help${capsLock&&passwordRequired?' login-caps-lock':''}`}/><button type="button" className="login-password-toggle" disabled={!passwordRequired||busy} aria-label={showPassword?'Hide password':'Show password'} title={showPassword?'Hide password':'Show password'} aria-controls="login-password" aria-pressed={showPassword} onMouseDown={event=>event.preventDefault()} onClick={()=>{setShowPassword(value=>!value);passwordInput.current?.focus({preventScroll:true});}}><Icon name={showPassword?'eyeOff':'eye'} size={19}/></button></div>
           {selected&&!usingAd&&<div className="login-profile" aria-live="polite"><span className="login-profile-avatar">{initials}</span><div className="login-profile-info"><strong>{displayName}</strong><span>{selected.branch}</span></div><span className="login-profile-role">{selected.role}</span></div>}
           <button className="login-submit" type="submit" disabled={(!passwordRequired&&!users.length)||busy||cooldown.blocked}>{cooldown.blocked?`Try again in ${cooldown.label}`:busy?'Signing in…':'Continue to workspace'} <Icon name="arrow" size={19}/></button>
           {users.length>0&&!usingAd&&<details className="login-switch-demo"><summary>Switch demo user</summary><select aria-label="Choose a demo user" value={selected?.employeeId||''} onChange={event=>setId(event.target.value)}><option value="">Choose an account</option>{users.map(user=><option key={user.employeeId} value={user.employeeId}>{user.employeeId} ? {user.name}</option>)}</select></details>}

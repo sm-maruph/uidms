@@ -28,13 +28,13 @@ import {driveOptionsForType,isDriveAccess,driveSystemForType} from './drivePolic
 const requestTypes = ['New ID creation (on behalf)','System ID creation (self-request)','Employee ID deactivation','System ID deactivation','ID reset / unlock','ID upgrade','Email creation','Mailing group change','Auto-forward change','IDrive access','N Drive access','External device email access'];
 
 export default function RequestModal({ onClose, onSubmit, profile, users=[], branches=[], departments=[], mailingGroups=[], initialType='New ID creation (on behalf)', initialDrive=null, ticket=null, printOnOpen=false, embedded=false, editable=false }) {
-  const branchTransferAllowed=canRequestBranchTransfer(profile?.role);
+  const branchTransferAllowed=canRequestBranchTransfer(profile);
   ticket = restoreSubmittedForm(ticket);
   const readOnly = Boolean(ticket) && !editable;
   users = !editable && ticket?.submittedForm?.context?.users || users;
   mailingGroups = !editable && ticket?.submittedForm?.context?.mailingGroups || mailingGroups;
   profile = ticket ? (ticket.requesterProfile || {...profile, name:ticket.name, employeeId:ticket.requesterId, branch:ticket.branch, signature:ticket.signature}) : profile;
-  const availableRequestTypes = requestTypes.filter(value => (value !== 'Branch transfer' || branchTransferAllowed) && (value !== 'Employee ID deactivation' || canRequestIdDeletion(profile?.department)));
+  const availableRequestTypes = requestTypes.filter(value => (value !== 'Branch transfer' || branchTransferAllowed) && (value !== 'Employee ID deactivation' || canRequestIdDeletion(profile?.department,profile)));
   const [type] = useState((ticket?.action === 'New ID creation' ? 'System ID creation (self-request)' : ticket?.action) || (availableRequestTypes.includes(initialType) ? initialType : availableRequestTypes[0]));
   const [stage, setStage] = useState(readOnly ? 'signed' : 'edit');
   const [acknowledged, setAcknowledged] = useState(false);
@@ -100,7 +100,7 @@ export default function RequestModal({ onClose, onSubmit, profile, users=[], bra
     if (accessError) { setError(accessError); return; }
     if (type === 'ID upgrade') { const upgradeError = validateUpgradeRequest(upgrade, profile?.access); if (upgradeError) { setError(upgradeError); return; } }
     if (stage !== 'edit') return;
-    if (type === 'Employee ID deactivation' && !canRequestIdDeletion(profile?.department)) { setError('Employee ID deactivation requests are available only to HR and IT departments.'); return; }
+    if (type === 'Employee ID deactivation' && !canRequestIdDeletion(profile?.department,profile)) { setError('Employee ID deactivation requests are available only to HR and IT departments.'); return; }
     if (requiresBusinessJustification(type)&&!justification.trim()) { setError('Add a business justification to continue.'); return; }
     if (type === 'New ID creation (on behalf)') { const routingError=validateNewUserRouting(newUser); if(routingError){setError(routingError);return;} }
     if (type === 'New ID creation (on behalf)' && (newUser.people || []).some(person => !person.adId && !person.email)) { setError('Select AD ID, email, or both for every new user.'); return; }

@@ -2,6 +2,7 @@ import { canRequestBranchTransfer } from './requestPermissions.js';
 import { newUserApproverRole } from './newUserWorkflow.js';
 import { otherAccessSystems, formResetSystems } from './requestCatalog.js';
 import { validateTransferAccess } from './accessValidation.js';
+import {canReviewDatabaseTicket} from './workflowReview.js';
 const editableSystems=new Set(formResetSystems.filter(system=>system!=='AD ID'));
 export const CHANGE_REQUEST = 'Branch / Department change';
 export const isChangeRequest = ticket => ticket?.action===CHANGE_REQUEST;
@@ -10,6 +11,7 @@ export const destinationRole = change => change.kind==='Department'?'Department 
 export function canViewChange(ticket,profile){
  if(!isChangeRequest(ticket))return true;
  if(!profile?.employeeId)return false;
+ if(ticket.sqlId)return true; // SQL has already authorized visibility, including historical reviewers/custodians.
  const change=ticket.transferChange;
  if(change?.employee?.employeeId===profile.employeeId)return true;
  if(canRequestBranchTransfer(profile.role))return true;
@@ -18,6 +20,7 @@ export function canViewChange(ticket,profile){
  return ['CITO','COO'].includes(profile.role)&&(ticket.assignedRole===profile.role||ticket.queryReturnRole===profile.role||(ticket.approvalHistory||[]).some(event=>event.employeeId===profile.employeeId));
 }
 export function canReviewChange(ticket,profile){
+ if(ticket.sqlId)return canReviewDatabaseTicket(ticket,profile);
  if(!isChangeRequest(ticket))return true;
  if(ticket.transferChange?.stage!=='approval'||ticket.assignedRole!==profile?.role)return false;
  if(profile.role==='Branch manager')return normalized(profile.branch)===normalized(ticket.transferChange.toBranch);
@@ -30,7 +33,7 @@ export function awaitsChangeAction(ticket,profile){
  return canViewChange(ticket,profile)&&canReviewChange(ticket,profile);
 }
 export function validateChangeInitiation(change,actor,employee){
- if(!canRequestBranchTransfer(actor?.role))return 'Only IT and HR can initiate a branch or department change.';
+ if(!canRequestBranchTransfer(actor))return 'Only IT, HR and administrators can initiate a branch or department change.';
  if(!employee?.employeeId||change.employeeId!==employee.employeeId)return 'Search for a valid employee ID first.';
  if(!['Branch','Department'].includes(change.kind))return 'Select branch change or department change.';
  if(!change.fromBranch||!change.toBranch)return 'Select the current and destination branches.';

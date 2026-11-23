@@ -5,6 +5,7 @@ const normalized=value=>String(value||'').trim().toLowerCase();
 
 export function queryRecipientsFor(users,profile,ticket) {
   if(!ticket||!profile?.employeeId)return [];
+  if(ticket.sqlId&&Array.isArray(ticket.queryParticipants))return ticket.queryParticipants;
   const requester=users.find(user=>user.employeeId===ticket.requesterId);
   const subject=isChangeRequest(ticket)?{branch:ticket.transferChange.toBranch,department:ticket.transferChange.toDepartment}:isNewUser(ticket)?ticket.newUserDetails?.people?.[0]:{...requester,...ticket.requesterProfile,branch:ticket.branch||ticket.requesterProfile?.branch||requester?.branch};
   const managerRole=isChangeRequest(ticket)?destinationRole(ticket.transferChange):newUserApproverRole(subject);

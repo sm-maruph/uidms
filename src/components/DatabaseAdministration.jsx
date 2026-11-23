@@ -1,8 +1,11 @@
 import React,{useState} from 'react';
-import {portalRoles} from './portalRoles.js';
+import {portalRoles,canSetPortalRole} from './portalRoles.js';
 import {Button} from './UI.jsx';
 import {api} from './SystemEmailWorkspace.jsx';
 import {useSqlRefresh} from './useSqlRefresh.js';
+import {configuredWorkflowRoles} from './ticketWorkflow.js';
+import Icon from './Icon.jsx';
+import '../workflow-editor.css';
 
 const empty={employeeId:'',name:'',email:'',role:'User',branchId:'',departmentId:'',designationId:'',active:true,mock:true};
 
@@ -12,6 +15,7 @@ export default function DatabaseAdministration({users,catalog,write,onRefresh,no
  const [group,setGroup]=useState({name:'',email:''});
  const [activation,setActivation]=useState('');
  const [membership,setMembership]=useState(null);
+ const [userSearch,setUserSearch]=useState('');
  const [busy,setBusy]=useState(false);
  const update=(key,value)=>setForm(current=>({...current,[key]:value}));
  const save=async work=>{
@@ -29,27 +33,35 @@ export default function DatabaseAdministration({users,catalog,write,onRefresh,no
    setForm(empty);
   });
  };
+ const findUser=async event=>{
+  event.preventDefault();setBusy(true);
+  try{const result=await api('/users?search='+encodeURIComponent(userSearch.trim())+'&pageSize=100');const found=result.items.find(user=>user.employeeId.toLowerCase()===userSearch.trim().toLowerCase());if(!found)throw new Error('No registered UIDMS employee has this system ID.');setForm({...found,role:found.baseRole||found.role,originalRole:found.baseRole||found.role});setActivation('');notify('Employee loaded. Choose a role and save.');}
+  catch(error){notify(error.message);}finally{setBusy(false);}
+ };
  return <section className="panel directory-panel">
   <h2>Organization setup</h2>
+  <form className="admin-user-form" onSubmit={findUser}>
+   <h3>Find an employee to change their role</h3><label>System ID<input value={userSearch} maxLength={40} autoComplete="off" required placeholder="Enter the employee system ID" onChange={event=>setUserSearch(event.target.value)}/></label><Button type="submit" disabled={busy}>Find employee</Button>
+  </form>
   <form className="admin-user-form" onSubmit={saveUser}>
    <h3>{form.id?'Edit user':'Create user'}</h3>{!form.id&&catalog.mockLoginEnabled&&<label><input type="checkbox" checked={form.mock!==false} onChange={event=>update('mock',event.target.checked)}/>Mock account (password 1234, local development only)</label>}
    <div className="transfer-field-grid">
     <label>Employee ID<input value={form.employeeId} disabled={Boolean(form.id)} required onChange={event=>update('employeeId',event.target.value)}/></label>
     <label>Full name<input value={form.name} required onChange={event=>update('name',event.target.value)}/></label>
     <label>Work email (optional)<input type="email" value={form.email||''} onChange={event=>update('email',event.target.value)}/></label>
-    <label>Role<select value={form.role} onChange={event=>update('role',event.target.value)}>{portalRoles.map(role=><option key={role}>{role}</option>)}</select></label>
+    <label>Role<select value={form.role} onChange={event=>update('role',event.target.value)}>{portalRoles.filter(value=>canSetPortalRole(role,form.originalRole,value)).map(role=><option key={role}>{role}</option>)}</select></label>
     {['branch','department','designation'].map(kind=><label key={kind}>{kind[0].toUpperCase()+kind.slice(1)}<select required={kind!=='designation'} value={form[kind+'Id']||''} onChange={event=>update(kind+'Id',event.target.value)}><option value="">Select {kind}</option>{catalog.organizations.filter(row=>row.Kind===kind).map(row=><option key={row.Id} value={row.Id}>{row.Name}</option>)}</select></label>)}
     {form.id&&<label><input type="checkbox" checked={form.active} onChange={event=>update('active',event.target.checked)}/>Active account</label>}
    </div>
    <div className="detail-actions"><Button disabled={busy} type="submit">Save user</Button>{form.id&&<Button type="button" variant="subtle" onClick={()=>setForm(empty)}>Cancel</Button>}</div>
    {activation&&<p role="status">One-time activation token <code>{activation}</code></p>}
   </form>
-  <div className="admin-user-list">{users.map(user=><div key={user.id} className="admin-user-row"><span>{user.name} · {user.employeeId} · {user.role}</span><Button type="button" variant="subtle" onClick={()=>{setForm(user);setActivation('');}}>Edit</Button></div>)}</div>
+  <div className="admin-user-list">{users.map(user=><div key={user.id} className="admin-user-row"><span>{user.name} · {user.employeeId} · {user.role}</span><Button type="button" variant="subtle" onClick={()=>{setForm({...user,role:user.baseRole||user.role,originalRole:user.baseRole||user.role});setActivation('');}}>Edit</Button></div>)}</div>
   <form className="admin-user-form" onSubmit={event=>{event.preventDefault();save(async()=>{await write('/lookups','POST',lookup);setLookup({...lookup,name:''});});}}>
    <h3>Organization lookups</h3><div className="transfer-field-grid"><label>Type<select value={lookup.kind} onChange={event=>setLookup({...lookup,kind:event.target.value})}>{['branch','department','designation'].map(kind=><option key={kind}>{kind}</option>)}</select></label><label>Name<input required value={lookup.name} onChange={event=>setLookup({...lookup,name:event.target.value})}/></label></div><Button type="submit" disabled={busy}>Add lookup</Button>
   </form>
   <form className="admin-user-form" onSubmit={event=>{event.preventDefault();save(async()=>{await write('/mailing-groups','POST',group);setGroup({name:'',email:''});});}}>
-   <h3>Mailing groups</h3><ul>{catalog.mailingGroups.map(row=><li key={row.Id}>{row.Name} · {row.Email} {role==='Super Admin'&&<Button type="button" variant="subtle" onClick={async()=>{try{const {userIds}=await api('/admin/mailing-groups/'+row.Id+'/members');setMembership({group:row,userIds});}catch(error){notify(error.message);}}}>Edit members</Button>}</li>)}</ul><div className="transfer-field-grid"><label>Name<input required value={group.name} onChange={event=>setGroup({...group,name:event.target.value})}/></label><label>Group email<input type="email" required value={group.email} onChange={event=>setGroup({...group,email:event.target.value})}/></label></div><Button type="submit" disabled={busy}>Add group</Button>
+   <h3>Mailing groups</h3><ul>{catalog.mailingGroups.map(row=><li key={row.Id}>{row.Name} · {row.Email} {['Admin','Super Admin'].includes(role)&&<Button type="button" variant="subtle" onClick={async()=>{try{const {userIds}=await api('/admin/mailing-groups/'+row.Id+'/members');setMembership({group:row,userIds});}catch(error){notify(error.message);}}}>Edit members</Button>}</li>)}</ul><div className="transfer-field-grid"><label>Name<input required value={group.name} onChange={event=>setGroup({...group,name:event.target.value})}/></label><label>Group email<input type="email" required value={group.email} onChange={event=>setGroup({...group,email:event.target.value})}/></label></div><Button type="submit" disabled={busy}>Add group</Button>
   </form>
   {membership&&<form className="admin-user-form" onSubmit={event=>{event.preventDefault();save(async()=>{await write('/admin/mailing-groups/'+membership.group.Id+'/members','PUT',{userIds:membership.userIds});setMembership(null);});}}>
    <h3>Members of {membership.group.Name}</h3><div className="admin-mailing-members">{users.filter(user=>user.active).map(user=><label key={user.id}><input type="checkbox" checked={membership.userIds.includes(user.id)} onChange={event=>setMembership(current=>({...current,userIds:event.target.checked?[...current.userIds,user.id]:current.userIds.filter(id=>id!==user.id)}))}/>{user.name} · {user.employeeId}</label>)}</div><div className="detail-actions"><Button type="submit" disabled={busy}>Save members</Button><Button type="button" variant="subtle" onClick={()=>setMembership(null)}>Cancel</Button></div>
@@ -60,16 +72,47 @@ export default function DatabaseAdministration({users,catalog,write,onRefresh,no
 export function DatabaseWorkflows({catalog,write,onRefresh,notify,role}){
  const [code,setCode]=useState('');
  const type=catalog.requestTypes.find(row=>row.Code===code);
- const [hr,setHr]=useState(false);
+ const [draft,setDraft]=useState({roles:[],original:[],dirty:false});
+ const [applyToOpenRequests,setApplyToOpenRequests]=useState(true);
  const [busy,setBusy]=useState(false);
- const roles=type?.Code==='reset'?['CITO']:['Manager',...(hr?['HR']:[]),'IT','CITO','COO'];
- return <section className="panel directory-panel"><h2>Workflow studio</h2>
-  <form className="admin-user-form" onSubmit={async event=>{
-   event.preventDefault();setBusy(true);
-   try{await write('/admin/workflows/'+code,'PUT',{roles});await onRefresh();notify('Workflow saved to SQL Server.');}
-   catch(error){notify(error.message);}finally{setBusy(false);}
-  }}><label>Request type<select value={code} required onChange={event=>{const next=event.target.value;setCode(next);setHr(catalog.requestTypes.find(row=>row.Code===next)?.IncludesHr||false);}}><option value="">Select service</option>{catalog.requestTypes.map(row=><option key={row.Code} value={row.Code}>{row.Name}</option>)}</select></label>
-   {type&&<><ol>{roles.map(item=><li key={item}>{item}</li>)}</ol>{code!=='reset'&&<label><input type="checkbox" checked={hr} disabled={role!=='Super Admin'||['new-user','movement','branch-transfer','employee-deactivate'].includes(code)} onChange={event=>setHr(event.target.checked)}/>Include HR review</label>}{role==='Super Admin'&&<Button type="submit" disabled={busy}>Save workflow</Button>}</>}
+ const [error,setError]=useState('');
+ const choices=['Manager','HR','IT','CITO','COO'];
+ const saved=configuredWorkflowRoles(catalog,code).join('|');
+ React.useEffect(()=>{if(!draft.dirty){const roles=configuredWorkflowRoles(catalog,code);setDraft({roles,original:roles,dirty:false});}},[code,saved,draft.dirty]);
+ const editable=['Admin','Super Admin'].includes(role)&&!busy;
+ const change=roles=>{setDraft(current=>({...current,roles,dirty:true}));setError('');};
+ const move=(index,offset)=>{const roles=[...draft.roles];[roles[index],roles[index+offset]]=[roles[index+offset],roles[index]];change(roles);};
+ const journey=['Submitted',...(code==='movement'?['Employee review']:[]),...draft.roles,'Processing','Completed'];
+ return <section className="panel directory-panel workflow-editor" aria-labelledby="workflow-studio-title">
+  <header className="workflow-editor-header"><span className="workflow-editor-mark"><Icon name="branch" size={23}/></span><div><p className="workflow-editor-eyebrow">REQUEST ADMINISTRATION</p><h2 id="workflow-studio-title">Workflow studio</h2><p>Set the approval journey for each request type.</p></div><span className="workflow-editor-access"><Icon name="settings" size={14}/>Configuration</span></header>
+  <form className="workflow-editor-form" onSubmit={async event=>{
+   event.preventDefault();if(!editable||!draft.roles.length)return;setBusy(true);setError('');
+   try{
+    const result=await write('/admin/workflows/'+code,'PUT',{roles:draft.roles,expectedRoles:draft.original,applyToOpenRequests});
+    setDraft(current=>({...current,original:current.roles,dirty:false}));await onRefresh();
+    notify(`Workflow saved. ${result.updatedRequests} ongoing request${result.updatedRequests===1?'':'s'} updated.`);
+   }catch(error){setError(error.message);}finally{setBusy(false);}
+  }}>
+   <div className="workflow-editor-toolbar"><label htmlFor="workflow-request-type">Request type<select id="workflow-request-type" value={code} required disabled={busy} onChange={event=>{const next=event.target.value;const roles=configuredWorkflowRoles(catalog,next);setCode(next);setDraft({roles,original:roles,dirty:false});setError('');}}><option value="">Select a request type</option>{catalog.requestTypes.map(row=><option key={row.Code} value={row.Code}>{row.Name}</option>)}</select></label>{type&&<span className={`workflow-editor-status${draft.dirty?' is-dirty':''}`} role="status"><i/>{draft.dirty?'Unsaved changes':'Saved workflow'}</span>}</div>
+   {type?<div className="workflow-editor-grid">
+    <section className="workflow-editor-steps" aria-labelledby="workflow-steps-title">
+     <div className="workflow-editor-section-heading"><div><h3 id="workflow-steps-title">Approval steps <span>{draft.roles.length}</span></h3><p>Choose reviewers and arrange their order.</p></div><Button type="button" variant="subtle" icon="plus" disabled={!editable||draft.roles.length===choices.length} onClick={()=>change([...draft.roles,choices.find(choice=>!draft.roles.includes(choice))])}>Add approval</Button></div>
+     <ol className="workflow-editor-roles">{draft.roles.map((item,index)=><li key={index}>
+      <span className="workflow-editor-step-number" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>
+      <label><span className="workflow-editor-field-label">Approval {index+1}</span><select aria-label={`Approval ${index+1} role`} value={item} disabled={!editable} onChange={event=>change(draft.roles.map((value,i)=>i===index?event.target.value:value))}>{choices.filter(choice=>choice===item||!draft.roles.includes(choice)).map(choice=><option key={choice}>{choice}</option>)}</select></label>
+      <div className="workflow-editor-step-actions"><button type="button" disabled={!editable||index===0} aria-label={`Move approval ${index+1} up`} title="Move up" onClick={()=>move(index,-1)}><Icon name="chevron" size={16} className="workflow-editor-up"/></button><button type="button" disabled={!editable||index===draft.roles.length-1} aria-label={`Move approval ${index+1} down`} title="Move down" onClick={()=>move(index,1)}><Icon name="chevron" size={16} className="workflow-editor-down"/></button><button type="button" className="workflow-editor-remove" disabled={!editable} aria-label={`Remove approval ${index+1}`} title="Remove approval" onClick={()=>change(draft.roles.filter((_,i)=>i!==index))}><Icon name="trash" size={16}/></button></div>
+     </li>)}</ol>
+     {!draft.roles.length&&<div className="workflow-editor-no-steps" role="status"><Icon name="users" size={26}/><strong>No approval steps yet</strong><p>Add at least one reviewer to save this workflow.</p></div>}
+     <p className="workflow-editor-scope-note"><Icon name="branch" size={15}/>Manager routes to the relevant branch manager or department head.</p>
+    </section>
+    <aside className="workflow-editor-summary" aria-label="Workflow preview and application settings">
+     <section className="workflow-editor-preview"><div className="workflow-editor-preview-heading"><span><Icon name="branch" size={17}/></span><div><h3>Approval journey</h3><p>Preview of your selected steps</p></div></div><ol aria-label="Configured approval journey">{journey.map((stage,index)=>{const fixed=index===0||index>=journey.length-2||stage==='Employee review';return <li className={fixed?'is-fixed':''} key={`${stage}-${index}`}><span className="workflow-editor-journey-node">{stage==='Submitted'?<Icon name="idCard" size={14}/>:stage==='Processing'?<Icon name="settings" size={14}/>:stage==='Completed'?<Icon name="check" size={14}/>:<i/>}</span><strong>{stage}</strong><small>{stage==='Submitted'?'Requester':stage==='Processing'?'After approval':stage==='Completed'?'Request fulfilled':stage==='Employee review'?'Employee':'Approval'}</small></li>;})}</ol></section>
+     <label className={`workflow-editor-apply${applyToOpenRequests?' is-enabled':''}`}><input type="checkbox" checked={applyToOpenRequests} disabled={!editable} onChange={event=>setApplyToOpenRequests(event.target.checked)}/><span><strong>Update ongoing requests</strong><small>Update pending steps. Keep completed approvals and finished requests unchanged.</small></span></label>
+     <details className="workflow-editor-overrides"><summary>System-specific workflows</summary><p>Approval overrides set in System Email Templates remain in effect.</p></details>
+    </aside>
+   </div>:<div className="workflow-editor-empty"><span><Icon name="branch" size={34}/></span><h3>Choose a request type to get started</h3><p>Set its reviewers, check the journey, then save your workflow.</p></div>}
+   {error&&<p className="workflow-editor-feedback" role="alert">{error}</p>}
+   <footer className="workflow-editor-footer"><p><Icon name={draft.dirty?'edit':'check'} size={15}/>{type?draft.dirty?'Changes apply after saving':'Workflow is saved':'Select a request type to begin'}</p><div><Button type="button" variant="subtle" aria-label="Reload saved workflow" title="Reload saved workflow" disabled={busy||!type} onClick={async()=>{setBusy(true);try{await onRefresh();setDraft(current=>({...current,dirty:false}));setError('');}catch(error){setError(error.message);}finally{setBusy(false);}}}>Reload</Button>{['Admin','Super Admin'].includes(role)&&<Button type="submit" icon="check" disabled={busy||!type||!draft.roles.length}>{busy?'Saving…':'Save workflow'}</Button>}</div></footer>
   </form></section>;
 }
 
