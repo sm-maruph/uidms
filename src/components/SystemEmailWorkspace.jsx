@@ -23,7 +23,7 @@ export async function api(path,{method='GET',body,csrfToken,signal,format}={}){
  if(!response.ok||!data){
   const {code,message}=data?.error||{};
   const text=message&&message!==code?message:mfaErrorMessages[code]||errorMessages[code]||(response.status===429?'Too many requests. Wait a moment and try again.':'UIDMS could not complete this action.');
-  throw Object.assign(new Error(text),{status:response.status,code,...(response.status===429?{retryAfterSeconds:retryAfterSeconds(response.headers.get('Retry-After'),data?.error?.retryAfterSeconds)}:{})});
+  throw Object.assign(new Error(text),{status:response.status,code,...(code==='WORKFLOW_ASSIGNMENTS_INCOMPLETE'?{details:data?.error?.details}:{}),...(response.status===429?{retryAfterSeconds:retryAfterSeconds(response.headers.get('Retry-After'),data?.error?.retryAfterSeconds)}:{})});
  }
  return data;
 }

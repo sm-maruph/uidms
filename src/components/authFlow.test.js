@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {startPortalLogin,verifyPortalMfa} from './authFlow.js';
+import {startPortalLogin,verifyPortalMfa,restorePortalSession} from './authFlow.js';
 test('valid credentials can return an MFA challenge without being treated as login failure',async()=>{
  const result=await startPortalLogin(async(path,options)=>{assert.equal(path,'/auth/login');assert.deepEqual(options.body,{employeeId:'EMP1',password:'Private passphrase',provider:'local'});return {challenge:'challenge',mfaEnrollmentRequired:true};},'EMP1','Private passphrase');
  assert.equal(result.challenge,'challenge');assert.equal(result.user,undefined);
@@ -29,4 +29,14 @@ test('MFA requires a valid code and an authenticated session response',async()=>
  await assert.rejects(verifyPortalMfa(api,'pending','123'));assert.equal(calls,0);
  assert.equal((await verifyPortalMfa(api,'pending','123456')).user.employeeId,'EMP1');
  await assert.rejects(verifyPortalMfa(async()=>({challenge:'still pending'}),'pending','123456'));
+});
+
+test('refresh restores a server-verified session and CSRF token without login or logout',async()=>{
+ const paths=[],session={user:{id:'server-user',employeeId:'BD1'},csrfToken:'fresh-csrf',provider:'ad'};
+ assert.equal(await restorePortalSession(async path=>{paths.push(path);return session;}),session);assert.deepEqual(paths,['/auth/session']);
+});
+test('missing or expired sessions return to login while transient failures remain retryable',async()=>{
+ assert.equal(await restorePortalSession(async()=>{throw Object.assign(new Error('Expired'),{status:401});}),null);
+ for(const status of [403,500,503,undefined])await assert.rejects(restorePortalSession(async()=>{throw Object.assign(new Error('Retry'),{status});}),error=>error.message==='Retry');
+ await assert.rejects(restorePortalSession(async()=>({user:{id:'server-user'}})),/incomplete/);
 });

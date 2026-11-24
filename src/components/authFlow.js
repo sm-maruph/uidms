@@ -10,3 +10,12 @@ export async function verifyPortalMfa(api,challenge,code){
  if(!result.user||!result.csrfToken)throw new Error('Verification did not establish a session. Sign in again.');
  return result;
 }
+
+// Restore only a server-validated cookie session; never persist credentials in browser storage.
+export async function restorePortalSession(api){
+ try{
+  const result=await api('/auth/session');
+  if(!result.user?.id||!result.csrfToken)throw new Error('The session response was incomplete. Try again.');
+  return result;
+ }catch(error){if(error.status===401)return null;throw error;}
+}

@@ -1,3 +1,6 @@
+import {ticketApprovalFlow} from './ticketWorkflow.js';
+import {requestTypeLabel} from './requestTitle.js';
+import {fulfilmentItems} from './fulfilment.js';
 import { newUserApproverRole, isNewUser } from './newUserWorkflow.js';
 import { isChangeRequest, destinationRole } from './transferChangeWorkflow.js';
 const ranks={'User':0,'Branch manager':1,'Department head':1,'HR':2,'IT':3,'CITO':4,'COO':5};
@@ -39,3 +42,25 @@ export function validateReviewQuery(details,users,profile,ticket) {
 }
 
 export const approvalRecommendation=remark=>remark?.trim()||'Recommended';
+
+// Use saved ticket positions, including system overrides and acting reviewers.
+export function isFinalApproval(ticket,step){
+ if(Array.isArray(ticket.workflowSteps)){
+  const current=step||ticket.workflowSteps.find(row=>row.position===ticket.currentPosition&&row.status==='Waiting');
+  return Boolean(current&&ticket.workflowSteps.some(row=>row.position===current.position)&&!ticket.workflowSteps.some(row=>row.position>current.position));
+ }
+ if(ticket.sqlId)return false; // A list response cannot prove the final step.
+ const roles=ticketApprovalFlow(ticket).filter(role=>!['Requester','Employee review'].includes(role));
+ return Boolean(roles.length&&roles.at(-1)===(step?.role||step?.stage||ticket.assignedRole));
+}
+export const approvalDecisionLabel=ticket=>isFinalApproval(ticket)?'Approve':'Recommended';
+export const approvalHistoryLabel=(ticket,step)=>step.status==='Approved'?(isFinalApproval(ticket,step)?'Approved':'Recommended'):step.status;
+
+export function reviewRequestSummary(ticket){
+ const data={...ticket,...ticket.submittedForm?.data};
+ const people=data.sqlPeople||[];
+ const items=data.sqlItems?.length?data.sqlItems.map(item=>{const person=people.find(row=>row.id===item.personId);return {system:item.system,person:person?.name||data.name,employeeId:person?.employeeId||data.requesterId,role:item.role,operation:item.operation};}):fulfilmentItems(data);
+ const change=data.transferChange;
+ const fields=[['Ticket',ticket.id],['Request',requestTypeLabel(ticket.action)],['Requested by',data.name],['System / employee ID',data.requesterId],['Branch',data.branch],['Department',data.department],...(change?[['Transfer from',[change.fromBranch,change.fromDepartment].filter(Boolean).join(' / ')],['Transfer to',[change.toBranch,change.toDepartment].filter(Boolean).join(' / ')]]:[])].filter(([,value])=>value);
+ return {fields,items,justification:data.justification||'',employees:(data.newUserDetails?.people||[]).map(person=>({name:person.name,employeeId:person.employeeId,branch:person.branch,department:person.department,adRole:person.adRole,email:person.email?person.preferredEmail:'',software:[person.msOffice&&'MS Office',person.otherSoftware].filter(Boolean).join(', ')}))};
+}

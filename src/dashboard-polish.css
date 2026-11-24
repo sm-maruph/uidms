@@ -11,11 +11,6 @@
 .app-shell .content-shell.overview-shell>.topbar {
   backdrop-filter:none;
 }
-.app-shell .content-shell.overview-shell>.topbar::before {
-  animation:none;
-  text-indent:0;
-  text-overflow:ellipsis;
-}
 .app-shell .content-shell.overview-shell .welcome-banner {
   background:linear-gradient(115deg,var(--bank-blue) 0%,var(--bank-blue-deep) 75%,#164c67 100%);
   box-shadow:0 5px 15px #00558d20,inset 0 1px 0 #ffffff24;

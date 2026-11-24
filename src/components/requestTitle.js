@@ -1,4 +1,4 @@
-export const requestTypeLabel=type=>({'IDrive access':'I Drive / S Drive Access','N Drive access':'N Drive Access','ID reset / unlock':'Unlock / Reset','ID Unlock / Reset':'Unlock / Reset','ID Reset / Unlock':'Unlock / Reset','Branch / Department change':'Branch / Department Transfer','Branch / Department Change':'Branch / Department Transfer'}[type]||type);
+export const requestTypeLabel=type=>({'New ID creation (on behalf)':'New AD request','IDrive access':'I Drive / S Drive Access','N Drive access':'N Drive Access','ID reset / unlock':'Unlock / Reset','ID Unlock / Reset':'Unlock / Reset','ID Reset / Unlock':'Unlock / Reset','Branch / Department change':'Branch / Department Transfer','Branch / Department Change':'Branch / Department Transfer'}[type]||type);
 
 export const emailTemplateCategories={
  'new-id':'New ID creation',
@@ -14,7 +14,7 @@ export const emailTemplateCategories={
 };
 
 export const emailTemplateCategory=action=>({
- 'System ID creation (self-request)':'new-id','New ID creation (on behalf)':'new-id','New ID creation':'new-id',
+ 'System ID creation (self-request)':'new-id','New AD request':'new-id','New ID creation (on behalf)':'new-id','New ID creation':'new-id',
  'Employee ID deactivation':'employee-deactivation','System ID deactivation':'system-deactivation',
  'Unlock / Reset':'reset','ID upgrade':'upgrade','Email creation':'email-creation',
  'Mailing group change':'mailing-group','Auto-forward change':'auto-forward',
@@ -39,7 +39,7 @@ export function requestTitle(ticket, compact=true) {
   if(!systems.size)String(ticket.system||'').split(/,\s*| \+ /).forEach(add);
   const names=[...systems];
   const subject=compact&&names.length>3?`${names.slice(0,3).join(', ')} +${names.length-3} more`:names.join(', ');
-  const label={'System ID creation (self-request)':'System ID creation','New ID creation':'System ID creation','New ID creation (on behalf)':'New employee ID request','ID upgrade':'ID Role Upgrade','ID reset / unlock':'ID reset / unlock','System ID deactivation':'System ID deactivation','Employee ID deactivation':'Employee ID deactivation','Branch transfer':'Branch transfer'}[action]||action;
+  const label={'System ID creation (self-request)':'System ID creation','New ID creation':'System ID creation','New ID creation (on behalf)':'New AD request','ID upgrade':'ID Role Upgrade','ID reset / unlock':'ID reset / unlock','System ID deactivation':'System ID deactivation','Employee ID deactivation':'Employee ID deactivation','Branch transfer':'Branch transfer'}[action]||action;
   const displayLabel=requestTypeLabel(label);
   return subject?`${displayLabel} - ${subject}`:displayLabel;
 }

@@ -4,6 +4,7 @@ import {Button} from './UI.jsx';
 import {api} from './SystemEmailWorkspace.jsx';
 import {useSqlRefresh} from './useSqlRefresh.js';
 import {configuredWorkflowRoles} from './ticketWorkflow.js';
+import {currentWorkflowTypes,olderWorkflowTypes} from './workflowCatalog.js';
 import Icon from './Icon.jsx';
 import '../workflow-editor.css';
 
@@ -69,31 +70,36 @@ export default function DatabaseAdministration({users,catalog,write,onRefresh,no
  </section>;
 }
 
-export function DatabaseWorkflows({catalog,write,onRefresh,notify,role}){
+export function DatabaseWorkflows({catalog,write,onRefresh,notify,role,onBack}){
  const [code,setCode]=useState('');
- const type=catalog.requestTypes.find(row=>row.Code===code);
+ const currentTypes=currentWorkflowTypes(catalog),olderTypes=olderWorkflowTypes(catalog);
+ const type=[...currentTypes,...olderTypes].find(row=>row.Code===code);
  const [draft,setDraft]=useState({roles:[],original:[],dirty:false});
  const [applyToOpenRequests,setApplyToOpenRequests]=useState(true);
  const [busy,setBusy]=useState(false);
  const [error,setError]=useState('');
+ const [assignmentIssues,setAssignmentIssues]=useState([]);
  const choices=['Manager','HR','IT','CITO','COO'];
  const saved=configuredWorkflowRoles(catalog,code).join('|');
  React.useEffect(()=>{if(!draft.dirty){const roles=configuredWorkflowRoles(catalog,code);setDraft({roles,original:roles,dirty:false});}},[code,saved,draft.dirty]);
  const editable=['Admin','Super Admin'].includes(role)&&!busy;
- const change=roles=>{setDraft(current=>({...current,roles,dirty:true}));setError('');};
+ const chooseType=next=>{const roles=configuredWorkflowRoles(catalog,next);setCode(next);setDraft({roles,original:roles,dirty:false});setError('');setAssignmentIssues([]);};
+ const change=roles=>{setDraft(current=>({...current,roles,dirty:true}));setError('');setAssignmentIssues([]);};
  const move=(index,offset)=>{const roles=[...draft.roles];[roles[index],roles[index+offset]]=[roles[index+offset],roles[index]];change(roles);};
  const journey=['Submitted',...(code==='movement'?['Employee review']:[]),...draft.roles,'Processing','Completed'];
  return <section className="panel directory-panel workflow-editor" aria-labelledby="workflow-studio-title">
-  <header className="workflow-editor-header"><span className="workflow-editor-mark"><Icon name="branch" size={23}/></span><div><p className="workflow-editor-eyebrow">REQUEST ADMINISTRATION</p><h2 id="workflow-studio-title">Workflow studio</h2><p>Set the approval journey for each request type.</p></div><span className="workflow-editor-access"><Icon name="settings" size={14}/>Configuration</span></header>
+  <header className="workflow-editor-header">{onBack&&<button type="button" className="button button-subtle workflow-editor-back" onClick={onBack} disabled={busy}><Icon name="chevron" size={16}/><span>Back</span></button>}<span className="workflow-editor-mark"><Icon name="branch" size={23}/></span><div><p className="workflow-editor-eyebrow">REQUEST ADMINISTRATION</p><h2 id="workflow-studio-title">Workflow studio</h2><p>Set the approval journey for each request type.</p></div><span className="workflow-editor-access"><Icon name="settings" size={14}/>Configuration</span></header>
   <form className="workflow-editor-form" onSubmit={async event=>{
-   event.preventDefault();if(!editable||!draft.roles.length)return;setBusy(true);setError('');
+   event.preventDefault();if(!editable||!draft.roles.length)return;setBusy(true);setError('');setAssignmentIssues([]);
    try{
     const result=await write('/admin/workflows/'+code,'PUT',{roles:draft.roles,expectedRoles:draft.original,applyToOpenRequests});
-    setDraft(current=>({...current,original:current.roles,dirty:false}));await onRefresh();
-    notify(`Workflow saved. ${result.updatedRequests} ongoing request${result.updatedRequests===1?'':'s'} updated.`);
-   }catch(error){setError(error.message);}finally{setBusy(false);}
+    setDraft(current=>({...current,original:current.roles,dirty:false}));
+    let refreshFailed=false;try{await onRefresh();}catch{refreshFailed=true;}
+    notify(`Workflow saved. ${result.updatedRequests} ongoing request${result.updatedRequests===1?'':'s'} updated.${refreshFailed?' Reload the page to refresh the latest data.':''}`);
+    setBusy(false);onBack?.();
+   }catch(error){setError(error.message);setAssignmentIssues(Array.isArray(error.details?.assignments)?error.details.assignments:[]);}finally{setBusy(false);}
   }}>
-   <div className="workflow-editor-toolbar"><label htmlFor="workflow-request-type">Request type<select id="workflow-request-type" value={code} required disabled={busy} onChange={event=>{const next=event.target.value;const roles=configuredWorkflowRoles(catalog,next);setCode(next);setDraft({roles,original:roles,dirty:false});setError('');}}><option value="">Select a request type</option>{catalog.requestTypes.map(row=><option key={row.Code} value={row.Code}>{row.Name}</option>)}</select></label>{type&&<span className={`workflow-editor-status${draft.dirty?' is-dirty':''}`} role="status"><i/>{draft.dirty?'Unsaved changes':'Saved workflow'}</span>}</div>
+   <div className="workflow-editor-toolbar"><label htmlFor="workflow-request-type">Request type<select id="workflow-request-type" value={code} required disabled={busy} onChange={event=>chooseType(event.target.value)}><option value="">Select a request type</option>{currentTypes.map(row=><option key={row.Code} value={row.Code}>{row.Name}</option>)}{type&&!currentTypes.some(row=>row.Code===code)&&<option value={code}>{type.Name} (older requests)</option>}</select></label>{type&&<span className={`workflow-editor-status${draft.dirty?' is-dirty':''}`} role="status"><i/>{draft.dirty?'Unsaved changes':'Saved workflow'}</span>}{olderTypes.length>0&&<details className="workflow-editor-older"><summary>Older request workflows</summary><div>{olderTypes.map(row=><button type="button" disabled={busy} key={row.Code} onClick={()=>chooseType(row.Code)}>{row.Name}<small>{row.ExistingRequests} existing requests</small></button>)}</div></details>}</div>
    {type?<div className="workflow-editor-grid">
     <section className="workflow-editor-steps" aria-labelledby="workflow-steps-title">
      <div className="workflow-editor-section-heading"><div><h3 id="workflow-steps-title">Approval steps <span>{draft.roles.length}</span></h3><p>Choose reviewers and arrange their order.</p></div><Button type="button" variant="subtle" icon="plus" disabled={!editable||draft.roles.length===choices.length} onClick={()=>change([...draft.roles,choices.find(choice=>!draft.roles.includes(choice))])}>Add approval</Button></div>
@@ -111,23 +117,9 @@ export function DatabaseWorkflows({catalog,write,onRefresh,notify,role}){
      <details className="workflow-editor-overrides"><summary>System-specific workflows</summary><p>Approval overrides set in System Email Templates remain in effect.</p></details>
     </aside>
    </div>:<div className="workflow-editor-empty"><span><Icon name="branch" size={34}/></span><h3>Choose a request type to get started</h3><p>Set its reviewers, check the journey, then save your workflow.</p></div>}
-   {error&&<p className="workflow-editor-feedback" role="alert">{error}</p>}
+   {error&&<div className="workflow-editor-feedback" role="alert"><p>{error}</p>{assignmentIssues.length>0&&<><ul>{assignmentIssues.map(issue=><li key={issue.scopeId+issue.role}><div><strong>{issue.role}: {issue.scopeName}</strong><span>{issue.branch} / {issue.department} · {issue.requestCount} request{issue.requestCount===1?'':'s'}{issue.reason==='APPROVER_INACTIVE'?' · Assigned employee is inactive':''}</span><small>{issue.tickets.join(', ')}</small></div><a href={'/admin/approvers?scope='+encodeURIComponent(issue.scopeId)} target="_blank" rel="noopener noreferrer">Set assignment</a></li>)}</ul><p className="workflow-editor-exact-scope">Choose the exact department or branch shown above. Similar department names are separate records. Assignment opens in another tab so you can keep this workflow draft.</p></>}</div>}
    <footer className="workflow-editor-footer"><p><Icon name={draft.dirty?'edit':'check'} size={15}/>{type?draft.dirty?'Changes apply after saving':'Workflow is saved':'Select a request type to begin'}</p><div><Button type="button" variant="subtle" aria-label="Reload saved workflow" title="Reload saved workflow" disabled={busy||!type} onClick={async()=>{setBusy(true);try{await onRefresh();setDraft(current=>({...current,dirty:false}));setError('');}catch(error){setError(error.message);}finally{setBusy(false);}}}>Reload</Button>{['Admin','Super Admin'].includes(role)&&<Button type="submit" icon="check" disabled={busy||!type||!draft.roles.length}>{busy?'Saving…':'Save workflow'}</Button>}</div></footer>
   </form></section>;
 }
 
-export function DatabaseAudit(){
- const [page,setPage]=useState(1);
- const [data,setData]=useState(null);
- const [error,setError]=useState('');
- const load=async(signal,next=page)=>{
-  const result=await api('/audit?page='+next,{signal});
-  if(!signal?.aborted){setData(result);setError('');}
- };
- React.useEffect(()=>{const controller=new AbortController();load(controller.signal).catch(error=>{if(!controller.signal.aborted)setError(error.message);});return()=>controller.abort();},[page]);
- useSqlRefresh(true,load,error=>setError(error.message));
- return <section className="panel directory-panel"><h2>Audit trail</h2>
-  {error&&<p role="alert">{error}</p>}
-  {!data?<p>Loading audit events…</p>:<><div className="system-role-table-wrap"><table className="system-role-table"><thead><tr><th>Time (Dhaka)</th><th>Event</th><th>Actor</th><th>Record</th></tr></thead><tbody>{data.items.map(row=><tr key={row.Id}><td>{new Date(row.CreatedAt).toLocaleString('en-GB',{timeZone:'Asia/Dhaka'})}</td><td>{row.Event}</td><td>{row.Name||row.EmployeeId||'System'}</td><td>{row.EntityId||'—'}</td></tr>)}</tbody></table></div>{!data.items.length&&<p>No audit events on this page.</p>}<div className="detail-actions"><Button disabled={page<=1} onClick={()=>setPage(page-1)}>Previous</Button><Button disabled={page*data.pageSize>=data.total} onClick={()=>setPage(page+1)}>Next</Button></div></>}
- </section>;
-}
+export {default as DatabaseAudit} from './DatabaseAudit.jsx';

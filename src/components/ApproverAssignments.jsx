@@ -1,6 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {api} from './SystemEmailWorkspace.jsx';
 import Icon from './Icon.jsx';
+import {similarApproverAssignments} from './workflowCatalog.js';
 import '../approver-assignments.css';
 
 export default function ApproverAssignments({write,onRefresh}){
@@ -9,7 +10,7 @@ export default function ApproverAssignments({write,onRefresh}){
  const [loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState('');
  const load=async()=>{const result=await api('/approver-assignments');setRows(result.items);return result.items;};
  const reload=async()=>{setBusy(true);setError('');try{const updated=await load();setSelected(current=>current?updated.find(row=>row.ScopeId===current.ScopeId)||null:null);setCandidate(null);setMessage('Assignments reloaded.');}catch(err){setError(err.message);}finally{setBusy(false);}};
- useEffect(()=>{let active=true;api('/approver-assignments').then(result=>{if(active)setRows(result.items);}).catch(err=>{if(active)setError(err.message);}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;};},[]);
+ useEffect(()=>{let active=true;api('/approver-assignments').then(result=>{if(active){setRows(result.items);const scope=new URLSearchParams(window.location.search).get('scope');const row=result.items.find(row=>row.ScopeId===scope);if(row){setSelected(row);setKind(row.Kind);setEmployeeId(row.EmployeeId||'');}}}).catch(err=>{if(active)setError(err.message);}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;};},[]);
  const choose=row=>{setSelected(row);setEmployeeId(row.EmployeeId||'');setCandidate(null);setError('');setMessage('');};
  const find=async event=>{
   event.preventDefault();setBusy(true);setError('');setCandidate(null);
@@ -32,6 +33,7 @@ export default function ApproverAssignments({write,onRefresh}){
    <aside className="approver-editor">
     {selected?<><p className="eyebrow">{selected.Kind==='branch'?'BRANCH MANAGER':'DEPARTMENT HEAD'}</p><h2>{selected.Name}</h2><div className="approver-current"><small>Current approver</small><strong>{selected.UserName||'Not assigned'}</strong><span>{selected.EmployeeId||'Select a registered employee below'}</span></div>
      <form onSubmit={find}><label htmlFor="approver-system-id">Approver system ID</label><div className="approver-id-search"><input id="approver-system-id" value={employeeId} autoComplete="off" maxLength={40} disabled={busy} placeholder="e.g. BD06653" onChange={event=>{setEmployeeId(event.target.value);setCandidate(null);setError('');setMessage('');}} required/><button className="button button-primary" type="submit" disabled={busy||!employeeId.trim()}>{busy?'Please wait…':'Find user'}</button></div></form>
+     {similarApproverAssignments(rows,selected).map(row=><div className="approver-alias-note" key={row.ScopeId}><strong>Similar department record: {row.Name}</strong><p>{row.UserName} ({row.EmployeeId}) is assigned there. This request uses the separate “{selected.Name}” record.</p><button className="button button-subtle" type="button" disabled={busy} onClick={()=>{setEmployeeId(row.EmployeeId);setCandidate(null);setError('');}}>Use this system ID</button></div>)}
      {candidate&&<div className="approver-candidate"><span className="approver-avatar">{candidate.name.split(/\s+/).map(part=>part[0]).slice(0,2).join('')}</span><div><strong>{candidate.name}</strong><span>{candidate.employeeId}</span><small>{candidate.role} · {candidate.branch} · {candidate.department}</small></div></div>}
      <div className="approver-save"><button className="button button-primary" type="button" disabled={!candidate||busy} onClick={save}>{busy?'Saving…':`Assign ${selected.Kind==='branch'?'branch manager':'department head'}`}</button></div>
      <p className="approver-note">This person receives the Manager approval step for this {selected.Kind}. Saving updates waiting steps on open requests and keeps completed approvals. Their portal role stays the same.</p></>:<div className="approver-empty-editor"><Icon name="users" size={32}/><h2>Choose a department or branch</h2><p>Select a scope to review or change its approver.</p></div>}
