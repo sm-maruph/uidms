@@ -1,3 +1,4 @@
+import {setOrganizationRouting} from './components/organizationRouting.js';
 import {timeGreeting} from './components/greeting.js';
 import LoginVerification from './components/LoginVerification.jsx';
 import ProfileOnboarding from './components/ProfileOnboarding.jsx';
@@ -401,6 +402,7 @@ export default function App() {
  const refreshOrganization=async(signal)=>{
   const [catalog,directory,self]=await Promise.all([api('/lookups',{signal}),api('/users?pageSize=100',{signal}),api('/profile',{signal})]);
   if(signal?.aborted)return;
+  setOrganizationRouting(catalog.organizations);
   setSqlCatalog(catalog);
   const own={...self.user,branch:catalog.organizations.find(row=>row.Id===self.user.branchId)?.Name||'',department:catalog.organizations.find(row=>row.Id===self.user.departmentId)?.Name||''};
   if(own){
@@ -418,7 +420,7 @@ export default function App() {
   setUsers(current=>directory.items.map(user=>{
    const previous=current.find(item=>item.id===user.id);
    const designation=catalog.organizations.find(row=>row.Id===user.designationId)?.Name||'';
-   return {...previous,...user,designation,systemId:user.employeeId,access:previous?.access||{}};
+   return {...previous,...user,branch:catalog.organizations.find(row=>row.Id===user.branchId)?.Name||'',department:catalog.organizations.find(row=>row.Id===user.departmentId)?.Name||'',designation,systemId:user.employeeId,access:previous?.access||{}};
   }));
   setBranches(catalog.organizations.filter(row=>row.Kind==='branch').map(row=>row.Name));
   setDepartments(catalog.organizations.filter(row=>row.Kind==='department').map(row=>row.Name));
@@ -433,7 +435,7 @@ export default function App() {
   setSelected(current=>{
    if(!current?.sqlId)return current;
    const latest=tickets.find(ticket=>ticket.sqlId===current.sqlId);
-   return !latest?null:latest.version===current.version&&latest.reviewableByMe===current.reviewableByMe?current:latest;
+   return !latest?null:latest.version===current.version&&latest.reviewableByMe===current.reviewableByMe?{...current,branch:latest.branch,department:latest.department}:latest;
   });
   setSyncError('');
  };
@@ -468,7 +470,8 @@ export default function App() {
    if(!isCurrent())return;
    if(restoring){const route=routeFromPath(window.location.pathname);setProfile(current);setActive(route.page);setSelected(route.requestId?tickets.find(ticket=>ticket.id===route.requestId)||null:null);}
    else enterWorkspace(current);
-   setSqlCatalog(catalog);
+   setOrganizationRouting(catalog.organizations);
+  setSqlCatalog(catalog);
    setMailingGroups(catalog.mailingGroups.map(row=>({address:row.Email,name:row.Name,members:row.IsMember?[result.user.employeeId]:[]})));
    setUsers([current,...visibleUsers]);
    setBranches(catalog.organizations.filter(row=>row.Kind==='branch').map(row=>row.Name));

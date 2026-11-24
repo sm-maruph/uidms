@@ -1,11 +1,12 @@
+import {organizationRoutingName} from './organizationRouting.js';
 import {canReviewDatabaseTicket} from './workflowReview.js';
 export const isNewUser = ticket => ticket?.action === 'New ID creation (on behalf)';
 const normalize = value => String(value||'').trim().toLowerCase().replace(/centre/g,'center').replace(/[^a-z0-9]/g,'');
 const departmentLed = new Set(['cardcenter','digitalbanking','callcenter','digitalbankingandcardcenter']);
 export function newUserApproverRole(person = {}) {
- const branch=normalize(person.branch);
- const department=normalize(person.department).replace(/department$/, '');
- return ['headoffice','corporateoffice','digitalbankingandcardcenter'].includes(branch)||(branch==='gulshanbranch'&&departmentLed.has(department))?'Department head':'Branch manager';
+ const branch=normalize(organizationRoutingName('branch',person.branch));
+ const department=normalize(organizationRoutingName('department',person.department)).replace(/department$/, '');
+ return ['headoffice','headofficebd','corporateoffice','digitalbankingandcardcenter'].includes(branch)||(branch==='gulshanbranch'&&departmentLed.has(department))?'Department head':'Branch manager';
 }
 export const newUserManagerRole = details => newUserApproverRole(details?.people?.[0]);
 export function matchesNewUserApprover(person, profile) {

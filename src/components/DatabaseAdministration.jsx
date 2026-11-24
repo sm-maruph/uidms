@@ -1,3 +1,4 @@
+import OrganizationManagement from './OrganizationManagement.jsx';
 import React,{useState} from 'react';
 import {portalRoles,canSetPortalRole} from './portalRoles.js';
 import {Button} from './UI.jsx';
@@ -12,7 +13,6 @@ const empty={employeeId:'',name:'',email:'',role:'User',branchId:'',departmentId
 
 export default function DatabaseAdministration({users,catalog,write,onRefresh,notify,role}){
  const [form,setForm]=useState(empty);
- const [lookup,setLookup]=useState({kind:'branch',name:''});
  const [group,setGroup]=useState({name:'',email:''});
  const [activation,setActivation]=useState('');
  const [membership,setMembership]=useState(null);
@@ -41,6 +41,7 @@ export default function DatabaseAdministration({users,catalog,write,onRefresh,no
  };
  return <section className="panel directory-panel">
   <h2>Organization setup</h2>
+  {['Admin','Super Admin'].includes(role)&&<OrganizationManagement write={write} onRefresh={onRefresh} notify={notify}/>}
   <form className="admin-user-form" onSubmit={findUser}>
    <h3>Find an employee to change their role</h3><label>System ID<input value={userSearch} maxLength={40} autoComplete="off" required placeholder="Enter the employee system ID" onChange={event=>setUserSearch(event.target.value)}/></label><Button type="submit" disabled={busy}>Find employee</Button>
   </form>
@@ -58,9 +59,6 @@ export default function DatabaseAdministration({users,catalog,write,onRefresh,no
    {activation&&<p role="status">One-time activation token <code>{activation}</code></p>}
   </form>
   <div className="admin-user-list">{users.map(user=><div key={user.id} className="admin-user-row"><span>{user.name} · {user.employeeId} · {user.role}</span><Button type="button" variant="subtle" onClick={()=>{setForm({...user,role:user.baseRole||user.role,originalRole:user.baseRole||user.role});setActivation('');}}>Edit</Button></div>)}</div>
-  <form className="admin-user-form" onSubmit={event=>{event.preventDefault();save(async()=>{await write('/lookups','POST',lookup);setLookup({...lookup,name:''});});}}>
-   <h3>Organization lookups</h3><div className="transfer-field-grid"><label>Type<select value={lookup.kind} onChange={event=>setLookup({...lookup,kind:event.target.value})}>{['branch','department','designation'].map(kind=><option key={kind}>{kind}</option>)}</select></label><label>Name<input required value={lookup.name} onChange={event=>setLookup({...lookup,name:event.target.value})}/></label></div><Button type="submit" disabled={busy}>Add lookup</Button>
-  </form>
   <form className="admin-user-form" onSubmit={event=>{event.preventDefault();save(async()=>{await write('/mailing-groups','POST',group);setGroup({name:'',email:''});});}}>
    <h3>Mailing groups</h3><ul>{catalog.mailingGroups.map(row=><li key={row.Id}>{row.Name} · {row.Email} {['Admin','Super Admin'].includes(role)&&<Button type="button" variant="subtle" onClick={async()=>{try{const {userIds}=await api('/admin/mailing-groups/'+row.Id+'/members');setMembership({group:row,userIds});}catch(error){notify(error.message);}}}>Edit members</Button>}</li>)}</ul><div className="transfer-field-grid"><label>Name<input required value={group.name} onChange={event=>setGroup({...group,name:event.target.value})}/></label><label>Group email<input type="email" required value={group.email} onChange={event=>setGroup({...group,email:event.target.value})}/></label></div><Button type="submit" disabled={busy}>Add group</Button>
   </form>
