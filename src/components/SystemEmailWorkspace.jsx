@@ -22,6 +22,7 @@ export async function api(path,{method='GET',body,csrfToken,signal,format}={}){
  const data=await response.json().catch(()=>null);
  if(!response.ok||!data){
   const {code,message}=data?.error||{};
+  if(response.status===401&&!path.startsWith('/auth/'))window.dispatchEvent(new CustomEvent('uidms:session-expired'));
   const text=message&&message!==code?message:mfaErrorMessages[code]||errorMessages[code]||(response.status===429?'Too many requests. Wait a moment and try again.':'UIDMS could not complete this action.');
   throw Object.assign(new Error(text),{status:response.status,code,...(code==='WORKFLOW_ASSIGNMENTS_INCOMPLETE'?{details:data?.error?.details}:{}),...(response.status===429?{retryAfterSeconds:retryAfterSeconds(response.headers.get('Retry-After'),data?.error?.retryAfterSeconds)}:{})});
  }

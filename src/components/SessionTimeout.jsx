@@ -1,0 +1,32 @@
+import React,{useEffect,useRef,useState} from 'react';
+import {createPortal} from 'react-dom';
+import {api} from './SystemEmailWorkspace.jsx';
+import Icon from './Icon.jsx';
+import {sessionDeadline,sessionSeconds,sessionCountdown} from './sessionTimeout.js';
+import '../session-timeout.css';
+export default function SessionTimeout({session,onTiming,onBlock,onSignOut,onSignIn}){
+ const [deadline,setDeadline]=useState(()=>sessionDeadline(session.session)),[now,setNow]=useState(Date.now),[open,setOpen]=useState(false),[expired,setExpired]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ const refs=useRef({}),panel=useRef(null),inFlight=useRef(false),activity=useRef(Date.now()),lastRenew=useRef(Date.now()),forcedExpiry=useRef(false);
+ refs.current={session,onTiming,onBlock,onSignOut,onSignIn,deadline,open,expired};
+ const apply=timing=>{if(forcedExpiry.current)return;const next=sessionDeadline(timing);setDeadline(next);setNow(Date.now());if(next&&sessionSeconds(next)>0)setExpired(false);onTiming(timing);return next;};
+ const fail=error=>{if(error.status===401||error.status===403){forcedExpiry.current=true;setExpired(true);setOpen(true);setError('Your session can no longer be continued. Please sign in again.');}else setError(error.message||'Could not contact the server. Try again before the countdown ends.');};
+ const renew=async(explicit=false)=>{if(inFlight.current||forcedExpiry.current)return;inFlight.current=true;setBusy(true);setError('');try{const result=await api('/auth/continue',{method:'POST',csrfToken:refs.current.session.csrfToken,body:{reason:explicit?'continue':'activity'}});const next=apply(result.session);if(explicit&&next&&sessionSeconds(next)>next.warningSeconds)setOpen(false);lastRenew.current=Date.now();activity.current=Date.now();}catch(error){fail(error);}finally{inFlight.current=false;setBusy(false);}};
+ const status=async()=>{if(inFlight.current||forcedExpiry.current||document.hidden)return;inFlight.current=true;try{const result=await api('/auth/status');const next=apply(result.session);if(next&&sessionSeconds(next)>next.warningSeconds)setOpen(false);}catch(error){fail(error);}finally{inFlight.current=false;}};
+ useEffect(()=>{if(session.session&&!forcedExpiry.current)setDeadline(sessionDeadline(session.session));},[session.session?.expiresAt,session.session?.serverNow]);
+ useEffect(()=>{
+  const interact=event=>{if(event.isTrusted&&!refs.current.open)activity.current=Date.now();};
+  const ended=()=>{forcedExpiry.current=true;setExpired(true);setOpen(true);};
+  const focus=()=>status();
+  for(const name of ['pointerdown','pointermove','keydown','scroll','touchstart'])window.addEventListener(name,interact,{passive:true,capture:true});
+  window.addEventListener('focus',focus);document.addEventListener('visibilitychange',focus);window.addEventListener('uidms:session-expired',ended);
+  if(!refs.current.deadline)status();
+  const timer=window.setInterval(()=>{const time=Date.now();setNow(time);const current=refs.current;if(!document.hidden&&!current.open&&!forcedExpiry.current&&activity.current>lastRenew.current&&time-lastRenew.current>=60000)renew();},1000);
+  return()=>{window.clearInterval(timer);for(const name of ['pointerdown','pointermove','keydown','scroll','touchstart'])window.removeEventListener(name,interact,true);window.removeEventListener('focus',focus);document.removeEventListener('visibilitychange',focus);window.removeEventListener('uidms:session-expired',ended);};
+ },[]);
+ const remaining=sessionSeconds(deadline,now),atLimit=Boolean(deadline&&deadline.absoluteAt-now<=deadline.warningSeconds*1000);
+ useEffect(()=>{if(remaining!==null&&remaining<=(deadline?.warningSeconds||60))setOpen(true);},[remaining,deadline?.warningSeconds]);
+ useEffect(()=>{if(remaining===0)setExpired(true);},[remaining]);
+ useEffect(()=>{onBlock(open||expired);return()=>onBlock(false);},[open,expired]);
+ useEffect(()=>{if(!open)return;const previous=document.activeElement,overflow=document.body.style.overflow;document.body.style.overflow='hidden';panel.current?.querySelector('button')?.focus();return()=>{document.body.style.overflow=overflow;if(previous?.isConnected)previous.focus();};},[open]);
+ return <><button type="button" className={`session-timeout-clock${open?' is-warning':''}`} aria-label={`Session time remaining ${sessionCountdown(remaining)}`} title="Session time remaining" onClick={()=>setOpen(true)}><Icon name="clock" size={15}/><span>{sessionCountdown(remaining)}</span></button>{open&&createPortal(<div className="session-timeout-scrim"><section className="session-timeout-dialog" ref={panel} role="dialog" aria-modal="true" aria-labelledby="session-timeout-title" onKeyDown={event=>{if(event.key==='Tab'){const fields=[...event.currentTarget.querySelectorAll('button:not(:disabled)')],first=fields[0],last=fields.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}}}}><span className="session-timeout-icon"><Icon name="clock" size={26}/></span><p className="eyebrow">SESSION SECURITY</p><h2 id="session-timeout-title">{expired?'Your session has ended':atLimit?'Sign in again to continue':'You are about to be signed out'}</h2><p>{expired?'Sign in again to continue working.':atLimit?'You have reached the maximum sign-in duration. A new sign-in is required.':'Do you want to continue your session? Select Yes, continue to reset the inactivity timeout.'}</p><div className="session-timeout-remaining"><small>Time remaining</small><strong>{sessionCountdown(remaining)}</strong></div>{error&&<p role="alert" className="session-timeout-error">{error}</p>}<footer>{!expired&&<button type="button" className="button button-subtle" disabled={busy} onClick={async()=>{setBusy(true);try{await onSignOut();}finally{setBusy(false);}}}>Sign out</button>}{expired?<button type="button" className="button button-primary" onClick={onSignIn}>Sign in again</button>:atLimit?<button type="button" className="button button-primary" disabled={busy} onClick={onSignOut}>Sign in again</button>:<button type="button" className="button button-primary" disabled={busy} onClick={()=>renew(true)}>{busy?'Continuing...':'Yes, continue'}</button>}{!expired&&!atLimit&&remaining>(deadline?.warningSeconds||60)&&<button type="button" className="button button-subtle" disabled={busy} onClick={()=>setOpen(false)}>Close</button>}</footer></section></div>,document.querySelector('.app-shell')||document.body)}</>;
+}

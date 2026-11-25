@@ -1,3 +1,4 @@
+import AdminDeleteDialog from './AdminDeleteDialog.jsx';
 import OrganizationManagement from './OrganizationManagement.jsx';
 import React,{useState} from 'react';
 import {portalRoles,canSetPortalRole} from './portalRoles.js';
@@ -13,6 +14,7 @@ const empty={employeeId:'',name:'',email:'',role:'User',branchId:'',departmentId
 
 export default function DatabaseAdministration({users,catalog,write,onRefresh,notify,role}){
  const [form,setForm]=useState(empty);
+ const [deleteTarget,setDeleteTarget]=useState(null);
  const [group,setGroup]=useState({name:'',email:''});
  const [activation,setActivation]=useState('');
  const [membership,setMembership]=useState(null);
@@ -55,16 +57,17 @@ export default function DatabaseAdministration({users,catalog,write,onRefresh,no
     {['branch','department','designation'].map(kind=><label key={kind}>{kind[0].toUpperCase()+kind.slice(1)}<select required={kind!=='designation'} value={form[kind+'Id']||''} onChange={event=>update(kind+'Id',event.target.value)}><option value="">Select {kind}</option>{catalog.organizations.filter(row=>row.Kind===kind).map(row=><option key={row.Id} value={row.Id}>{row.Name}</option>)}</select></label>)}
     {form.id&&<label><input type="checkbox" checked={form.active} onChange={event=>update('active',event.target.checked)}/>Active account</label>}
    </div>
-   <div className="detail-actions"><Button disabled={busy} type="submit">Save user</Button>{form.id&&<Button type="button" variant="subtle" onClick={()=>setForm(empty)}>Cancel</Button>}</div>
+   <div className="detail-actions"><Button disabled={busy} type="submit">Save user</Button>{form.id&&<><Button type="button" variant="subtle" onClick={()=>setDeleteTarget({kind:'user',id:form.id})}>Delete user</Button><Button type="button" variant="subtle" onClick={()=>setForm(empty)}>Cancel</Button></>}</div>
    {activation&&<p role="status">One-time activation token <code>{activation}</code></p>}
   </form>
-  <div className="admin-user-list">{users.map(user=><div key={user.id} className="admin-user-row"><span>{user.name} · {user.employeeId} · {user.role}</span><Button type="button" variant="subtle" onClick={()=>{setForm({...user,role:user.baseRole||user.role,originalRole:user.baseRole||user.role});setActivation('');}}>Edit</Button></div>)}</div>
+  <div className="admin-user-list">{users.map(user=><div key={user.id} className="admin-user-row"><span>{user.name} · {user.employeeId} · {user.role}</span><Button type="button" variant="subtle" onClick={()=>{setForm({...user,role:user.baseRole||user.role,originalRole:user.baseRole||user.role});setActivation('');}}>Edit</Button><Button type="button" variant="subtle" onClick={()=>setDeleteTarget({kind:'user',id:user.id})}>Delete</Button></div>)}</div>
   <form className="admin-user-form" onSubmit={event=>{event.preventDefault();save(async()=>{await write('/mailing-groups','POST',group);setGroup({name:'',email:''});});}}>
    <h3>Mailing groups</h3><ul>{catalog.mailingGroups.map(row=><li key={row.Id}>{row.Name} · {row.Email} {['Admin','Super Admin'].includes(role)&&<Button type="button" variant="subtle" onClick={async()=>{try{const {userIds}=await api('/admin/mailing-groups/'+row.Id+'/members');setMembership({group:row,userIds});}catch(error){notify(error.message);}}}>Edit members</Button>}</li>)}</ul><div className="transfer-field-grid"><label>Name<input required value={group.name} onChange={event=>setGroup({...group,name:event.target.value})}/></label><label>Group email<input type="email" required value={group.email} onChange={event=>setGroup({...group,email:event.target.value})}/></label></div><Button type="submit" disabled={busy}>Add group</Button>
   </form>
   {membership&&<form className="admin-user-form" onSubmit={event=>{event.preventDefault();save(async()=>{await write('/admin/mailing-groups/'+membership.group.Id+'/members','PUT',{userIds:membership.userIds});setMembership(null);});}}>
    <h3>Members of {membership.group.Name}</h3><div className="admin-mailing-members">{users.filter(user=>user.active).map(user=><label key={user.id}><input type="checkbox" checked={membership.userIds.includes(user.id)} onChange={event=>setMembership(current=>({...current,userIds:event.target.checked?[...current.userIds,user.id]:current.userIds.filter(id=>id!==user.id)}))}/>{user.name} · {user.employeeId}</label>)}</div><div className="detail-actions"><Button type="submit" disabled={busy}>Save members</Button><Button type="button" variant="subtle" onClick={()=>setMembership(null)}>Cancel</Button></div>
   </form>}
+ {deleteTarget&&<AdminDeleteDialog {...deleteTarget} write={write} onClose={()=>setDeleteTarget(null)} onDeleted={async()=>{setDeleteTarget(null);setForm(empty);notify("User deleted. Selected requests updated and audit history retained.");await onRefresh();}}/>}
  </section>;
 }
 

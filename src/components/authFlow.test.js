@@ -40,3 +40,5 @@ test('missing or expired sessions return to login while transient failures remai
  for(const status of [403,500,503,undefined])await assert.rejects(restorePortalSession(async()=>{throw Object.assign(new Error('Retry'),{status});}),error=>error.message==='Retry');
  await assert.rejects(restorePortalSession(async()=>({user:{id:'server-user'}})),/incomplete/);
 });
+
+test('anonymous session discovery returns to sign-in without treating it as an HTTP failure',async()=>{assert.equal(await restorePortalSession(async()=>({authenticated:false})),null);});

@@ -15,6 +15,7 @@ export async function verifyPortalMfa(api,challenge,code){
 export async function restorePortalSession(api){
  try{
   const result=await api('/auth/session');
+  if(result.authenticated===false)return null;
   if(!result.user?.id||!result.csrfToken)throw new Error('The session response was incomplete. Try again.');
   return result;
  }catch(error){if(error.status===401)return null;throw error;}
