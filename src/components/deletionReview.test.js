@@ -3,3 +3,11 @@ const requests=[{Id:'own',CreatedByUser:true},{Id:'other',UserDependency:true},{
 test('deleting a user can retain their requests or remove only those they created',()=>{const plan={kind:'user',requests,users};const keep=deletionSelection(plan,{requests:'keep'});assert.equal(keep.kept.length,3);assert.deepEqual(keep.blockers.map(row=>row.Id),['other']);assert.equal(keep.removedUsers.length,1);const remove=deletionSelection(plan,{requests:'delete',deleteOtherRequests:true});assert.deepEqual(remove.removed.map(row=>row.Id),['own','other']);assert.deepEqual(remove.kept.map(row=>row.Id),['history']);assert.equal(remove.blockers.length,0);});
 test('organization deletion can move employees and keep history, or remove all linked records',()=>{const plan={kind:'branch',users,requests:[{Id:'pending',ScopeDependency:true},{Id:'closed'}]};assert.equal(deletionSelection(plan,{employees:'move',requests:'keep'}).blockers.length,1);const remove=deletionSelection(plan,{employees:'delete',requests:'delete'});assert.equal(remove.removed.length,2);assert.equal(remove.removedUsers.length,1);assert.equal(remove.blockers.length,0);});
 test('request deletion never removes its employee or unrelated access',()=>{const selected=deletionSelection({kind:'request',users:[],requests:[{Id:'ticket'}]},{});assert.equal(selected.removed.length,1);assert.equal(selected.removedUsers.length,0);});
+
+test('duplicate organization merge keeps every record and clears only transferable scope blockers',()=>{
+ const plan={kind:'branch',users,requests:[{Id:'pending',ScopeDependency:true,UserDependency:true},{Id:'closed'}]};
+ const choice={employees:'move',requests:'keep',replacementId:'head-office-bd',mergePending:true};
+ const selected=deletionSelection(plan,choice);assert.equal(selected.removed.length,0);assert.equal(selected.removedUsers.length,0);assert.equal(selected.kept.length,2);assert.equal(selected.blockers.length,0);
+ assert.equal(deletionSelection(plan,{...choice,replacementId:''}).blockers.length,1);
+ assert.equal(deletionSelection(plan,{...choice,employees:'delete'}).blockers.length,1);
+});
