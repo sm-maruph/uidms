@@ -105,6 +105,15 @@ function ProcessingDrafts({session}){
   try{const data=await api(path,{method:'POST',body:{},csrfToken:session.csrfToken});setDrafts(data.items);}
   catch(error){setError(error.message);}finally{setBusy(false);}
  };
+ const rebuild=async()=>{
+  if(!window.confirm('Refresh unsent drafts using the current system-group templates? Unsent edits will be replaced. Sent emails and confirmations will be kept.'))return;
+  setBusy(true);setError('');
+  try{
+   const current=await api('/requests/'+ticket.id);
+   const result=await api(path+'/rebuild',{method:'POST',body:{version:current.version},csrfToken:session.csrfToken});
+   setDrafts(result.items);setTicket(previous=>({...previous,...current}));
+  }catch(error){setError(error.message);}finally{setBusy(false);}
+ };
  const markSent=async(draft,email)=>{
   const edited=Object.keys(email).some(key=>JSON.stringify(email[key])!==JSON.stringify(draft[key]));
   await api(`${path}/${draft.id}/sent`,{method:'POST',csrfToken:session.csrfToken,body:{confirmedSent:true,...(edited?{email}:{})}});
@@ -125,8 +134,9 @@ function ProcessingDrafts({session}){
  return <section className="panel directory-panel system-email-panel"><h2>Processing drafts</h2>
   {error&&<p role="alert">{error}</p>}
   {ticket?<><div className="fulfilment-buttons"><button className="button button-subtle" type="button" disabled={busy} onClick={()=>{setTicket(null);setDrafts(null);setError('');}}>Back to tickets</button></div>
+   {canProcess&&['Approved','IT processing','HO processing'].includes(ticket.state)&&drafts?.some(draft=>!draft.sentAt)&&<button className="button button-subtle" type="button" disabled={busy} onClick={rebuild}>{busy?'Refreshing...':'Refresh unsent drafts'}</button>}
    <h3>{ticket.ticketNumber} · {ticket.action}</h3>
-   {drafts===null?<p>Loading drafts…</p>:drafts.length?<div className="fulfilment-panel"><p>{drafts.filter(draft=>draft.sentAt).length} of {drafts.length} drafts confirmed sent</p>{drafts.map(draft=><EmailDraftCard key={draft.id} draft={draft} requesterEmail={ticket.requesterProfile?.email} canSend={ticket.state!=='Completed'&&canProcess} onSent={markSent}/>)}</div>:<><p>No drafts are recorded for this ticket.</p>{ticket.state==='Approved'&&canProcess&&<button className="button button-primary" type="button" disabled={busy} onClick={initialize}>Create processing drafts</button>}</>}
+   {drafts===null?<p>Loading drafts…</p>:drafts.length?<div className="fulfilment-panel"><p>{drafts.filter(draft=>draft.sentAt).length} of {drafts.length} drafts confirmed sent</p>{drafts.map(draft=><EmailDraftCard key={draft.id} draft={draft} requesterEmail={ticket.requesterProfile?.email} canSend={ticket.state!=='Completed'&&canProcess} onSent={markSent}/>)}</div>:<><p>No drafts are recorded for this ticket.</p>{['Approved','IT processing','HO processing'].includes(ticket.state)&&canProcess&&<button className="button button-primary" type="button" disabled={busy} onClick={initialize}>Create processing drafts</button>}</>}
    {canProcess&&['Approved','IT processing'].includes(ticket.state)&&drafts?.length>0&&drafts.every(draft=>draft.sentAt)&&<form className="system-email-form" onSubmit={recordProcessing}>
     <h3>Record processing</h3><label>Processing reference<input name="reference" required maxLength={250}/></label><label>Notes<textarea name="notes" rows="3" maxLength={2000}/></label><button className="button button-primary" disabled={busy} type="submit">Record processing</button>
    </form>}

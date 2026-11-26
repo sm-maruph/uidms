@@ -2,6 +2,8 @@ import {emailTemplateCategory,requestTypeLabel} from './requestTitle.js';
 import { canReceiveCredentials } from './newUserWorkflow.js';
 import {mergeProcessingCc,requiredProcessingCc} from './processingRecipients.js';
 export function fulfilmentItems(ticket) {
+ if(ticket.typeCode==='movement'&&ticket.transferAccess?.version===1){const groups=new Map();for(const item of ticket.sqlItems||[]){if(item.operation==='revoke'||ticket.transferAccess.current.some(old=>old.systemId===item.systemId&&(old.systemRoleId||null)===(item.systemRoleId||null)))continue;const person=ticket.sqlPeople?.find(person=>person.id===item.personId);const key=`${person?.employeeId}:${item.systemId}`;const row=groups.get(key)||{system:item.system,systemId:item.systemId,person:person?.name||ticket.transferChange?.employee?.name,employeeId:person?.employeeId||ticket.transferChange?.employee?.employeeId,role:'',key};row.role=[row.role,item.role].filter(Boolean).join(', ');groups.set(key,row);}return [...groups.values()];}
+
  const data={...ticket,...ticket.submittedForm?.data};
  const result=[];
  const add=(system,person=data.requesterProfile?.name||ticket.name,employeeId=ticket.requesterId)=>{if(system&&!result.some(item=>item.system===system&&item.employeeId===employeeId)){

@@ -1,3 +1,4 @@
+import GmailSetup from './GmailSetup.jsx';
 import AdminDeleteDialog from './AdminDeleteDialog.jsx';
 import OrganizationManagement from './OrganizationManagement.jsx';
 import React,{useState} from 'react';
@@ -43,6 +44,7 @@ export default function DatabaseAdministration({users,catalog,write,onRefresh,no
  };
  return <section className="panel directory-panel">
   <h2>Organization setup</h2>
+  {role==='Super Admin'&&<GmailSetup write={write}/>}
   {['Admin','Super Admin'].includes(role)&&<OrganizationManagement write={write} onRefresh={onRefresh} notify={notify}/>}
   <form className="admin-user-form" onSubmit={findUser}>
    <h3>Find an employee to change their role</h3><label>System ID<input value={userSearch} maxLength={40} autoComplete="off" required placeholder="Enter the employee system ID" onChange={event=>setUserSearch(event.target.value)}/></label><Button type="submit" disabled={busy}>Find employee</Button>

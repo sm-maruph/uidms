@@ -84,6 +84,6 @@ export function requestFromDatabase(ticket,detail){
   return {police:check?.Police||'Pending',reference:check?.ReferenceCheck||'Pending',recommendation:check?.Recommendation||''};
  })}:ticket.hrClearance;
  return {...ticket,...summary,...Object.fromEntries(formKeys.flatMap(key=>details?.[key]?[[key,details[key]]]:[])),
-  id:ticket.id,sqlId:detail.id,action:ticket.action,system:ticket.system||[...new Set(items.map(item=>item.system))].join(', '),transferChange:details?.transferChange||ticket.transferChange,
+  id:ticket.id,sqlId:detail.id,action:ticket.action,system:ticket.system||[...new Set(items.map(item=>item.system))].join(', '),transferChange:details?.transferChange||ticket.transferChange,transferAccess:details?.transferAccess||ticket.transferAccess,
   approvalHistory,queryHistory,queryTargetIds:(queries||[]).filter(query=>!query.resolvedAt).map(query=>query.recipientEmployeeId),hrClearance,sqlPeople:people,sqlItems:items};
 }

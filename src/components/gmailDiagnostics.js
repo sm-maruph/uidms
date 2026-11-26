@@ -1,0 +1,5 @@
+export const gmailDiagnosticsVersion='gmail-diag-v1';
+export function gmailStatusDiagnostics(status){
+ return {version:gmailDiagnosticsVersion,backendVersion:status.diagnosticsVersion||'older-backend',configured:Boolean(status.configured),setupEnabled:Boolean(status.setupEnabled),connected:Boolean(status.connected),storageError:Boolean(status.storageError),clientIdLoaded:status.diagnostics?.clientIdConfigured??'unknown',clientSecretLoaded:status.diagnostics?.clientSecretConfigured??'unknown',redirectUriLoaded:status.diagnostics?.redirectConfigured??'unknown',navigation:'same-tab',buttonDisabledReason:!status.configured?'Google configuration is not loaded by the running backend':!status.setupEnabled?'GMAIL_SETUP_ENABLED is false in the running backend':null};
+}
+export function gmailErrorDiagnostics(error){return {version:gmailDiagnosticsVersion,httpStatus:Number.isInteger(error?.status)?error.status:null,code:typeof error?.code==='string'&&/^[A-Z0-9_]{1,80}$/.test(error.code)?error.code:'CLIENT_ERROR'};}
