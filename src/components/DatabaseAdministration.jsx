@@ -10,6 +10,7 @@ import {configuredWorkflowRoles} from './ticketWorkflow.js';
 import {currentWorkflowTypes,olderWorkflowTypes} from './workflowCatalog.js';
 import Icon from './Icon.jsx';
 import '../workflow-editor.css';
+import '../organization-setup.css';
 
 const empty={employeeId:'',name:'',email:'',role:'User',branchId:'',departmentId:'',designationId:'',active:true,mock:true};
 
@@ -24,7 +25,7 @@ export default function DatabaseAdministration({users,catalog,write,onRefresh,no
  const update=(key,value)=>setForm(current=>({...current,[key]:value}));
  const save=async work=>{
   setBusy(true);
-  try{await work();await onRefresh();notify('Saved to SQL Server.');}
+  try{await work();await onRefresh();notify('Your changes have been saved.');}
   catch(error){notify(error.message);}finally{setBusy(false);}
  };
  const saveUser=event=>{
@@ -42,7 +43,7 @@ export default function DatabaseAdministration({users,catalog,write,onRefresh,no
   try{const result=await api('/users?search='+encodeURIComponent(userSearch.trim())+'&pageSize=100');const found=result.items.find(user=>user.employeeId.toLowerCase()===userSearch.trim().toLowerCase());if(!found)throw new Error('No registered UIDMS employee has this system ID.');setForm({...found,role:found.baseRole||found.role,originalRole:found.baseRole||found.role});setActivation('');notify('Employee loaded. Choose a role and save.');}
   catch(error){notify(error.message);}finally{setBusy(false);}
  };
- return <section className="panel directory-panel">
+ return <section className="panel directory-panel organization-setup-panel">
   <h2>Organization setup</h2>
   {role==='Super Admin'&&<GmailSetup write={write}/>}
   {['Admin','Super Admin'].includes(role)&&<OrganizationManagement write={write} onRefresh={onRefresh} notify={notify}/>}

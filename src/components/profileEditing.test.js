@@ -29,3 +29,9 @@ test('signature payload accepts a changed PNG and does not resend unchanged imag
  assert.equal(profileUpdatePayload({...options(),signature:image,initialSignature:image}).signatureBase64,undefined);
  assert.throws(()=>profileUpdatePayload({...options(),signature:'data:image/jpeg;base64,aGVsbG8='}),/PNG/);
 });
+test('profile email is normalized and only changed values are submitted',()=>{
+ assert.equal(profileUpdatePayload({...options(),email:' Employee@COMBANKBD.COM ',initialEmail:''}).email,'employee@combankbd.com');
+ assert.equal(profileUpdatePayload({...options(),email:'Employee@combankbd.com',initialEmail:'employee@combankbd.com'}).email,undefined);
+ assert.equal(profileUpdatePayload({...options(),email:'',initialEmail:'employee@combankbd.com'}).email,null);
+ assert.equal(profileUpdatePayload(options()).email,undefined);
+});

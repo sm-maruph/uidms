@@ -6,12 +6,15 @@ import { mockSignature } from './signature.js';
 import {api} from './SystemEmailWorkspace.jsx';
 import {profileAccessRows,profileUpdatePayload} from './profileEditing.js';
 
-export default function ProfileSignatureModal({ profile, onClose, onSave, onSaveProfile, catalog, databaseBacked=false }) {
+export default function ProfileSignatureModal({ profile, onClose, onSave, onSaveProfile, onRequestAccess, catalog, databaseBacked=false }) {
   const [signature, setSignature] = useState(profile?.signature || (databaseBacked?'':mockSignature));
   const [error, setError] = useState('');
   const [busy,setBusy]=useState(false);
   const [loaded,setLoaded]=useState(!onSaveProfile);
   const [designationId,setDesignationId]=useState(profile?.designationId||'');
+  const [email,setEmail]=useState(profile?.email||'');
+  const [initialEmail,setInitialEmail]=useState(profile?.email||'');
+  const [emailDomains,setEmailDomains]=useState(['combankbd.com']);
   const [version,setVersion]=useState(profile?.version||'');
   const [access,setAccess]=useState([]);
   const [initialAccess,setInitialAccess]=useState([]);
@@ -24,6 +27,7 @@ export default function ProfileSignatureModal({ profile, onClose, onSave, onSave
     api('/profile',{signal:controller.signal}).then(result=>{
       if(controller.signal.aborted)return;
       setDesignationId(result.user.designationId||'');setVersion(result.user.version);
+      setEmail(result.user.email||'');setInitialEmail(result.user.email||'');setEmailDomains(result.notificationEmailDomains||['combankbd.com']);
       const rows=profileAccessRows(result.access);setAccess(rows);setInitialAccess(rows);
       setCanEditAccess(Boolean(result.canEditAccess));setLoaded(true);
     }).catch(error=>{if(!controller.signal.aborted)setError(error.message);});
@@ -44,18 +48,20 @@ export default function ProfileSignatureModal({ profile, onClose, onSave, onSave
     event.preventDefault();if(busy||!loaded)return;
     setBusy(true);setError('');
     try{
-      if(onSaveProfile)await onSaveProfile(profileUpdatePayload({designationId,version,access,initialAccess,canEditAccess,signature,initialSignature:profile?.signature||''}));
+      if(onSaveProfile)await onSaveProfile(profileUpdatePayload({designationId,version,email,initialEmail,access,initialAccess,canEditAccess,signature,initialSignature:profile?.signature||''}));
       else await onSave(signature);
     }catch(error){setError(error.message);}finally{setBusy(false);}
   };
   const modal=<div className="modal-scrim profile-signature-scrim" onMouseDown={event => !busy&&event.target === event.currentTarget && onClose()}><form className={`profile-signature-modal ${onSaveProfile?'profile-editor-modal':''}`} role="dialog" aria-modal="true" aria-labelledby="signature-title" onSubmit={save}>
     <button type="button" className="icon-button profile-signature-close" disabled={busy} onClick={onClose} aria-label="Close"><Icon name="close"/></button>
-    <p className="eyebrow">PROFILE</p><h2 id="signature-title">{onSaveProfile?'Edit profile':'Your e-signature'}</h2><p>{onSaveProfile?(canEditAccess?'Update your designation, current access and e-signature.':'Update your designation and e-signature. Review your current access below.'):'Save your signature once. UIDMS will attach it to your requests.'}</p>
+    <p className="eyebrow">PROFILE</p><h2 id="signature-title">{onSaveProfile?'Edit profile':'Your e-signature'}</h2><p>{onSaveProfile?(canEditAccess?'Update your company email, designation, current access and e-signature.':'Update your company email, designation and e-signature. Review your current access below.'):'Save your signature once. UIDMS will attach it to your requests.'}</p>
     {onSaveProfile&&<>
       <div className="profile-editor-identity"><strong>{profile.name}</strong><span>{profile.employeeId} · {profile.role}</span></div>
       {!loaded&&!error&&<p role="status">Loading your profile…</p>}
       {!loaded&&error&&<Button type="button" variant="subtle" onClick={()=>setLoadAttempt(value=>value+1)}>Reload profile</Button>}
       <fieldset className="profile-editor-fields" disabled={!loaded||busy}>
+        <label className="field-label">Company email for notifications<input type="email" autoComplete="email" maxLength={254} value={email} placeholder={`your.name@${emailDomains[0]||'combankbd.com'}`} onChange={event=>setEmail(event.target.value)} aria-describedby="profile-email-help"/></label>
+        <p id="profile-email-help" className="profile-email-help">UIDMS will send request, approval and query notifications to this company email address.</p>
         <label className="field-label">Designation<select value={designationId} onChange={event=>setDesignationId(event.target.value)}><option value="">Not specified</option>{designationId&&!(catalog?.organizations||[]).some(row=>row.Id===designationId&&row.Kind==='designation')&&<option value={designationId}>{profile.designation||'Recorded designation'}</option>}{(catalog?.organizations||[]).filter(row=>row.Kind==='designation').map(row=><option key={row.Id} value={row.Id}>{row.Name}</option>)}</select></label>
         <section className="profile-editor-access"><h3>Current access <span>{access.length}</span></h3>
           <p>{canEditAccess?'Record the systems and roles for your profile. Changes are audited.':'Request access changes through Create a request.'}</p>
@@ -70,6 +76,7 @@ export default function ProfileSignatureModal({ profile, onClose, onSave, onSave
             </div>:<div className="profile-access-readonly" key={row.key}><strong>{row.systemName}</strong><span>{row.roleName||'Standard access'}</span></div>;
           })}
           {!access.length&&<p>No current access recorded.</p>}
+          {!canEditAccess&&onRequestAccess&&<Button type="button" variant="subtle" icon="plus" onClick={onRequestAccess}>Request access changes</Button>}
           {canEditAccess&&<Button type="button" variant="subtle" icon="plus" onClick={()=>setAccess(current=>[...current,{key:`new-${++nextKey.current}`,systemId:'',systemRoleId:'',username:''}])}>Add system access</Button>}
         </section>
       </fieldset>
