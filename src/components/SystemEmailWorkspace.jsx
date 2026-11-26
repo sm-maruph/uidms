@@ -19,6 +19,7 @@ export async function api(path,{method='GET',body,csrfToken,signal,format}={}){
  });
  if(response.status===204)return;
  if(response.ok&&format==='blob')return response.blob();
+ if(response.ok&&format==='text')return response.text();
  const data=await response.json().catch(()=>null);
  if(!response.ok||!data){
   const {code,message}=data?.error||{};
